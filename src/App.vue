@@ -1,5 +1,7 @@
 <template>
-  <VTiptap />
+  <div>
+    <VTiptap />
+  </div>
 </template>
 
 <script>
