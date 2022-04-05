@@ -4,9 +4,9 @@
 
 |Name|Description|Type|Required|Default|
 |---|---|---|---|---|
-|value|-|`string | null`|`false`|-|
-|placeholder|-|`string | null`|`false`|-|
-|view|-|`boolean | string[] | string`|`false`|`false`|
+|value|-|`string \| null`|`false`|-|
+|placeholder|-|`string \| null`|`false`|-|
+|view|-|`boolean \| string[] \| string`|`false`|`false`|
 |codeEditable|-|`boolean`|`false`|`false`|
 |codeEditor|-|`boolean`|`false`|`false`|
 |xss|-|`boolean`|`false`|`true`|
