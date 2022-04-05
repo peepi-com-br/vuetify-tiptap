@@ -1,16 +1,14 @@
 <template>
-  <v-app>
-    <HelloWorld />
-  </v-app>
+  <VTiptap />
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld";
+import VTiptap from "./components/VTiptap";
 
 export default {
   name: "App",
   components: {
-    HelloWorld,
+    VTiptap,
   },
 
   data: () => ({

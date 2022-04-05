@@ -3,7 +3,5 @@
 </template>
 
 <script>
-export default {
-  name: "HelloWorld",
-};
+export class VTiptap {}
 </script>
