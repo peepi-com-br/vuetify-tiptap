@@ -1,34 +1,31 @@
 # vuetify-tiptap
 
-## Project setup
-```
-npm install
-```
+## Props
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+|Name|Description|Type|Required|Default|
+|---|---|---|---|---|
+|value|-|`string | null`|`false`|-|
+|placeholder|-|`string | null`|`false`|-|
+|view|-|`boolean | string[] | string`|`false`|false|
+|codeEditable|-|`boolean`|`false`|false|
+|codeEditor|-|`boolean`|`false`|false|
+|xss|-|`boolean`|`false`|true|
+|codeLanguage|-|`string`|`false`|html|
+|hideToolbar|-|`boolean`|`false`|false|
+|inline|-|`boolean`|`false`|false|
+|disabled|-|`boolean`|`false`|false|
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## Events
 
-### Run your unit tests
-```
-npm run test:unit
-```
+|Event Name|Description|Parameters|
+|---|---|---|
+|input|-|-|
+|enter|-|-|
 
-### Run your end-to-end tests
-```
-npm run test:e2e
-```
+## Slots
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+<!-- @vuese:[name]:slots:start -->
+|Name|Description|Default Slot Content|
+|---|---|---|
+|prepend|-|-|
+|append|-|-|
