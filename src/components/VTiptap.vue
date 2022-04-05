@@ -260,7 +260,8 @@ export default class VTiptap extends Vue {
       .replace("watch?v=", "embed/")
       .replace("https://vimeo.com/", "https://player.vimeo.com/video/");
 
-    let whiteList = collect({
+    // eslint-disable-next-line
+    let whiteList: any = collect({
       a: ["href", "title", "target"],
       span: ["style"],
       blockquote: ["style"],
@@ -297,7 +298,6 @@ export default class VTiptap extends Vue {
     }
 
     return xss(value, {
-      /* eslint-disable-next-line */
       whiteList: whiteList.all(),
     });
   }
@@ -730,7 +730,9 @@ export default class VTiptap extends Vue {
           },
         }),
         TaskItem.configure({
-          itemTypeName: "taskItem",
+          HTMLAttributes: {
+            itemTypeName: "task-list",
+          },
         }),
         Text,
         TextAlign.configure({
