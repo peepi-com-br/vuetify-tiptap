@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <v-app>
     <VTiptap />
-  </div>
+  </v-app>
 </template>
 
 <script>
