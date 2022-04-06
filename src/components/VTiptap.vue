@@ -1,7 +1,10 @@
 <template>
   <div class="v-tiptap" :class="{ inline, view }">
+    <!-- View mode -->
+    <div v-if="view" v-html="cleanValue" style="width: 100%" />
+    <!-- Edit Mode -->
     <v-input
-      v-if="view === false"
+      v-else
       class="simple outside-label"
       style="padding-top: 0px !important"
       v-bind="$attrs"
@@ -12,7 +15,10 @@
         :class="{ 'py-2 px-3': inline }"
         :outlined="!inline"
         style="width: 100%"
-        :height="height"
+        v-bind="$attrs"
+        :style="{
+          borderColor: $attrs['error-messages'] ? '#ff5252' : undefined,
+        }"
       >
         <!-- Toolbar -->
         <v-toolbar
@@ -24,38 +30,41 @@
           class="py-1"
         >
           <template v-for="(item, key) in items">
+            <!-- Spacer -->
             <v-spacer v-if="item.type === 'spacer'" :key="key" />
-
+            <!-- Divider -->
+            <div
+              v-else-if="item.type === 'divider'"
+              class="divider"
+              :key="key"
+            />
+            <!-- Slot -->
+            <div v-else-if="item.type === 'slot'" :key="key">
+              <slot :name="item.slot" v-bind="{ editor }" />
+            </div>
+            <!-- Buttons -->
             <div v-else class="my-1" :key="key">
-              <!-- Divider -->
-              <div class="divider" v-if="item.type === 'divider'" />
-              <!-- Other -->
-              <div v-else>
-                <v-tooltip :open-delay="500" top>
-                  <span>{{ item.title }}</span>
-                  <template v-slot:activator="{ on, attrs }">
-                    <!-- Headings -->
-                    <div v-if="item.type === 'headings'" class="ml-n1">
-                      <v-select
-                        v-model="selectedHeading"
-                        :items="headingsItems"
-                        dense
-                        hide-details="auto"
-                        style="width: 84px"
-                      />
-                    </div>
-                    <slot
-                      v-else-if="item.type === 'slot'"
-                      :name="item.slot"
-                      v-bind="{ editor }"
+              <v-tooltip :open-delay="500" top>
+                <span>{{ item.title }}</span>
+                <template v-slot:activator="{ on, attrs }">
+                  <!-- Headings -->
+                  <div v-if="item.type === 'headings'" class="ml-n1">
+                    <v-select
+                      v-model="selectedHeading"
+                      :items="headingsItems"
+                      dense
+                      hide-details="auto"
+                      style="width: 104px"
                     />
-                    <!-- Alignment -->
-                    <!-- <div v-else-if="item.type === 'alignment'" class="mr-1">
+                  </div>
+
+                  <!-- Alignment -->
+                  <!-- <div v-else-if="item.type === 'alignment'" class="mr-1">
                     <v-select v-model="selectedHeading" :items="headingsItems" dense hide-details="auto" />
                   </div> -->
-                    <!-- Color Button -->
-                    <div v-else-if="item.title === 'Color'" class="mr-1">
-                      <!--  <ColorPicker
+                  <!-- Color Button -->
+                  <div v-else-if="item.title === 'Color'" class="mr-1">
+                    <!--  <ColorPicker
                       v-model="selectedColor"
                       @input="item.action(selectedColor)"
                       v-bind="attrs"
@@ -80,57 +89,44 @@
                         </v-btn>
                       </template>
                     </ColorPicker> -->
-                    </div>
+                  </div>
 
-                    <!-- Standard Button -->
-                    <v-btn
-                      v-else
-                      :class="{
-                        'v-btn--active': item.isActive && item.isActive(),
-                      }"
-                      :color="
-                        item.isActive && item.isActive() ? 'primary' : undefined
-                      "
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="item.action()"
-                      class="mr-1"
-                      icon
-                      small
-                    >
-                      <v-icon>{{ item.icon }}</v-icon>
-                    </v-btn>
-                  </template>
-                </v-tooltip>
-              </div>
+                  <!-- Standard Button -->
+                  <v-btn
+                    v-else
+                    :class="{
+                      'v-btn--active': item.isActive && item.isActive(),
+                    }"
+                    :color="
+                      item.isActive && item.isActive() ? 'primary' : undefined
+                    "
+                    v-bind="attrs"
+                    v-on="on"
+                    @click="item.action()"
+                    class="mr-1"
+                    icon
+                    small
+                  >
+                    <v-icon>{{ item.icon }}</v-icon>
+                  </v-btn>
+                </template>
+              </v-tooltip>
             </div>
           </template>
         </v-toolbar>
 
         <div class="d-flex">
+          <!-- Slot Prepend -->
           <slot name="prepend" />
-
           <!-- Tiptap Editor -->
-
           <slot name="editor">
             <editor-content :editor="editor" class="flex-grow-1" />
           </slot>
-
+          <!-- Slot Append -->
           <slot name="append" />
         </div>
       </v-card>
     </v-input>
-    <!-- View mode -->
-    <v-card
-      v-else
-      flat
-      class="py-2 px-3"
-      :outlined="!inline"
-      style="width: 100%"
-      :height="height"
-    >
-      <div v-html="cleanValue" />
-    </v-card>
   </div>
 </template>
 
@@ -194,22 +190,12 @@ import {
 export default class VTiptap extends Vue {
   @Prop() readonly value: string | null;
 
+  @Prop({ default: false }) readonly view: boolean;
+
   @Prop() readonly placeholder: string | null;
 
-  @Prop({ default: false }) readonly view: boolean | string[] | string;
-
-  @Prop({ default: true }) readonly xss: boolean;
-
-  @Prop({ default: false }) readonly inline: boolean;
-
-  @Prop({ default: false }) readonly hideToolbar: boolean;
-
-  @Prop({ default: false }) readonly disabled: boolean;
-
-  @Prop({ default: undefined }) readonly height: number;
-
   @Prop({
-    default: [
+    default: () => [
       "bold",
       "italic",
       "strike",
@@ -236,20 +222,8 @@ export default class VTiptap extends Vue {
   })
   readonly toolbar: string[];
 
-  editor: Editor | null = null;
-
-  get cleanValue() {
-    if (!this.xss) {
-      return this.value;
-    }
-
-    const value = this.value
-      .replace("https://youtu.be/", "https://www.youtube.com/watch?v=")
-      .replace("watch?v=", "embed/")
-      .replace("https://vimeo.com/", "https://player.vimeo.com/video/");
-
-    // eslint-disable-next-line
-    let whiteList: any = collect({
+  @Prop({
+    default: () => ({
       a: ["href", "title", "target"],
       span: ["style"],
       blockquote: ["style"],
@@ -279,10 +253,35 @@ export default class VTiptap extends Vue {
       tbody: ["class", "style"],
       table: ["class", "style"],
       br: [],
-    });
+    }),
+  })
+  readonly xssOptions: Record<string, string[]>;
 
-    if (Array.isArray(this.view)) {
-      whiteList = whiteList.only(this.view);
+  @Prop({ default: false }) readonly hideToolbar: boolean;
+
+  @Prop({ default: true }) readonly xss: boolean | string[];
+
+  @Prop({ default: false }) readonly inline: boolean;
+
+  @Prop({ default: false }) readonly disabled: boolean;
+
+  editor: Editor | null = null;
+
+  get cleanValue() {
+    if (this.xss === false) {
+      return this.value;
+    }
+
+    const value = this.value
+      .replace("https://youtu.be/", "https://www.youtube.com/watch?v=")
+      .replace("watch?v=", "embed/")
+      .replace("https://vimeo.com/", "https://player.vimeo.com/video/");
+
+    // eslint-disable-next-line
+    let whiteList: any = collect(this.xssOptions);
+
+    if (Array.isArray(this.xss)) {
+      whiteList = whiteList.only(this.xss);
     }
 
     return xss(value, {
@@ -425,30 +424,29 @@ export default class VTiptap extends Vue {
         title: "Emoji",
         action: this.setEmoji,
       },
-      // {
-      //   icon: 'mdi-format-quote-open',
-      //   title: 'Blockquote',
-      //   action: () => this.editor.chain().focus().toggleBlockquote().run(),
-      //   isActive: () => this.editor.isActive('blockquote'),
-      // },
-      // {
-      //   icon: 'mdi-minus',
-      //   title: 'Horizontal Rule',
-      //   action: () => this.editor.chain().focus().setHorizontalRule().run(),
-      // },
-      // { type: 'divider' },
-      // {
-      //   title: 'Code',
-      //   icon: 'mdi-code-tags',
-      //   action: () => this.editor.chain().focus().toggleCode().run(),
-      //   isActive: () => this.editor.isActive('code'),
-      // },
-      // {
-      //   icon: 'mdi-code-braces-box',
-      //   title: 'Code Block',
-      //   action: () => this.editor.chain().focus().toggleCodeBlock().run(),
-      //   isActive: () => this.editor.isActive('codeBlock'),
-      // },
+      blockquote: {
+        icon: "mdi-format-quote-open",
+        title: "Blockquote",
+        action: () => this.editor.chain().focus().toggleBlockquote().run(),
+        isActive: () => this.editor.isActive("blockquote"),
+      },
+      rule: {
+        icon: "mdi-minus",
+        title: "Horizontal Rule",
+        action: () => this.editor.chain().focus().setHorizontalRule().run(),
+      },
+      code: {
+        title: "Code",
+        icon: "mdi-code-tags",
+        action: () => this.editor.chain().focus().toggleCode().run(),
+        isActive: () => this.editor.isActive("code"),
+      },
+      codeBlock: {
+        icon: "mdi-code-braces-box",
+        title: "Code Block",
+        action: () => this.editor.chain().focus().toggleCodeBlock().run(),
+        isActive: () => this.editor.isActive("codeBlock"),
+      },
       clear: {
         icon: "mdi-format-clear",
         title: "Clear Format",
@@ -636,6 +634,21 @@ export default class VTiptap extends Vue {
   }
 
   created() {
+    // const extensionsDefinition = {
+    //   focus: Focus.configure({
+    //     className: "focus",
+    //   }),
+    // };
+
+    // let extensions = [];
+    // for (let i of this.extensions) {
+    //   if (extensionsDefinition[i]) {
+    //     extensions.push(extensionsDefinition[i]);
+    //   }
+    // }
+
+    // enabledExtesions = ['bold'];
+
     this.editor = new Editor({
       content: this.value,
       editorProps: {
@@ -660,27 +673,24 @@ export default class VTiptap extends Vue {
       },
       onUpdate: ({ editor }) => this.$emit("input", editor.getHTML()),
       extensions: [
-        Blockquote.configure({
-          HTMLAttributes: {
-            class: "blockquote",
+        StarterKit.configure({
+          bold: false,
+          blockquote: {
+            HTMLAttributes: {
+              class: "blockquote",
+            },
+          },
+          history: {
+            depth: 10,
+          },
+          heading: {
+            levels: [1, 2, 3],
           },
         }),
-        Color,
-        Document,
+        //
         Focus.configure({
           className: "focus",
         }),
-        Highlight.configure({
-          multicolor: true,
-        }),
-        History.configure({
-          depth: 10,
-        }),
-        Image,
-        Link.configure({
-          openOnClick: false,
-        }),
-        Paragraph,
         Placeholder.configure({
           placeholder: () => {
             if (!this.placeholder) {
@@ -690,11 +700,14 @@ export default class VTiptap extends Vue {
             return this.placeholder;
           },
         }),
-        StarterKit.configure({
-          history: false,
-          heading: {
-            levels: [1, 2, 3],
-          },
+        //
+        Color,
+        Highlight.configure({
+          multicolor: true,
+        }),
+        Image,
+        Link.configure({
+          openOnClick: false,
         }),
         TaskList.configure({
           HTMLAttributes: {
@@ -706,7 +719,6 @@ export default class VTiptap extends Vue {
             itemTypeName: "task-list",
           },
         }),
-        Text,
         TextAlign.configure({
           types: ["heading", "paragraph"],
         }),

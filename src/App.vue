@@ -24,7 +24,14 @@
           <v-list-item>
             <v-select
               v-model="toolbar"
-              :items="['bold', '>', '#edit-html-btn', '#clean-btn']"
+              :items="[
+                'bold',
+                '|',
+                'italic',
+                '>',
+                '#edit-html-btn',
+                '#clean-btn',
+              ]"
               label="toolbar"
               multiple
               persisten
@@ -34,12 +41,17 @@
       </v-col>
 
       <v-col cols="8">
+        <!-- value="<p><strong>Hello</strong> World</p>" -->
+        <!-- :toolbar="toolbar" -->
         <VTiptap
           v-model="content"
           :hide-toolbar="hideToolbar"
+          disable-toolbar
           :inline="inline"
-          :toolbar="toolbar"
           :view="view"
+          background-color="grey lighten-4"
+          :error-messages="['a']"
+          rounded
         >
           <template #editor="{}" v-if="editHtml">
             <v-textarea
@@ -68,6 +80,9 @@
               <v-icon>mdi-delete-circle-outline</v-icon>
             </v-btn>
           </template>
+
+          <template #append> B </template>
+          <template #prepend> A </template>
         </VTiptap>
       </v-col>
     </v-row>
@@ -89,7 +104,7 @@ export default {
     inline: false,
     editHtml: false,
     hideToolbar: false,
-    toolbar: ["bold", ">", "#edit-html-btn", "#clean-btn"],
+    toolbar: ["bold", "|", "italic", ">", "#edit-html-btn", "#clean-btn"],
   }),
 };
 </script>
