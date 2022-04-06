@@ -518,10 +518,10 @@ export default class VTiptap extends Vue {
 
   // Headings
   headingsItems = [
-    { text: "Título 1", value: 1 },
-    { text: "Título 2", value: 2 },
-    { text: "Título 3", value: 3 },
-    { text: "Texto", value: 0 },
+    { text: "Heading 1", value: 1 },
+    { text: "Heading 2", value: 2 },
+    { text: "Heading 3", value: 3 },
+    { text: "Text", value: 0 },
   ];
 
   selectedHeading = 0;
