@@ -22,10 +22,11 @@
         :class="{ 'py-2 px-3': inline }"
         :outlined="!inline"
         style="width: 100%"
+        :height="height"
       >
         <!-- Toolbar -->
         <v-toolbar
-          v-if="!hideToolbar && !codeEditor"
+          v-if="!hideToolbar"
           dense
           flat
           color="grey lighten-4"
@@ -45,7 +46,7 @@
                     <v-select
                       v-model="selectedHeading"
                       :items="headingsItems"
-                      :disabled="code"
+                      :disabled="codeEditor"
                       dense
                       hide-details="auto"
                       style="width: 84px"
@@ -87,7 +88,7 @@
                   <!-- Standard Button -->
                   <v-btn
                     v-else
-                    :disabled="code"
+                    :disabled="codeEditor"
                     :class="{
                       'v-btn--active': item.isActive && item.isActive(),
                     }"
@@ -112,10 +113,9 @@
 
           <!-- Right Buttons ? -->
           <v-btn
-            v-if="codeEditable"
+            v-if="htmlEditable"
             text
-            @click="code = !code"
-            :color="code ? 'primary' : undefined"
+            :color="codeEditor ? 'primary' : undefined"
             small
           >
             HTML
@@ -127,7 +127,7 @@
 
           <!-- Tiptap Editor -->
           <editor-content
-            v-if="!html && !code"
+            v-if="!codeEditor"
             :editor="editor"
             class="flex-grow-1"
           />
@@ -226,7 +226,7 @@ export default class VTiptap extends Vue {
 
   @Prop({ default: false }) readonly view: boolean | string[] | string;
 
-  @Prop({ default: false }) readonly codeEditable: boolean;
+  @Prop({ default: false }) readonly htmlEditable: boolean;
 
   @Prop({ default: false }) readonly codeEditor: boolean;
 
@@ -240,11 +240,9 @@ export default class VTiptap extends Vue {
 
   @Prop({ default: false }) readonly disabled: boolean;
 
-  html = false;
+  @Prop({ default: undefined }) readonly height: number;
 
   editor: Editor | null = null;
-
-  code = false;
 
   highlighter(code) {
     return highlight(code, languages[this.codeLanguage]);
@@ -569,7 +567,7 @@ export default class VTiptap extends Vue {
       return `3px solid ${color}C0`;
     }
 
-    return this.code
+    return this.htmlEditable
       ? "3px solid rgba(0,0,0,0.2)"
       : "3px solid rgba(0, 0, 0, 0.67)";
   }
@@ -660,10 +658,6 @@ export default class VTiptap extends Vue {
   }
 
   created() {
-    if (this.codeEditor) {
-      this.code = true;
-    }
-
     this.editor = new Editor({
       content: this.value,
       editorProps: {
@@ -797,6 +791,10 @@ export default class VTiptap extends Vue {
     pointer-events: none;
     height: 0;
     font-style: italic;
+  }
+
+  .v-select__selection--disabled {
+    color: rgba(0, 0, 0, 0.26) !important;
   }
 
   .v-toolbar__content {
