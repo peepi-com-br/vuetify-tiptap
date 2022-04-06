@@ -1,14 +1,4 @@
 <template>
-  <!-- <div class="main">
-    <v-input
-      class="v-tiptap"
-      :messages="['Messages']"
-      append-icon="mdi-close"
-      prepend-icon="mdi-phone"
-    >
-      <editor-content :editor="editor" />
-    </v-input>
-  </div> -->
   <div class="v-tiptap" :class="{ inline, view }">
     <v-input
       v-if="view === false"
@@ -26,7 +16,7 @@
       >
         <!-- Toolbar -->
         <v-toolbar
-          v-if="!hideToolbar"
+          v-if="!hideToolbar && toolbar.length"
           dense
           flat
           color="grey lighten-4"
@@ -49,7 +39,6 @@
                       <v-select
                         v-model="selectedHeading"
                         :items="headingsItems"
-                        :disabled="codeEditor"
                         dense
                         hide-details="auto"
                         style="width: 84px"
@@ -96,7 +85,6 @@
                     <!-- Standard Button -->
                     <v-btn
                       v-else
-                      :disabled="codeEditor"
                       :class="{
                         'v-btn--active': item.isActive && item.isActive(),
                       }"
@@ -117,18 +105,6 @@
               </div>
             </div>
           </template>
-
-          <!-- <v-spacer /> -->
-
-          <!-- Right Buttons ? -->
-          <!-- <v-btn
-            v-if="htmlEditable"
-            text
-            :color="codeEditor ? 'primary' : undefined"
-            small
-          >
-            HTML
-          </v-btn> -->
         </v-toolbar>
 
         <div class="d-flex">
@@ -136,28 +112,25 @@
 
           <!-- Tiptap Editor -->
 
-          <slot name="editor" v-if="!codeEditor">
+          <slot name="editor">
             <editor-content :editor="editor" class="flex-grow-1" />
           </slot>
-
-          <!-- Prism HTML Editor -->
-          <prism-editor
-            v-else
-            @input="$emit('input', $event)"
-            @blur="onCodeBlur"
-            style="background: #f5f2f0; max-height: 80vh"
-            class="py-4"
-            :value="value"
-            :highlight="highlighter"
-            line-numbers
-          />
 
           <slot name="append" />
         </div>
       </v-card>
     </v-input>
     <!-- View mode -->
-    <div v-else v-html="cleanValue" />
+    <v-card
+      v-else
+      flat
+      class="py-2 px-3"
+      :outlined="!inline"
+      style="width: 100%"
+      :height="height"
+    >
+      <div v-html="cleanValue" />
+    </v-card>
   </div>
 </template>
 
@@ -192,14 +165,6 @@ import Underline from "@tiptap/extension-underline";
 
 import xss from "xss";
 
-import { highlight, languages } from "prismjs";
-import { PrismEditor } from "vue-prism-editor";
-import pretty from "pretty";
-
-import "vue-prism-editor/dist/prismeditor.min.css";
-import "prismjs/components/prism-clike";
-import "prismjs/components/prism-javascript";
-import "prismjs/themes/prism.css";
 import collect from "collect.js";
 
 import {
@@ -216,7 +181,6 @@ import {
 @Component({
   components: {
     EditorContent,
-    PrismEditor,
     VInput,
     VCard,
     VBtn,
@@ -234,13 +198,15 @@ export default class VTiptap extends Vue {
 
   @Prop({ default: false }) readonly view: boolean | string[] | string;
 
-  @Prop({ default: false }) readonly htmlEditable: boolean;
-
-  @Prop({ default: false }) readonly codeEditor: boolean;
-
   @Prop({ default: true }) readonly xss: boolean;
 
-  @Prop({ default: "html" }) readonly codeLanguage: string;
+  @Prop({ default: false }) readonly inline: boolean;
+
+  @Prop({ default: false }) readonly hideToolbar: boolean;
+
+  @Prop({ default: false }) readonly disabled: boolean;
+
+  @Prop({ default: undefined }) readonly height: number;
 
   @Prop({
     default: [
@@ -270,19 +236,7 @@ export default class VTiptap extends Vue {
   })
   readonly toolbar: string[];
 
-  @Prop({ default: false }) readonly hideToolbar: boolean;
-
-  @Prop({ default: false }) readonly inline: boolean;
-
-  @Prop({ default: false }) readonly disabled: boolean;
-
-  @Prop({ default: undefined }) readonly height: number;
-
   editor: Editor | null = null;
-
-  highlighter(code) {
-    return highlight(code, languages[this.codeLanguage]);
-  }
 
   get cleanValue() {
     if (!this.xss) {
@@ -594,32 +548,7 @@ export default class VTiptap extends Vue {
     return "left";
   }
 
-  // Code
-  @Watch("code")
-  onCodeChange() {
-    if (this.codeLanguage === "html") {
-      this.$emit("input", pretty(this.cleanValue));
-    }
-  }
-
-  onCodeBlur() {
-    if (this.codeLanguage === "html") {
-      this.$emit("input", pretty(this.cleanValue));
-    }
-  }
-
   selectedColor = null;
-
-  get selectedColorBorder() {
-    if (this.selectedColor) {
-      const color = `${this.selectedColor}`;
-      return `3px solid ${color}C0`;
-    }
-
-    return this.htmlEditable
-      ? "3px solid rgba(0,0,0,0.2)"
-      : "3px solid rgba(0, 0, 0, 0.67)";
-  }
 
   setLink() {
     /* const previousUrl = this.editor.getAttributes("link").href;
@@ -793,11 +722,6 @@ export default class VTiptap extends Vue {
 
   @Watch("value")
   onValueChanged(value) {
-    const code = this.editor.getHTML();
-    if (code === value) {
-      return;
-    }
-
     this.editor.commands.setContent(value);
   }
 

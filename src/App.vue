@@ -3,39 +3,32 @@
     <v-row class="py-4 px-4">
       <v-col cols="4">
         <v-toolbar color="grey" dense flat dark>
-          <v-toolbar-title>Settings</v-toolbar-title>
+          <v-toolbar-title>vuetify-tiptap</v-toolbar-title>
         </v-toolbar>
 
         <v-list subheader two-line flat>
           <v-subheader>Props</v-subheader>
 
           <v-list-item>
-            <v-switch v-model="view" label="view" class="mt-0" inset />
-          </v-list-item>
-
-          <v-list-item>
-            <v-switch v-model="codeEditor" label="codeEditor" inset />
-          </v-list-item>
-
-          <v-list-item>
-            <v-select
-              :items="['html', 'css']"
-              v-model="codeLanguage"
-              flat
-              label="codeLanguage"
-            />
-          </v-list-item>
-
-          <v-list-item>
-            <v-switch v-model="htmlEditable" label="htmlEditable" inset />
-          </v-list-item>
-
-          <v-list-item>
             <v-switch v-model="hideToolbar" label="hideToolbar" inset />
           </v-list-item>
 
           <v-list-item>
+            <v-switch v-model="view" label="view" inset />
+          </v-list-item>
+
+          <v-list-item>
             <v-switch v-model="inline" label="inline" inset />
+          </v-list-item>
+
+          <v-list-item>
+            <v-select
+              v-model="toolbar"
+              :items="toolbarItems"
+              label="toolbar"
+              multiple
+              persisten
+            />
           </v-list-item>
         </v-list>
       </v-col>
@@ -43,34 +36,34 @@
       <v-col cols="8">
         <VTiptap
           v-model="content"
-          :code-editor="codeEditor"
-          :html-editable="htmlEditable"
-          :toolbar="['bold', '>', '#html', '#css']"
           :hide-toolbar="hideToolbar"
           :inline="inline"
-          :code-language="codeLanguage"
+          :toolbar="toolbar"
           :view="view"
-          height="300"
         >
-          <template #editor="{}" v-if="showDialog">
-            <div>HTML EDITOR</div>
+          <template #editor="{}" v-if="editHtml">
+            <v-textarea
+              height="auto"
+              hide-details
+              v-model="content"
+              flat
+              solo
+            />
           </template>
 
-          <template #html="{ editor }">
+          <template #edit-html-btn="{ editor }">
             <v-btn
-              @click="showDialog = !showDialog"
+              @click="editHtml = !editHtml"
               class="elevation-0"
               small
-              color="primary"
+              :color="editHtml ? 'primary' : undefined"
+              text
             >
               {{ editor.isActive("bold") ? "HTML" : "NO-HTML" }}
             </v-btn>
-            <!-- <v-dialog v-model="showDialog">
-              <v-card widht="300" height="300"> EAI ! </v-card>
-            </v-dialog> -->
           </template>
 
-          <template #css="{ editor }">
+          <template #clean-btn="{ editor }">
             <v-btn icon small @click="editor.commands.setContent('')">
               <v-icon>mdi-delete-circle-outline</v-icon>
             </v-btn>
@@ -92,13 +85,12 @@ export default {
 
   data: () => ({
     content: "",
-    codeLanguage: "html",
-    codeEditor: false,
-    htmlEditable: false,
-    hideToolbar: false,
     view: false,
     inline: false,
-    showDialog: false,
+    editHtml: false,
+    hideToolbar: false,
+    toolbar: ["bold", ">", "#edit-html-btn", "#clean-btn"],
+    toolbarItems: ["bold", ">", "#edit-html-btn", "#clean-btn"],
   }),
 };
 </script>
