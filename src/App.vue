@@ -24,7 +24,7 @@
           <v-list-item>
             <v-select
               v-model="toolbar"
-              :items="toolbarItems"
+              :items="['bold', '>', '#edit-html-btn', '#clean-btn']"
               label="toolbar"
               multiple
               persisten
@@ -90,7 +90,6 @@ export default {
     editHtml: false,
     hideToolbar: false,
     toolbar: ["bold", ">", "#edit-html-btn", "#clean-btn"],
-    toolbarItems: ["bold", ">", "#edit-html-btn", "#clean-btn"],
   }),
 };
 </script>
