@@ -45,12 +45,37 @@
           v-model="content"
           :code-editor="codeEditor"
           :html-editable="htmlEditable"
+          :toolbar="['bold', '>', '#html', '#css']"
           :hide-toolbar="hideToolbar"
           :inline="inline"
           :code-language="codeLanguage"
           :view="view"
           height="300"
-        />
+        >
+          <template #editor="{}" v-if="showDialog">
+            <div>HTML EDITOR</div>
+          </template>
+
+          <template #html="{ editor }">
+            <v-btn
+              @click="showDialog = !showDialog"
+              class="elevation-0"
+              small
+              color="primary"
+            >
+              {{ editor.isActive("bold") ? "HTML" : "NO-HTML" }}
+            </v-btn>
+            <!-- <v-dialog v-model="showDialog">
+              <v-card widht="300" height="300"> EAI ! </v-card>
+            </v-dialog> -->
+          </template>
+
+          <template #css="{ editor }">
+            <v-btn icon small @click="editor.commands.setContent('')">
+              <v-icon>mdi-delete-circle-outline</v-icon>
+            </v-btn>
+          </template>
+        </VTiptap>
       </v-col>
     </v-row>
   </v-app>
@@ -72,6 +97,8 @@ export default {
     htmlEditable: false,
     hideToolbar: false,
     view: false,
+    inline: false,
+    showDialog: false,
   }),
 };
 </script>

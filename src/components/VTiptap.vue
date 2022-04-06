@@ -33,32 +33,40 @@
           height="auto"
           class="py-1"
         >
-          <div v-for="(item, key) in items" :key="key" class="my-1">
-            <!-- Divider -->
-            <div class="divider" v-if="item.type === 'divider'" />
-            <!-- Other -->
-            <div v-else>
-              <v-tooltip :open-delay="500" top>
-                <span>{{ item.title }}</span>
-                <template v-slot:activator="{ on, attrs }">
-                  <!-- Headings -->
-                  <div v-if="item.type === 'headings'" class="ml-n1">
-                    <v-select
-                      v-model="selectedHeading"
-                      :items="headingsItems"
-                      :disabled="codeEditor"
-                      dense
-                      hide-details="auto"
-                      style="width: 84px"
+          <template v-for="(item, key) in items">
+            <v-spacer v-if="item.type === 'spacer'" :key="key" />
+
+            <div v-else class="my-1" :key="key">
+              <!-- Divider -->
+              <div class="divider" v-if="item.type === 'divider'" />
+              <!-- Other -->
+              <div v-else>
+                <v-tooltip :open-delay="500" top>
+                  <span>{{ item.title }}</span>
+                  <template v-slot:activator="{ on, attrs }">
+                    <!-- Headings -->
+                    <div v-if="item.type === 'headings'" class="ml-n1">
+                      <v-select
+                        v-model="selectedHeading"
+                        :items="headingsItems"
+                        :disabled="codeEditor"
+                        dense
+                        hide-details="auto"
+                        style="width: 84px"
+                      />
+                    </div>
+                    <slot
+                      v-else-if="item.type === 'slot'"
+                      :name="item.slot"
+                      v-bind="{ editor }"
                     />
-                  </div>
-                  <!-- Alignment -->
-                  <!-- <div v-else-if="item.type === 'alignment'" class="mr-1">
+                    <!-- Alignment -->
+                    <!-- <div v-else-if="item.type === 'alignment'" class="mr-1">
                     <v-select v-model="selectedHeading" :items="headingsItems" dense hide-details="auto" />
                   </div> -->
-                  <!-- Color Button -->
-                  <div v-else-if="item.title === 'Color'" class="mr-1">
-                    <!--  <ColorPicker
+                    <!-- Color Button -->
+                    <div v-else-if="item.title === 'Color'" class="mr-1">
+                      <!--  <ColorPicker
                       v-model="selectedColor"
                       @input="item.action(selectedColor)"
                       v-bind="attrs"
@@ -83,54 +91,54 @@
                         </v-btn>
                       </template>
                     </ColorPicker> -->
-                  </div>
+                    </div>
 
-                  <!-- Standard Button -->
-                  <v-btn
-                    v-else
-                    :disabled="codeEditor"
-                    :class="{
-                      'v-btn--active': item.isActive && item.isActive(),
-                    }"
-                    :color="
-                      item.isActive && item.isActive() ? 'primary' : undefined
-                    "
-                    v-bind="attrs"
-                    v-on="on"
-                    @click="item.action()"
-                    class="mr-1"
-                    icon
-                    small
-                  >
-                    <v-icon>{{ item.icon }}</v-icon>
-                  </v-btn>
-                </template>
-              </v-tooltip>
+                    <!-- Standard Button -->
+                    <v-btn
+                      v-else
+                      :disabled="codeEditor"
+                      :class="{
+                        'v-btn--active': item.isActive && item.isActive(),
+                      }"
+                      :color="
+                        item.isActive && item.isActive() ? 'primary' : undefined
+                      "
+                      v-bind="attrs"
+                      v-on="on"
+                      @click="item.action()"
+                      class="mr-1"
+                      icon
+                      small
+                    >
+                      <v-icon>{{ item.icon }}</v-icon>
+                    </v-btn>
+                  </template>
+                </v-tooltip>
+              </div>
             </div>
-          </div>
+          </template>
 
-          <v-spacer />
+          <!-- <v-spacer /> -->
 
           <!-- Right Buttons ? -->
-          <v-btn
+          <!-- <v-btn
             v-if="htmlEditable"
             text
             :color="codeEditor ? 'primary' : undefined"
             small
           >
             HTML
-          </v-btn>
+          </v-btn> -->
         </v-toolbar>
 
         <div class="d-flex">
           <slot name="prepend" />
 
           <!-- Tiptap Editor -->
-          <editor-content
-            v-if="!codeEditor"
-            :editor="editor"
-            class="flex-grow-1"
-          />
+
+          <slot name="editor" v-if="!codeEditor">
+            <editor-content :editor="editor" class="flex-grow-1" />
+          </slot>
 
           <!-- Prism HTML Editor -->
           <prism-editor
@@ -234,6 +242,34 @@ export default class VTiptap extends Vue {
 
   @Prop({ default: "html" }) readonly codeLanguage: string;
 
+  @Prop({
+    default: [
+      "bold",
+      "italic",
+      "strike",
+      "underline",
+      "color",
+      "|",
+      "headings",
+      "|",
+      "left",
+      "right",
+      "center",
+      "justify",
+      "|",
+      "bulletList",
+      "orderedList",
+      "|",
+      "link",
+      "video",
+      "image",
+      "emoji",
+      "|",
+      "clear",
+    ],
+  })
+  readonly toolbar: string[];
+
   @Prop({ default: false }) readonly hideToolbar: boolean;
 
   @Prop({ default: false }) readonly inline: boolean;
@@ -301,134 +337,136 @@ export default class VTiptap extends Vue {
   }
 
   get items() {
-    return [
-      {
+    const definitions = {
+      "|": { type: "divider" },
+      divider: { type: "divider" },
+      ">": { type: "spacer" },
+      spacer: { type: "spacer" },
+      bold: {
         title: "Bold",
         icon: "mdi-format-bold",
         action: () => this.editor.chain().focus().toggleBold().run(),
         isActive: () => this.editor.isActive("bold"),
       },
-      {
+      italic: {
         title: "Italic",
         icon: "mdi-format-italic",
         action: () => this.editor.chain().focus().toggleItalic().run(),
         isActive: () => this.editor.isActive("italic"),
       },
-      {
+      underline: {
         title: "Underline",
         icon: "mdi-format-underline",
         action: () => this.editor.chain().focus().toggleUnderline().run(),
         isActive: () => this.editor.isActive("underline"),
       },
-      {
+      strike: {
         title: "Strike",
         icon: "mdi-format-strikethrough",
         action: () => this.editor.chain().focus().toggleStrike().run(),
         isActive: () => this.editor.isActive("strike"),
       },
-      {
+      color: {
         title: "Color",
         icon: "mdi-palette",
         action: (color) => this.editor.chain().focus().setColor(color).run(),
         isActive: () => this.editor.isActive("textStyle"),
       },
-      { type: "divider" },
-      // {
-      //   title: 'Highlight',
-      //   icon: 'mdi-grease-pencil',
-      //   action: () => this.editor.chain().focus().toggleHighlight().run(),
-      //   isActive: () => this.editor.isActive('highlight'),
-      // },
-      // { type: 'divider' },
-      { type: "headings" },
-      // {
-      //   title: 'Heading 1',
-      //   icon: 'mdi-format-header-1',
-      //   action: () => this.editor.chain().focus().toggleHeading({ level: 1 }).run(),
-      //   isActive: () => this.editor.isActive('heading', { level: 1 }),
-      // },
-      // {
-      //   title: 'Heading 2',
-      //   icon: 'mdi-format-header-2',
-      //   action: () => this.editor.chain().focus().toggleHeading({ level: 2 }).run(),
-      //   isActive: () => this.editor.isActive('heading', { level: 2 }),
-      // },
-      // {
-      //   title: 'Heading 3',
-      //   icon: 'mdi-format-header-3',
-      //   action: () => this.editor.chain().focus().toggleHeading({ level: 3 }).run(),
-      //   isActive: () => this.editor.isActive('heading', { level: 3 }),
-      // },
-      // {
-      //   title: 'Paragraph',
-      //   icon: 'mdi-format-paragraph',
-      //   action: () => this.editor.chain().focus().setParagraph().run(),
-      //   isActive: () => this.editor.isActive('paragraph'),
-      // },
-      { type: "divider" },
-      {
+      highlight: {
+        title: "Highlight",
+        icon: "mdi-grease-pencil",
+        action: () => this.editor.chain().focus().toggleHighlight().run(),
+        isActive: () => this.editor.isActive("highlight"),
+      },
+      headings: { type: "headings" },
+      h1: {
+        title: "Heading 1",
+        icon: "mdi-format-header-1",
+        action: () =>
+          this.editor.chain().focus().toggleHeading({ level: 1 }).run(),
+        isActive: () => this.editor.isActive("heading", { level: 1 }),
+      },
+      h2: {
+        title: "Heading 2",
+        icon: "mdi-format-header-2",
+        action: () =>
+          this.editor.chain().focus().toggleHeading({ level: 2 }).run(),
+        isActive: () => this.editor.isActive("heading", { level: 2 }),
+      },
+      h3: {
+        title: "Heading 3",
+        icon: "mdi-format-header-3",
+        action: () =>
+          this.editor.chain().focus().toggleHeading({ level: 3 }).run(),
+        isActive: () => this.editor.isActive("heading", { level: 3 }),
+      },
+      p: {
+        title: "Paragraph",
+        icon: "mdi-format-paragraph",
+        action: () => this.editor.chain().focus().setParagraph().run(),
+        isActive: () => this.editor.isActive("paragraph"),
+      },
+      left: {
         title: "left",
         icon: "mdi-format-align-left",
         action: () => this.editor.chain().focus().setTextAlign("left").run(),
         isActive: () => this.editor.isActive({ textAlign: "left" }),
       },
-      {
+      center: {
         title: "center",
         icon: "mdi-format-align-center",
         action: () => this.editor.chain().focus().setTextAlign("center").run(),
         isActive: () => this.editor.isActive({ textAlign: "center" }),
       },
-      {
+      right: {
         title: "right",
         icon: "mdi-format-align-right",
         action: () => this.editor.chain().focus().setTextAlign("right").run(),
         isActive: () => this.editor.isActive({ textAlign: "right" }),
       },
-      {
+      justify: {
         title: "justify",
         icon: "mdi-format-align-justify",
         action: () => this.editor.chain().focus().setTextAlign("justify").run(),
         isActive: () => this.editor.isActive({ textAlign: "justify" }),
       },
-      { type: "divider" },
-      {
+      bulletList: {
         title: "Bullet List",
         icon: "mdi-format-list-bulleted-square",
         action: () => this.editor.chain().focus().toggleBulletList().run(),
         isActive: () => this.editor.isActive("bulletList"),
       },
-      {
+      orderedList: {
         icon: "mdi-format-list-numbered",
         title: "Ordered List",
         action: () => this.editor.chain().focus().toggleOrderedList().run(),
         isActive: () => this.editor.isActive("orderedList"),
       },
-      // {
-      //   icon: 'mdi-format-list-checkbox',
-      //   title: 'Task List',
-      //   action: () => this.editor.chain().focus().toggleTaskList().run(),
-      //   isActive: () => this.editor.isActive('taskList'),
-      // },
-      { type: "divider" },
-      {
+      checkbox: {
+        icon: "mdi-format-list-checkbox",
+        title: "Task List",
+        action: () => this.editor.chain().focus().toggleTaskList().run(),
+        isActive: () => this.editor.isActive("taskList"),
+      },
+      link: {
         title: "Link",
         icon: "mdi-link-variant",
         action: this.setLink,
         isActive: () => this.editor.isActive("link"),
       },
-      {
+      image: {
         icon: "mdi-image",
         title: "Image",
         action: this.selectImage,
         isActive: () => this.editor.isActive("image"),
       },
-      {
+      video: {
         icon: "mdi-video",
         title: "Video",
         action: this.setVideo,
         isActive: () => this.editor.isActive("iframe"),
       },
-      {
+      emoji: {
         icon: "mdi-emoticon-outline",
         title: "Emoji",
         action: this.setEmoji,
@@ -457,15 +495,25 @@ export default class VTiptap extends Vue {
       //   action: () => this.editor.chain().focus().toggleCodeBlock().run(),
       //   isActive: () => this.editor.isActive('codeBlock'),
       // },
-      { type: "divider" },
-      {
+      clear: {
         icon: "mdi-format-clear",
         title: "Clear Format",
         /* eslint newline-per-chained-call: "off" */
         action: () =>
           this.editor.chain().focus().clearNodes().unsetAllMarks().run(),
       },
-    ];
+    };
+
+    let toolbarItems = [];
+    for (let i of this.toolbar) {
+      if (definitions[i]) {
+        toolbarItems.push(definitions[i]);
+      } else if (i[0] === "#") {
+        toolbarItems.push({ type: "slot", slot: i.substring(1) });
+      }
+    }
+
+    return toolbarItems;
   }
 
   // Headings
