@@ -594,6 +594,7 @@ export default class VTiptap extends Vue {
     return "left";
   }
 
+  // Code
   @Watch("code")
   onCodeChange() {
     if (this.codeLanguage === "html") {
