@@ -142,8 +142,8 @@ import TiptapKit from "@/plugins/tiptap-kit";
 import vuetify from "@/plugins/vuetify";
 import VTiptapLinkDialog from "./VTiptapLinkDialog.vue";
 import VTiptapVideoDialog from "./VTiptapVideoDialog.vue";
+import VTiptapImageDialog from "./VTiptapImageDialog.vue";
 
-//import ImageDialog from '@/plugins/ui/tiptap/ImageDialog.vue';
 import EmojiPicker from "./EmojiPicker.vue";
 //import i18n from '@/plugins/i18n';
 
@@ -357,12 +357,11 @@ export default class VTiptap extends Vue {
   }
 
   async selectImage() {
-    /*  const value = this.editor.view.state.selection.node?.attrs?.src;
+    const value = this.editor.view.state.selection["node"]?.attrs?.src;
 
-    const ImageDialogComponent = Vue.extend(ImageDialog);
+    const ImageDialogComponent = Vue.extend(VTiptapImageDialog);
     const instance = new ImageDialogComponent({
-      i18n,
-      vuetify: Vue.prototype.tiptapVuetifyPlugin.vuetify,
+      vuetify: vuetify,
       propsData: { value },
     });
 
@@ -371,7 +370,7 @@ export default class VTiptap extends Vue {
       this.editor.chain().focus().setImage({ src }).run();
     });
 
-    document.querySelector("body").appendChild(instance.$el); */
+    document.querySelector("body").appendChild(instance.$el);
   }
 
   setVideo() {
