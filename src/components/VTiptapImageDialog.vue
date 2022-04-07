@@ -16,6 +16,8 @@
       <v-card-text>
         <!-- <UploadableImage v-model="src" variant class="mb-4" :uploading.sync="uploading" /> -->
 
+        <slot name="imageComponent" />
+
         <v-text-field
           v-model="src"
           name="src"
@@ -42,7 +44,7 @@ import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 export default class ImageDialog extends Vue {
   @Prop() readonly value: string | null;
 
-  dialog = true;
+  dialog = false;
 
   uploading = false;
 
@@ -54,6 +56,7 @@ export default class ImageDialog extends Vue {
   }
 
   created() {
+    console.log(this.$scopedSlots);
     this.src = this.value;
   }
 

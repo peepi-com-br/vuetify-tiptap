@@ -110,7 +110,7 @@
                     "
                     v-bind="attrs"
                     v-on="on"
-                    @click="item.action()"
+                    @click="item.action"
                     class="mr-1"
                     icon
                     small
@@ -125,15 +125,27 @@
 
         <div class="d-flex">
           <!-- Slot Prepend -->
-          <slot name="prepend" />
+          <slot name="prepend" v-bind="{ editor }" />
           <!-- Tiptap Editor -->
-          <slot name="editor">
+          <slot name="editor" v-bind="{ editor }">
             <editor-content :editor="editor" class="flex-grow-1" />
           </slot>
           <!-- Slot Append -->
-          <slot name="append" />
+          <slot name="append" v-bind="{ editor }" />
         </div>
+
+        <slot name="bottom" v-bind="{ editor }" />
       </v-card>
+
+      <!-- Dialogs -->
+      <VTiptapImageDialog
+        v-model="imageDialog"
+        @input="editor.chain().focus().setImage({ src }).run()"
+      >
+        <template #imageComponent>
+          <slot name="imageComponent" />
+        </template>
+      </VTiptapImageDialog>
     </v-input>
   </div>
 </template>
@@ -156,7 +168,7 @@ import ColorPicker from "./ColorPicker.vue";
 //import i18n from '@/plugins/i18n';
 
 import toolbarItems from "@/constants/toolbarItems";
-import toolbarDefinitions from "@/constants/toolbarDefinitions";
+import makeToolbarDefinitions from "@/constants/toolbarDefinitions";
 
 import xssRules from "@/constants/xssRules";
 import xss from "xss";
@@ -184,6 +196,7 @@ import {
     VSpacer,
     VTooltip,
     ColorPicker,
+    VTiptapImageDialog,
   },
 })
 export default class VTiptap extends Vue {
@@ -222,10 +235,7 @@ export default class VTiptap extends Vue {
 
     // eslint-disable-next-line
     let whiteList: any = collect(this.xssOptions);
-
-    if (Array.isArray(this.xss)) {
-      whiteList = whiteList.only(this.xss);
-    }
+    whiteList = Array.isArray(this.xss) ? whiteList.only(this.xss) : whiteList;
 
     return xss(value, {
       whiteList: whiteList.all(),
@@ -233,7 +243,7 @@ export default class VTiptap extends Vue {
   }
 
   get items() {
-    return toolbarDefinitions(this);
+    return makeToolbarDefinitions(this);
   }
 
   // Headings
@@ -317,10 +327,12 @@ export default class VTiptap extends Vue {
   selectedColor = null;
 
   get selectedColorBorder() {
-    console.log(this.selectedColor);
     if (this.selectedColor) {
-      const color = `${this.selectedColor}`;
-      return `3px solid ${color}C0`;
+      let color = `${this.selectedColor}`;
+      color =
+        color[0] === "r" ? color.replace(")", ", 0.75)") : color.concat("C0");
+
+      return `3px solid ${color}`;
     }
 
     return "3px solid rgba(0, 0, 0, 0.67)";
@@ -350,8 +362,8 @@ export default class VTiptap extends Vue {
     instance.$mount();
   }
 
-  setEmoji() {
-    const activator = this.$el;
+  setEmoji(e) {
+    const activator = e.target;
 
     const EmojiPickerComponent = Vue.extend(EmojiPicker);
     const instance: any = new EmojiPickerComponent({
@@ -368,28 +380,39 @@ export default class VTiptap extends Vue {
 
     // Set Position
     const position = activator.getBoundingClientRect();
-    instance.$children[0].absoluteX = position.x + 500;
-    instance.$children[0].absoluteY = position.y + 300;
+    instance.$children[0].absoluteX = position.x + 14;
+    instance.$children[0].absoluteY = position.y + 14;
 
     // Display emoji picker
     instance.value = true;
   }
 
+  imageDialog = false;
+
   async selectImage() {
-    const value = this.editor.view.state.selection["node"]?.attrs?.src;
+    this.imageDialog = true;
+    // const value = this.editor.view.state.selection["node"]?.attrs?.src;
 
-    const ImageDialogComponent = Vue.extend(VTiptapImageDialog);
-    const instance = new ImageDialogComponent({
-      vuetify: vuetify,
-      propsData: { value },
-    });
+    // const ImageDialogComponent = Vue.extend(VTiptapImageDialog);
+    // const instance = new ImageDialogComponent({
+    //   vuetify: vuetify,
+    //   propsData: { value },
+    // });
 
-    instance.$mount();
-    instance.$on("input", (src) => {
-      this.editor.chain().focus().setImage({ src }).run();
-    });
+    // // console.log(this.$scopedSlots);
+    // /* eslint-disable-next-line */
+    // /* ts-ignore */
+    // instance.$scopedSlots = {
+    //   imageComponent: this.$scopedSlots.imageComponent,
+    // };
 
-    document.querySelector("body").appendChild(instance.$el);
+    // instance.$mount();
+
+    // instance.$on("input", (src) => {
+    //   this.editor.chain().focus().setImage({ src }).run();
+    // });
+
+    // document.querySelector("body").appendChild(instance.$el);
   }
 
   setVideo() {
@@ -483,6 +506,11 @@ export default class VTiptap extends Vue {
 
   @Watch("value")
   onValueChanged(value) {
+    const code = this.editor.getHTML();
+    if (code === value) {
+      return;
+    }
+
     this.editor.commands.setContent(value);
   }
 

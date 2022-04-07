@@ -100,6 +100,21 @@
 
           <template #prepend>🔜</template>
           <template #append>🔚</template>
+
+          <template #bottom>
+            <v-toolbar
+              dense
+              flat
+              height="48px"
+              class="py-1 px-4"
+              style="border-top: 1px solid #ddd"
+            >
+              <v-spacer />
+              <v-btn icon small><v-icon>mdi-send</v-icon></v-btn>
+            </v-toolbar>
+          </template>
+
+          <template #imageComponent> Testing images </template>
         </VTiptap>
       </v-col>
     </v-row>

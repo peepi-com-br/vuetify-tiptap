@@ -1,9 +1,11 @@
-export default function toolbarDefinitions(context) {
+export default function makeToolbarDefinitions(context) {
   const definitions = {
+    // Special items
     "|": { type: "divider" },
     divider: { type: "divider" },
     ">": { type: "spacer" },
     spacer: { type: "spacer" },
+    // Standard buttons
     bold: {
       title: "Bold",
       icon: "mdi-format-bold",

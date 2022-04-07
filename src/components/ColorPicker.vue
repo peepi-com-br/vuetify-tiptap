@@ -133,6 +133,7 @@ export default class ColorPicker extends Vue {
   }
 
   setColor(color) {
+    console.log(color);
     this.$emit("input", color);
     this.menu = false;
   }
