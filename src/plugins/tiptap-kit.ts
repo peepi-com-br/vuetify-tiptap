@@ -30,7 +30,7 @@ import TaskList, { TaskListOptions } from '@tiptap/extension-task-list'
 import TaskItem, { TaskItemOptions } from '@tiptap/extension-task-item'
 import TextStyle, { TextStyleOptions } from '@tiptap/extension-text-style'
 import Underline, { UnderlineOptions } from '@tiptap/extension-underline'
-//import Video from '@/plugins/ui/tiptap/video-new';
+import Video from '@/plugins/video';
 
 export interface StarterKitOptions {
   blockquote: Partial<BlockquoteOptions> | false,
@@ -50,7 +50,7 @@ export interface StarterKitOptions {
   orderedList: Partial<OrderedListOptions> | false,
   paragraph: Partial<ParagraphOptions> | false,
   strike: Partial<StrikeOptions> | false,
-  text: false,
+  text: any,
   placeholder: Partial<PlaceholderOptions> | false,
   textAlign: Partial<TextAlignOptions> | false,
   focus: Partial<FocusOptions> | false,
@@ -62,7 +62,7 @@ export interface StarterKitOptions {
   taskItem: Partial<TaskItemOptions> | false,
   textStyle: Partial<TextStyleOptions> | false,
   underline: Partial<UnderlineOptions> | false,
-  video: false,
+  video: any,
 }
 
 
@@ -116,9 +116,9 @@ export default Extension.create<StarterKitOptions>({
       extensions.push(Underline.configure(this.options?.underline))
     }
 
-    /* if (this.options.video !== false) {
-      extensions.push(Video.configure(this.options?.video))
-    } */
+    if (this.options.video !== false) {
+      extensions.push(Video.configure())
+    }
 
     if (this.options.blockquote !== false) {
       extensions.push(Blockquote.configure(this.options?.blockquote))

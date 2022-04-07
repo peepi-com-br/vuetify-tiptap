@@ -137,9 +137,9 @@ import "@/styles/styles.scss";
 
 import { Editor, EditorContent } from "@tiptap/vue-2";
 import TiptapKit from "@/plugins/tiptap-kit";
-
-//import VTiptapLinkDialog from "./VTiptapLinkDialog.vue";
-//import VTiptapVideoDialog from "./VTiptapVideoDialog.vue";
+import vuetify from "@/plugins/vuetify";
+import VTiptapLinkDialog from "./VTiptapLinkDialog.vue";
+import VTiptapVideoDialog from "./VTiptapVideoDialog.vue";
 
 //import ImageDialog from '@/plugins/ui/tiptap/ImageDialog.vue';
 //import EmojiPicker from '@/plugins/ui/tiptap/EmojiPicker.vue';
@@ -304,11 +304,10 @@ export default class VTiptap extends Vue {
   selectedColor = null;
 
   setLink() {
-    /* const previousUrl = this.editor.getAttributes("link").href;
+    const previousUrl = this.editor.getAttributes("link").href;
 
     const instance = new VTiptapLinkDialog({
-      i18n,
-      vuetify: Vue.prototype.tiptapVuetifyPlugin.vuetify,
+      vuetify: vuetify,
       propsData: { value: previousUrl },
     });
 
@@ -325,7 +324,7 @@ export default class VTiptap extends Vue {
       }
     });
 
-    instance.$mount(); */
+    instance.$mount();
   }
 
   setEmoji(e) {
@@ -373,11 +372,10 @@ export default class VTiptap extends Vue {
   }
 
   setVideo() {
-    /*  const previousSrc = this.editor.getAttributes("iframe").src;
+    const previousSrc = this.editor.getAttributes("iframe").src;
 
     const instance = new VTiptapVideoDialog({
-      i18n,
-      vuetify: Vue.prototype.tiptapVuetifyPlugin.vuetify,
+      vuetify: vuetify,
       propsData: { value: previousSrc },
     });
 
@@ -385,7 +383,7 @@ export default class VTiptap extends Vue {
       this.editor.chain().focus().setIframe({ src }).run();
     });
 
-    instance.$mount(); */
+    instance.$mount();
   }
 
   created() {
@@ -468,7 +466,7 @@ export default class VTiptap extends Vue {
           },
           textStyle: {},
           underline: {},
-          // video: {},
+          video: true,
         }),
       ],
       autofocus: false,
