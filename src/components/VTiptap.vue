@@ -429,7 +429,7 @@ export default class VTiptap extends Vue {
       onUpdate: ({ editor }) => this.$emit("input", editor.getHTML()),
       extensions: [
         TiptapKit.configure({
-          bold: false,
+          bold: {},
           blockquote: {
             HTMLAttributes: {
               class: "blockquote",
