@@ -22,16 +22,19 @@
           </v-list-item>
 
           <v-list-item>
+            <v-switch
+              v-model="errorMessages"
+              :false-value="null"
+              true-value="Error messages"
+              label="errorMessages"
+              inset
+            />
+          </v-list-item>
+
+          <v-list-item>
             <v-select
               v-model="toolbar"
-              :items="[
-                'bold',
-                '|',
-                'italic',
-                '>',
-                '#edit-html-btn',
-                '#clean-btn',
-              ]"
+              :items="toolbarItems"
               label="toolbar"
               multiple
               persisten
@@ -41,16 +44,16 @@
       </v-col>
 
       <v-col cols="8">
-        <!-- value="<p><strong>Hello</strong> World</p>" -->
-        <!-- :toolbar="toolbar" -->
         <VTiptap
           v-model="content"
           :hide-toolbar="hideToolbar"
           disable-toolbar
+          :toolbar="toolbar"
           :inline="inline"
           :view="view"
           background-color="grey lighten-4"
-          :error-messages="['a']"
+          placeholder="Enter some text..."
+          :error-messages="errorMessages"
           rounded
         >
           <template #editor="{}" v-if="editHtml">
@@ -63,7 +66,7 @@
             />
           </template>
 
-          <template #edit-html-btn="{ editor }">
+          <template #edit-html-btn="{}">
             <v-btn
               @click="editHtml = !editHtml"
               class="elevation-0"
@@ -71,7 +74,7 @@
               :color="editHtml ? 'primary' : undefined"
               text
             >
-              {{ editor.isActive("bold") ? "HTML" : "NO-HTML" }}
+              HTML
             </v-btn>
           </template>
 
@@ -81,8 +84,8 @@
             </v-btn>
           </template>
 
-          <template #append> B </template>
-          <template #prepend> A </template>
+          <template #prepend>🔜</template>
+          <template #append>🔚</template>
         </VTiptap>
       </v-col>
     </v-row>
@@ -92,6 +95,9 @@
 <script>
 import VTiptap from "./components/VTiptap";
 
+import toolbarItems from "@/constants/toolbarItems";
+import collect from "collect.js";
+
 export default {
   name: "App",
   components: {
@@ -99,12 +105,29 @@ export default {
   },
 
   data: () => ({
-    content: "",
+    content: "<p style='text-align: center '><u>Hello World</u></p>",
     view: false,
     inline: false,
     editHtml: false,
     hideToolbar: false,
-    toolbar: ["bold", "|", "italic", ">", "#edit-html-btn", "#clean-btn"],
+    errorMessages: null,
+    toolbar: collect(toolbarItems)
+      .unique()
+      .push(">")
+      .push("#edit-html-btn")
+      .push("#clean-btn")
+      .all(),
   }),
+
+  computed: {
+    toolbarItems() {
+      return collect(toolbarItems)
+        .unique()
+        .push(">")
+        .push("#edit-html-btn")
+        .push("#clean-btn")
+        .all();
+    },
+  },
 };
 </script>

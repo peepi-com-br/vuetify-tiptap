@@ -132,36 +132,24 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
+import collect from "collect.js";
+import "@/styles/styles.scss";
 
 import { Editor, EditorContent } from "@tiptap/vue-2";
-import StarterKit from "@tiptap/starter-kit";
+import TiptapKit from "@/plugins/tiptap-kit";
+
 //import VTiptapLinkDialog from "./VTiptapLinkDialog.vue";
 //import VTiptapVideoDialog from "./VTiptapVideoDialog.vue";
-import Document from "@tiptap/extension-document";
-import Paragraph from "@tiptap/extension-paragraph";
-import Placeholder from "@tiptap/extension-placeholder";
-import Blockquote from "@tiptap/extension-blockquote";
-import Focus from "@tiptap/extension-focus";
-import History from "@tiptap/extension-history";
-import Highlight from "@tiptap/extension-highlight";
-import TaskList from "@tiptap/extension-task-list";
-import TaskItem from "@tiptap/extension-task-item";
-import TextAlign from "@tiptap/extension-text-align";
-import Text from "@tiptap/extension-text";
-import TextStyle from "@tiptap/extension-text-style";
-import Link from "@tiptap/extension-link";
-import Color from "@tiptap/extension-color";
-import Image from "@tiptap/extension-image";
-import Underline from "@tiptap/extension-underline";
 
 //import ImageDialog from '@/plugins/ui/tiptap/ImageDialog.vue';
 //import EmojiPicker from '@/plugins/ui/tiptap/EmojiPicker.vue';
-//import Video from '@/plugins/ui/tiptap/video-new';
 //import i18n from '@/plugins/i18n';
 
-import xss from "xss";
+import toolbarItems from "@/constants/toolbarItems";
+import toolbarDefinitions from "@/constants/toolbarDefinitions";
 
-import collect from "collect.js";
+import xssRules from "@/constants/xssRules";
+import xss from "xss";
 
 import {
   VInput,
@@ -194,67 +182,9 @@ export default class VTiptap extends Vue {
 
   @Prop() readonly placeholder: string | null;
 
-  @Prop({
-    default: () => [
-      "bold",
-      "italic",
-      "strike",
-      "underline",
-      "color",
-      "|",
-      "headings",
-      "|",
-      "left",
-      "right",
-      "center",
-      "justify",
-      "|",
-      "bulletList",
-      "orderedList",
-      "|",
-      "link",
-      "video",
-      "image",
-      "emoji",
-      "|",
-      "clear",
-    ],
-  })
-  readonly toolbar: string[];
+  @Prop({ default: () => toolbarItems }) readonly toolbar: string[];
 
-  @Prop({
-    default: () => ({
-      a: ["href", "title", "target"],
-      span: ["style"],
-      blockquote: ["style"],
-      p: ["style"],
-      hr: [],
-      pre: [],
-      code: [],
-      strong: [],
-      img: ["src", "alt", "title"],
-      label: ["contenteditable"],
-      input: ["type", "value"],
-      div: ["class"],
-      iframe: ["src", "allowfullscreen"],
-      em: [],
-      s: [],
-      mark: [],
-      h1: [],
-      h2: [],
-      h3: [],
-      ul: ["class", "data-type"],
-      li: ["data-checked"],
-      ol: [],
-      u: [],
-      tr: ["class", "style"],
-      td: ["class", "style"],
-      th: ["class", "style"],
-      tbody: ["class", "style"],
-      table: ["class", "style"],
-      br: [],
-    }),
-  })
+  @Prop({ default: () => xssRules })
   readonly xssOptions: Record<string, string[]>;
 
   @Prop({ default: false }) readonly hideToolbar: boolean;
@@ -290,182 +220,7 @@ export default class VTiptap extends Vue {
   }
 
   get items() {
-    const definitions = {
-      "|": { type: "divider" },
-      divider: { type: "divider" },
-      ">": { type: "spacer" },
-      spacer: { type: "spacer" },
-      bold: {
-        title: "Bold",
-        icon: "mdi-format-bold",
-        action: () => this.editor.chain().focus().toggleBold().run(),
-        isActive: () => this.editor.isActive("bold"),
-      },
-      italic: {
-        title: "Italic",
-        icon: "mdi-format-italic",
-        action: () => this.editor.chain().focus().toggleItalic().run(),
-        isActive: () => this.editor.isActive("italic"),
-      },
-      underline: {
-        title: "Underline",
-        icon: "mdi-format-underline",
-        action: () => this.editor.chain().focus().toggleUnderline().run(),
-        isActive: () => this.editor.isActive("underline"),
-      },
-      strike: {
-        title: "Strike",
-        icon: "mdi-format-strikethrough",
-        action: () => this.editor.chain().focus().toggleStrike().run(),
-        isActive: () => this.editor.isActive("strike"),
-      },
-      color: {
-        title: "Color",
-        icon: "mdi-palette",
-        action: (color) => this.editor.chain().focus().setColor(color).run(),
-        isActive: () => this.editor.isActive("textStyle"),
-      },
-      highlight: {
-        title: "Highlight",
-        icon: "mdi-grease-pencil",
-        action: () => this.editor.chain().focus().toggleHighlight().run(),
-        isActive: () => this.editor.isActive("highlight"),
-      },
-      headings: { type: "headings" },
-      h1: {
-        title: "Heading 1",
-        icon: "mdi-format-header-1",
-        action: () =>
-          this.editor.chain().focus().toggleHeading({ level: 1 }).run(),
-        isActive: () => this.editor.isActive("heading", { level: 1 }),
-      },
-      h2: {
-        title: "Heading 2",
-        icon: "mdi-format-header-2",
-        action: () =>
-          this.editor.chain().focus().toggleHeading({ level: 2 }).run(),
-        isActive: () => this.editor.isActive("heading", { level: 2 }),
-      },
-      h3: {
-        title: "Heading 3",
-        icon: "mdi-format-header-3",
-        action: () =>
-          this.editor.chain().focus().toggleHeading({ level: 3 }).run(),
-        isActive: () => this.editor.isActive("heading", { level: 3 }),
-      },
-      p: {
-        title: "Paragraph",
-        icon: "mdi-format-paragraph",
-        action: () => this.editor.chain().focus().setParagraph().run(),
-        isActive: () => this.editor.isActive("paragraph"),
-      },
-      left: {
-        title: "left",
-        icon: "mdi-format-align-left",
-        action: () => this.editor.chain().focus().setTextAlign("left").run(),
-        isActive: () => this.editor.isActive({ textAlign: "left" }),
-      },
-      center: {
-        title: "center",
-        icon: "mdi-format-align-center",
-        action: () => this.editor.chain().focus().setTextAlign("center").run(),
-        isActive: () => this.editor.isActive({ textAlign: "center" }),
-      },
-      right: {
-        title: "right",
-        icon: "mdi-format-align-right",
-        action: () => this.editor.chain().focus().setTextAlign("right").run(),
-        isActive: () => this.editor.isActive({ textAlign: "right" }),
-      },
-      justify: {
-        title: "justify",
-        icon: "mdi-format-align-justify",
-        action: () => this.editor.chain().focus().setTextAlign("justify").run(),
-        isActive: () => this.editor.isActive({ textAlign: "justify" }),
-      },
-      bulletList: {
-        title: "Bullet List",
-        icon: "mdi-format-list-bulleted-square",
-        action: () => this.editor.chain().focus().toggleBulletList().run(),
-        isActive: () => this.editor.isActive("bulletList"),
-      },
-      orderedList: {
-        icon: "mdi-format-list-numbered",
-        title: "Ordered List",
-        action: () => this.editor.chain().focus().toggleOrderedList().run(),
-        isActive: () => this.editor.isActive("orderedList"),
-      },
-      checkbox: {
-        icon: "mdi-format-list-checkbox",
-        title: "Task List",
-        action: () => this.editor.chain().focus().toggleTaskList().run(),
-        isActive: () => this.editor.isActive("taskList"),
-      },
-      link: {
-        title: "Link",
-        icon: "mdi-link-variant",
-        action: this.setLink,
-        isActive: () => this.editor.isActive("link"),
-      },
-      image: {
-        icon: "mdi-image",
-        title: "Image",
-        action: this.selectImage,
-        isActive: () => this.editor.isActive("image"),
-      },
-      video: {
-        icon: "mdi-video",
-        title: "Video",
-        action: this.setVideo,
-        isActive: () => this.editor.isActive("iframe"),
-      },
-      emoji: {
-        icon: "mdi-emoticon-outline",
-        title: "Emoji",
-        action: this.setEmoji,
-      },
-      blockquote: {
-        icon: "mdi-format-quote-open",
-        title: "Blockquote",
-        action: () => this.editor.chain().focus().toggleBlockquote().run(),
-        isActive: () => this.editor.isActive("blockquote"),
-      },
-      rule: {
-        icon: "mdi-minus",
-        title: "Horizontal Rule",
-        action: () => this.editor.chain().focus().setHorizontalRule().run(),
-      },
-      code: {
-        title: "Code",
-        icon: "mdi-code-tags",
-        action: () => this.editor.chain().focus().toggleCode().run(),
-        isActive: () => this.editor.isActive("code"),
-      },
-      codeBlock: {
-        icon: "mdi-code-braces-box",
-        title: "Code Block",
-        action: () => this.editor.chain().focus().toggleCodeBlock().run(),
-        isActive: () => this.editor.isActive("codeBlock"),
-      },
-      clear: {
-        icon: "mdi-format-clear",
-        title: "Clear Format",
-        /* eslint newline-per-chained-call: "off" */
-        action: () =>
-          this.editor.chain().focus().clearNodes().unsetAllMarks().run(),
-      },
-    };
-
-    let toolbarItems = [];
-    for (let i of this.toolbar) {
-      if (definitions[i]) {
-        toolbarItems.push(definitions[i]);
-      } else if (i[0] === "#") {
-        toolbarItems.push({ type: "slot", slot: i.substring(1) });
-      }
-    }
-
-    return toolbarItems;
+    return toolbarDefinitions(this);
   }
 
   // Headings
@@ -673,7 +428,7 @@ export default class VTiptap extends Vue {
       },
       onUpdate: ({ editor }) => this.$emit("input", editor.getHTML()),
       extensions: [
-        StarterKit.configure({
+        TiptapKit.configure({
           bold: false,
           blockquote: {
             HTMLAttributes: {
@@ -686,45 +441,35 @@ export default class VTiptap extends Vue {
           heading: {
             levels: [1, 2, 3],
           },
-        }),
-        //
-        Focus.configure({
-          className: "focus",
-        }),
-        Placeholder.configure({
-          placeholder: () => {
-            if (!this.placeholder) {
-              return "";
-            }
-
-            return this.placeholder;
+          placeholder: {
+            placeholder: () => this.placeholder || "",
           },
-        }),
-        //
-        Color,
-        Highlight.configure({
-          multicolor: true,
-        }),
-        Image,
-        Link.configure({
-          openOnClick: false,
-        }),
-        TaskList.configure({
-          HTMLAttributes: {
-            class: "task-list",
+          textAlign: {
+            types: ["heading", "paragraph"],
           },
-        }),
-        TaskItem.configure({
-          HTMLAttributes: {
-            itemTypeName: "task-list",
+          focus: {
+            className: "focus",
           },
+          color: {},
+          highlight: { multicolor: true },
+          image: {},
+          link: {
+            openOnClick: false,
+          },
+          taskList: {
+            HTMLAttributes: {
+              class: "task-list",
+            },
+          },
+          taskItem: {
+            HTMLAttributes: {
+              itemTypeName: "task-list",
+            },
+          },
+          textStyle: {},
+          underline: {},
+          // video: {},
         }),
-        TextAlign.configure({
-          types: ["heading", "paragraph"],
-        }),
-        TextStyle,
-        Underline,
-        // Video,
       ],
       autofocus: false,
       editable: true,
@@ -747,189 +492,3 @@ export default class VTiptap extends Vue {
   }
 }
 </script>
-
-<style lang="scss">
-.v-tiptap {
-  overflow-wrap: anywhere;
-
-  .ProseMirror {
-    padding: 12px 18px;
-    min-height: 180px;
-    overflow-wrap: anywhere;
-  }
-
-  &.inline {
-    .ProseMirror {
-      padding: 6px 12px;
-      min-height: 32px;
-    }
-    p {
-      padding: 0 0;
-      line-height: 1.2rem;
-    }
-  }
-
-  .ProseMirror p.is-editor-empty:first-child::before {
-    content: attr(data-placeholder);
-    float: left;
-    color: #adb5bd;
-    pointer-events: none;
-    height: 0;
-    font-style: italic;
-  }
-
-  .v-select__selection--disabled {
-    color: rgba(0, 0, 0, 0.26) !important;
-  }
-
-  .v-toolbar__content {
-    flex-wrap: wrap;
-    padding: 4px 12px;
-
-    .v-select {
-      width: min-content;
-      margin-bottom: 0px !important;
-
-      .v-input__slot:hover {
-        background: #fcfcfc;
-        border-radius: 4px;
-      }
-      .v-input__slot::before,
-      .v-input__slot::after {
-        display: none;
-      }
-      .v-input__control > div {
-        height: 28px;
-        min-height: 24px !important;
-        padding: 6px !important;
-      }
-      .v-input__icon {
-        min-width: auto;
-        width: auto;
-        margin-left: -4px;
-        margin-right: -4px;
-      }
-      .v-input__append-inner {
-        padding: 0px;
-      }
-      .v-select__selection {
-        margin-top: 0px;
-        font-size: 14px;
-        margin-right: 8px;
-        font-weight: 500;
-        color: rgba(0, 0, 0, 0.7);
-      }
-    }
-    .v-btn.v-btn--icon {
-      border-radius: 4px;
-    }
-  }
-
-  .divider {
-    width: 2px;
-    height: 1.25rem;
-    background-color: rgba(#000, 0.1);
-    margin-left: 0.25rem;
-    margin-right: 0.5rem;
-  }
-
-  :focus-visible {
-    outline: -webkit-focus-ring-color auto 0px;
-  }
-
-  p {
-    padding: 0.35em 0;
-    margin: 2px 0px;
-    margin-bottom: 0;
-    line-height: 1.5rem;
-  }
-
-  h1 {
-    font-size: 2.125rem !important;
-    line-height: 2.5rem;
-    letter-spacing: 0.0073529412em !important;
-    font-weight: 400;
-    font-family: Roboto, sans-serif !important;
-    padding: 0.75em 0 0.5em 0;
-  }
-
-  h2 {
-    line-height: 2rem;
-    font-family: Roboto, sans-serif !important;
-    font-size: 1.5rem !important;
-    font-weight: 400;
-    letter-spacing: normal !important;
-    padding: 0.75em 0 0.5em 0;
-  }
-
-  h3 {
-    font-size: 1.25rem !important;
-    font-weight: 500;
-    letter-spacing: 0.0125em !important;
-    line-height: 2rem;
-    font-family: Roboto, sans-serif !important;
-    padding: 0.75em 0 0.5em 0;
-  }
-
-  blockquote {
-    margin-left: 1rem;
-    padding-left: 0.75em;
-    font-weight: 300;
-    border-left: 3px solid rgba(#0d0d0d, 0.2);
-  }
-
-  img {
-    max-width: 638px;
-    height: auto;
-    border: 4px solid rgba(0, 0, 0, 0);
-    margin-left: -4px;
-
-    &.focus {
-      border: 4px solid rgb(80, 173, 248);
-    }
-  }
-  .iframe-wrapper {
-    iframe {
-      width: 640px;
-      height: 360px;
-      border: 4px solid rgba(0, 0, 0, 0);
-      margin-left: -4px;
-    }
-
-    &.focus {
-      iframe {
-        border: 4px solid rgb(80, 173, 248);
-      }
-    }
-  }
-
-  ul,
-  ol {
-    padding-left: 20px;
-  }
-
-  ul[data-type="taskList"] {
-    list-style: none;
-    padding: 0;
-
-    p {
-      margin: 0;
-    }
-
-    li {
-      display: flex;
-
-      > label {
-        flex: 0 0 auto;
-        margin-right: 0.5rem;
-        margin-top: 1.1rem;
-        user-select: none;
-      }
-
-      > div {
-        flex: 1 1 auto;
-      }
-    }
-  }
-}
-</style>
