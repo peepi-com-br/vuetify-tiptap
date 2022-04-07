@@ -65,7 +65,7 @@
                   </div> -->
                   <!-- Color Button -->
                   <div v-else-if="item.title === 'Color'" class="mr-1">
-                    <!--  <ColorPicker
+                    <ColorPicker
                       v-model="selectedColor"
                       @input="item.action(selectedColor)"
                       v-bind="attrs"
@@ -76,7 +76,13 @@
                       gray-scale
                     >
                       <template #button="{ on }">
-                        <v-btn v-on="on" :disabled="code" icon small style="">
+                        <v-btn
+                          v-on="on"
+                          :disabled="disableToolbar"
+                          icon
+                          small
+                          style=""
+                        >
                           <v-icon
                             :style="{
                               'border-bottom': selectedColorBorder,
@@ -89,7 +95,7 @@
                           </v-icon>
                         </v-btn>
                       </template>
-                    </ColorPicker> -->
+                    </ColorPicker>
                   </div>
 
                   <!-- Standard Button -->
@@ -145,6 +151,8 @@ import VTiptapVideoDialog from "./VTiptapVideoDialog.vue";
 import VTiptapImageDialog from "./VTiptapImageDialog.vue";
 
 import EmojiPicker from "./EmojiPicker.vue";
+import ColorPicker from "./ColorPicker.vue";
+
 //import i18n from '@/plugins/i18n';
 
 import toolbarItems from "@/constants/toolbarItems";
@@ -175,6 +183,7 @@ import {
     VSelect,
     VSpacer,
     VTooltip,
+    ColorPicker,
   },
 })
 export default class VTiptap extends Vue {
@@ -306,6 +315,16 @@ export default class VTiptap extends Vue {
   }
 
   selectedColor = null;
+
+  get selectedColorBorder() {
+    console.log(this.selectedColor);
+    if (this.selectedColor) {
+      const color = `${this.selectedColor}`;
+      return `3px solid ${color}C0`;
+    }
+
+    return "3px solid rgba(0, 0, 0, 0.67)";
+  }
 
   setLink() {
     const previousUrl = this.editor.getAttributes("link").href;

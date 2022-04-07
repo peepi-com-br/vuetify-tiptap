@@ -119,7 +119,8 @@ export default {
   },
 
   data: () => ({
-    content: "<p style='text-align: center '><u>Hello World</u></p>",
+    content:
+      '<h2 style="text-align: center"><span style="color: rgb(76, 175, 80)"><u>Hello</u></span><u> </u><span style="color: rgb(233, 30, 99)"><u>World😄</u></span></h2><p style="text-align: center"><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.youtube.com/watch?v=GtD_J864yts">click</a></p><img src="https://fakeimg.pl/550x100/ff0000"><div class="iframe-wrapper"><iframe src="https://www.youtube.com/embed/k4yL3IZSPIc" frameborder="0" allowfullscreen="true"></iframe></div>',
     view: false,
     inline: false,
     editHtml: false,
