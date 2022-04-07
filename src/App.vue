@@ -14,6 +14,10 @@
           </v-list-item>
 
           <v-list-item>
+            <v-switch v-model="disableToolbar" label="disableToolbar" inset />
+          </v-list-item>
+
+          <v-list-item>
             <v-switch v-model="view" label="view" inset />
           </v-list-item>
 
@@ -47,7 +51,7 @@
         <VTiptap
           v-model="content"
           :hide-toolbar="hideToolbar"
-          disable-toolbar
+          :disable-toolbar="disableToolbar"
           :toolbar="toolbar"
           :inline="inline"
           :view="view"
@@ -68,7 +72,10 @@
 
           <template #edit-html-btn="{}">
             <v-btn
-              @click="editHtml = !editHtml"
+              @click="
+                editHtml = !editHtml;
+                disableToolbar = !disableToolbar;
+              "
               class="elevation-0"
               small
               :color="editHtml ? 'primary' : undefined"
@@ -79,7 +86,14 @@
           </template>
 
           <template #clean-btn="{ editor }">
-            <v-btn icon small @click="editor.commands.setContent('')">
+            <v-btn
+              icon
+              small
+              @click="
+                editor.commands.setContent('');
+                content = '';
+              "
+            >
               <v-icon>mdi-delete-circle-outline</v-icon>
             </v-btn>
           </template>
@@ -110,6 +124,7 @@ export default {
     inline: false,
     editHtml: false,
     hideToolbar: false,
+    disableToolbar: false,
     errorMessages: null,
     toolbar: collect(toolbarItems)
       .unique()

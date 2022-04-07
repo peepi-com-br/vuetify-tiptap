@@ -51,6 +51,7 @@
                   <div v-if="item.type === 'headings'" class="ml-n1">
                     <v-select
                       v-model="selectedHeading"
+                      :disabled="disableToolbar"
                       :items="headingsItems"
                       dense
                       hide-details="auto"
@@ -94,6 +95,7 @@
                   <!-- Standard Button -->
                   <v-btn
                     v-else
+                    :disabled="disableToolbar"
                     :class="{
                       'v-btn--active': item.isActive && item.isActive(),
                     }"
@@ -188,6 +190,8 @@ export default class VTiptap extends Vue {
   readonly xssOptions: Record<string, string[]>;
 
   @Prop({ default: false }) readonly hideToolbar: boolean;
+
+  @Prop({ default: false }) readonly disableToolbar: boolean;
 
   @Prop({ default: true }) readonly xss: boolean | string[];
 
