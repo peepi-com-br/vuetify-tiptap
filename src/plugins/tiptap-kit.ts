@@ -117,7 +117,7 @@ export default Extension.create<StarterKitOptions>({
     }
 
     if (this.options.video !== false) {
-      extensions.push(Video.configure())
+      extensions.push(Video.configure(this.options?.video))
     }
 
     if (this.options.blockquote !== false) {

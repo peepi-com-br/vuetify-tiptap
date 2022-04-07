@@ -142,7 +142,7 @@ import VTiptapLinkDialog from "./VTiptapLinkDialog.vue";
 import VTiptapVideoDialog from "./VTiptapVideoDialog.vue";
 
 //import ImageDialog from '@/plugins/ui/tiptap/ImageDialog.vue';
-//import EmojiPicker from '@/plugins/ui/tiptap/EmojiPicker.vue';
+import EmojiPicker from "./EmojiPicker.vue";
 //import i18n from '@/plugins/i18n';
 
 import toolbarItems from "@/constants/toolbarItems";
@@ -327,13 +327,12 @@ export default class VTiptap extends Vue {
     instance.$mount();
   }
 
-  setEmoji(e) {
-    /* const activator = e.target;
+  setEmoji() {
+    const activator = this.$el;
 
     const EmojiPickerComponent = Vue.extend(EmojiPicker);
-    const instance = new EmojiPickerComponent({
-      i18n,
-      vuetify: Vue.prototype.tiptapVuetifyPlugin.vuetify,
+    const instance: any = new EmojiPickerComponent({
+      vuetify: vuetify,
     });
 
     instance.$mount();
@@ -346,11 +345,11 @@ export default class VTiptap extends Vue {
 
     // Set Position
     const position = activator.getBoundingClientRect();
-    instance.$children[0].absoluteX = position.x + 14;
-    instance.$children[0].absoluteY = position.y + 14;
+    instance.$children[0].absoluteX = position.x + 500;
+    instance.$children[0].absoluteY = position.y + 300;
 
     // Display emoji picker
-    instance.value = true; */
+    instance.value = true;
   }
 
   async selectImage() {
@@ -387,21 +386,6 @@ export default class VTiptap extends Vue {
   }
 
   created() {
-    // const extensionsDefinition = {
-    //   focus: Focus.configure({
-    //     className: "focus",
-    //   }),
-    // };
-
-    // let extensions = [];
-    // for (let i of this.extensions) {
-    //   if (extensionsDefinition[i]) {
-    //     extensions.push(extensionsDefinition[i]);
-    //   }
-    // }
-
-    // enabledExtesions = ['bold'];
-
     this.editor = new Editor({
       content: this.value,
       editorProps: {
@@ -466,7 +450,7 @@ export default class VTiptap extends Vue {
           },
           textStyle: {},
           underline: {},
-          video: true,
+          video: {},
         }),
       ],
       autofocus: false,
