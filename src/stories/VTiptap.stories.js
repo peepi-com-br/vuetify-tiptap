@@ -17,7 +17,7 @@ export default storyFactory({
 const Template = (args, { argTypes }) => ({
   components: { VTiptap },
   props: Object.keys(argTypes),
-  template: '<v-tiptap :value="value" :toolbar="toolbar" />',
+  template: '<v-tiptap :toolbar="toolbar" />',
 });
 
 // now the stories, you need at least one

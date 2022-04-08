@@ -10,7 +10,14 @@ module.exports = defineConfig({
     },
   },
 
-  chainWebpack: (config) => {
+  css: { extract: false },
+
+  chainWebpack: config => {
     config.module.rule("js").include.add(path.resolve(__dirname, "./demo"));
+    config.externals({
+      vue: "Vue",
+      vuetify: "Vuetify",
+      "vuetify/lib": "Vuetify",
+    });
   },
 });
