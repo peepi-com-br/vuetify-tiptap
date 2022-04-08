@@ -12,7 +12,7 @@ module.exports = defineConfig({
 
   css: { extract: false },
 
-  chainWebpack: config => {
+  chainWebpack: (config) => {
     config.module.rule("js").include.add(path.resolve(__dirname, "./demo"));
     config.externals({
       vue: "Vue",
