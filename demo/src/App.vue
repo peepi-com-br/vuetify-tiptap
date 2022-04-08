@@ -157,7 +157,7 @@
 </template>
 
 <script>
-import VTiptap from "./components/VTiptap";
+import VTiptap from "../../src/VTiptap.vue";
 
 import testHtml from "@/constants/testHtml";
 import toolbarItems from "@/constants/toolbarItems";

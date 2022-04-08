@@ -1,5 +1,5 @@
 import { shallowMount } from "@vue/test-utils";
-import VTiptap from "@/components/VTiptap.vue";
+import VTiptap from "@/VTiptap.vue";
 
 describe("VTiptap.vue", () => {
   it("renders props.msg when passed", () => {

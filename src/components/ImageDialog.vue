@@ -20,7 +20,7 @@
       </v-card-text>
 
       <v-card-actions>
-        <v-btn :loading="uploading" :disabled="uploading" text @click="apply">
+        <v-btn text @click="apply">
           {{ "apply" }}
         </v-btn>
       </v-card-actions>
