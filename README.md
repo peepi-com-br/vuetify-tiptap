@@ -31,15 +31,11 @@
 <v-tiptap v-model="value" />
 ```
 
-(IMAGEM EXEMPLO)
-
 To ensure full consistency between whats is seen in the editor and what you see when you render the HTML value, the component also has a view mode.
 
 ```vue
 <v-tiptap v-model="value" view />
 ```
-
-(IMAGEM EXEMPLO)
 
 The toolbar is fully customizable and you can add, remove or reorder buttons. You can also use slots to add custom buttons with your own functionality.
 
@@ -56,8 +52,6 @@ The toolbar is fully customizable and you can add, remove or reorder buttons. Yo
 </v-tiptap>
 ```
 
-(IMAGEM EXEMPLO)
-
 > ⚠️ This project uses Vue 2 and Vuetify 2. We plan to upgrade to Vue 3 as soon as Vuetify supports it.
 
 ## Instalation
@@ -72,39 +66,55 @@ The toolbar is fully customizable and you can add, remove or reorder buttons. Yo
 
 ## Props
 
-| Name         | Description | Type                            | Required | Default |
-| ------------ | ----------- | ------------------------------- | -------- | ------- |
-| value        | -           | `string \| null`                | `false`  | -       |
-| placeholder  | -           | `string \| null`                | `false`  | -       |
-| view         | -           | `boolean \| string[] \| string` | `false`  | `false` |
-| codeEditable | -           | `boolean`                       | `false`  | `false` |
-| codeEditor   | -           | `boolean`                       | `false`  | `false` |
-| xss          | -           | `boolean`                       | `false`  | `true`  |
-| codeLanguage | -           | `string`                        | `false`  | `html`  |
-| hideToolbar  | -           | `boolean`                       | `false`  | `false` |
-| inline       | -           | `boolean`                       | `false`  | `false` |
-| disabled     | -           | `boolean`                       | `false`  | `false` |
+|Name|Description|Type|Required|Default|
+|--------------|---|----------------------------|-------|-----|
+|value         |---|`string \| null`            |`false`|-----|
+|view          |---|`boolean`                   |`false`|false|
+|placeholder   |---|`string \| null`            |`false`|-----|
+|toolbar       |---|`string[]`                  |`false`|-----|
+|xssOptions    |---|`Record<string, string[]>`  |`false`|-----|
+|hideToolbar   |---|`boolean`                   |`false`|false|
+|disableToolbar|---|`boolean`                   |`false`|false|
+|xss           |---|`boolean \| string[]`       |`false`|true |
+|dense         |---|`boolean`                   |`false`|false|
+|outlined      |---|`boolean`                   |`false`|true |
+|disabled      |---|`boolean`                   |`false`|false|
 
 ## Events
 
-| Event Name | Description | Parameters |
-| ---------- | ----------- | ---------- |
-| input      | -           | -          |
-| enter      | -           | -          |
+|Event Name|Description|Parameters|
+|----------|-----------|----------|
+|enter     |-----------|----------|
+|input     |-----------|----------|
 
 ## Slots
 
-| Name    | Description | Default Slot Content |
-| ------- | ----------- | -------------------- |
-| prepend | -           | -                    |
-| append  | -           | -                    |
+|Name           |Description  |Default Slot Content|
+|---------------|-------------|--------------------|
+|toolbar.item   |-------------|--------------------|
+|prepend        |Slot Prepend |--------------------|
+|editor         |Tiptap Editor|--------------------|
+|append         |Slot Append  |--------------------|
+|bottom         |-------------|--------------------|
+|image          |-------------|--------------------|
+
+## Changelog
+
+Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
+
+## Contributing
+
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+
+## Credits
+
+- [Atila Silva](https://github.com/a2insights)
+- [Ricardo Faust](https://github.com/alkin)
+- [All Contributors](../../contributors)
 
 ## License
 
-## Mantainers
-
-- Ricardo Faust (alkin)
-- Atila Silva (atila)
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
