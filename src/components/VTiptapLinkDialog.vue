@@ -3,22 +3,21 @@
     <v-card>
       <v-card-title>
         <span class="headline">
-          {{ "Config link" }}
+          {{ "Edit Link" }}
         </span>
 
         <v-spacer />
 
-        <v-btn icon @click="close">
+        <v-btn icon @click="dialog = false">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
 
       <v-card-text>
-        <v-text-field v-model="url" name="link" label="link" hide-details />
+        <v-text-field v-model="url" name="url" label="URL" hide-details />
       </v-card-text>
 
       <v-card-actions>
-        <v-btn text @click="close">{{ "close" }}</v-btn>
         <v-btn :disabled="isDisabled" text @click="apply">
           {{ "apply" }}
         </v-btn>
@@ -44,10 +43,6 @@ export default class RichTextNewLinkDialog extends Vue {
 
   get isDisabled() {
     return this.value === this.url || (!this.value && !this.url);
-  }
-
-  close() {
-    this.dialog = false;
   }
 
   apply() {

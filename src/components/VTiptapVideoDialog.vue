@@ -2,7 +2,7 @@
   <v-dialog :value="dialog" @input="dialog = $event" max-width="500px">
     <v-card>
       <v-card-title>
-        <span class="headline">{{ "video" }}</span>
+        <span class="headline">{{ "Edit Video" }}</span>
 
         <v-spacer />
 
@@ -15,14 +15,14 @@
         <v-text-field
           v-model="src"
           name="link-video"
-          :label="'link'"
+          label="URL"
           hide-details
         />
       </v-card-text>
 
       <v-card-actions>
         <v-btn text @click="apply">
-          {{ "add" }}
+          {{ "Apply" }}
         </v-btn>
       </v-card-actions>
     </v-card>

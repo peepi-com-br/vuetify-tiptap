@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title>
         <span class="headline">
-          {{ "image" }}
+          {{ "Edit Image" }}
         </span>
 
         <v-spacer />
@@ -15,13 +15,7 @@
 
       <v-card-text>
         <slot name="image">
-          <v-text-field
-            v-model="value"
-            name="src"
-            label="Link URL"
-            :placeholder="'image'"
-            hide-details
-          />
+          <v-text-field v-model="value" name="src" label="URL" hide-details />
         </slot>
       </v-card-text>
 
