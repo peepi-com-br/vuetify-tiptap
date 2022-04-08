@@ -19,6 +19,7 @@
           borderColor: $attrs['error-messages'] ? '#ff5252' : undefined,
         }"
       >
+        <v-btn>Testing changes in chromatic</v-btn>
         <!-- Toolbar -->
         <v-toolbar
           v-if="!hideToolbar && toolbar.length"
