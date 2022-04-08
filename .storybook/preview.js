@@ -51,8 +51,10 @@ export const decorators = [
       },
       template: `
         <v-app>
-          <v-container fluid>
+          <v-container>
+            <div style="width: 820px">
             <wrapped />
+            </div>
           </v-container>
         </v-app>
       `,
