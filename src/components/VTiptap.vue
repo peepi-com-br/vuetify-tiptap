@@ -1,5 +1,5 @@
 <template>
-  <div class="v-tiptap" :class="{ inline, view }">
+  <div class="v-tiptap" :class="{ dense, view }">
     <!-- View mode -->
     <div v-if="view" v-html="cleanValue" style="width: 100%" />
     <!-- Edit Mode -->
@@ -12,8 +12,7 @@
     >
       <v-card
         flat
-        :class="{ 'py-2 px-3': inline }"
-        :outlined="!inline"
+        :outlined="outlined"
         style="width: 100%"
         v-bind="$attrs"
         :style="{
@@ -219,7 +218,9 @@ export default class VTiptap extends Vue {
 
   @Prop({ default: true }) readonly xss: boolean | string[];
 
-  @Prop({ default: false }) readonly inline: boolean;
+  @Prop({ default: false }) readonly dense: boolean;
+
+  @Prop({ default: true }) readonly outlined: boolean;
 
   @Prop({ default: false }) readonly disabled: boolean;
 

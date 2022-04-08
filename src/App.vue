@@ -22,7 +22,23 @@
           </v-list-item>
 
           <v-list-item>
-            <v-switch v-model="inline" label="inline" inset />
+            <v-switch v-model="outlined" label="outlined" inset />
+          </v-list-item>
+
+          <v-list-item>
+            <v-switch v-model="dense" label="dense" inset />
+          </v-list-item>
+
+          <v-list-item>
+            <v-switch v-model="slotPrepend" label="slotPrepend" inset />
+          </v-list-item>
+
+          <v-list-item>
+            <v-switch v-model="slotAppend" label="slotAppend" inset />
+          </v-list-item>
+
+          <v-list-item>
+            <v-switch v-model="slotBottom" label="slotBottom" inset />
           </v-list-item>
 
           <v-list-item>
@@ -53,7 +69,8 @@
           :hide-toolbar="hideToolbar"
           :disable-toolbar="disableToolbar"
           :toolbar="toolbar"
-          :inline="inline"
+          :outlined="outlined"
+          :dense="dense"
           :view="view"
           background-color="grey lighten-4"
           placeholder="Enter some text..."
@@ -98,10 +115,9 @@
             </v-btn>
           </template>
 
-          <template #prepend>🔜</template>
-          <template #append>🔚</template>
-
-          <template #bottom="{ editor }">
+          <template v-if="slotPrepend" #prepend>🔜</template>
+          <template v-if="slotAppend" #append>🔚</template>
+          <template v-if="slotBottom" #bottom="{ editor }">
             <v-toolbar
               dense
               flat
@@ -156,12 +172,16 @@ export default {
   data: () => ({
     content: testHtml,
     view: false,
-    inline: false,
+    outlined: true,
+    dense: false,
     editHtml: false,
     hideToolbar: false,
     disableToolbar: false,
     errorMessages: null,
     toolbar: undefined,
+    slotPrepend: false,
+    slotAppend: false,
+    slotBottom: false,
   }),
 
   computed: {
