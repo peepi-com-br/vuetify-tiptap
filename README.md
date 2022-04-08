@@ -12,7 +12,7 @@
 ![Sample](images/sample.png)
 
 <p align="center">
-    <a href="#"><strong>View Demo</strong></a>
+    <a href="https://main--62508045836c88003a1f61fa.chromatic.com"><strong>View Demo</strong></a>
     ·
     <a href="#usage">Usage</a>
     ·
@@ -66,37 +66,37 @@ The toolbar is fully customizable and you can add, remove or reorder buttons. Yo
 
 ## Props
 
-|Name|Description|Type|Required|Default|
-|--------------|---|----------------------------|-------|-----|
-|value         |---|`string \| null`            |`false`|-----|
-|view          |---|`boolean`                   |`false`|false|
-|placeholder   |---|`string \| null`            |`false`|-----|
-|toolbar       |---|`string[]`                  |`false`|-----|
-|xssOptions    |---|`Record<string, string[]>`  |`false`|-----|
-|hideToolbar   |---|`boolean`                   |`false`|false|
-|disableToolbar|---|`boolean`                   |`false`|false|
-|xss           |---|`boolean \| string[]`       |`false`|true |
-|dense         |---|`boolean`                   |`false`|false|
-|outlined      |---|`boolean`                   |`false`|true |
-|disabled      |---|`boolean`                   |`false`|false|
+| Name           | Description | Type                       | Required | Default |
+| -------------- | ----------- | -------------------------- | -------- | ------- |
+| value          | ---         | `string \| null`           | `false`  | -----   |
+| view           | ---         | `boolean`                  | `false`  | false   |
+| placeholder    | ---         | `string \| null`           | `false`  | -----   |
+| toolbar        | ---         | `string[]`                 | `false`  | -----   |
+| xssOptions     | ---         | `Record<string, string[]>` | `false`  | -----   |
+| hideToolbar    | ---         | `boolean`                  | `false`  | false   |
+| disableToolbar | ---         | `boolean`                  | `false`  | false   |
+| xss            | ---         | `boolean \| string[]`      | `false`  | true    |
+| dense          | ---         | `boolean`                  | `false`  | false   |
+| outlined       | ---         | `boolean`                  | `false`  | true    |
+| disabled       | ---         | `boolean`                  | `false`  | false   |
 
 ## Events
 
-|Event Name|Description|Parameters|
-|----------|-----------|----------|
-|enter     |-----------|----------|
-|input     |-----------|----------|
+| Event Name | Description | Parameters |
+| ---------- | ----------- | ---------- |
+| enter      | ----------- | ---------- |
+| input      | ----------- | ---------- |
 
 ## Slots
 
-|Name           |Description  |Default Slot Content|
-|---------------|-------------|--------------------|
-|toolbar.item   |-------------|--------------------|
-|prepend        |Slot Prepend |--------------------|
-|editor         |Tiptap Editor|--------------------|
-|append         |Slot Append  |--------------------|
-|bottom         |-------------|--------------------|
-|image          |-------------|--------------------|
+| Name         | Description   | Default Slot Content |
+| ------------ | ------------- | -------------------- |
+| toolbar.item | ------------- | -------------------- |
+| prepend      | Slot Prepend  | -------------------- |
+| editor       | Tiptap Editor | -------------------- |
+| append       | Slot Append   | -------------------- |
+| bottom       | ------------- | -------------------- |
+| image        | ------------- | -------------------- |
 
 ## Changelog
 

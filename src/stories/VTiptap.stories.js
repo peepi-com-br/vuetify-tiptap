@@ -10,18 +10,22 @@ export default storyFactory({
   title: "VTiptap",
   component: VTiptap,
   description: "This can be **markdown**!",
-  args: {},
+  args: {
+    toolbar: undefined,
+    value: "",
+  },
 });
 
 // create a base template to share
 const Template = (args, { argTypes }) => ({
   components: { VTiptap },
   props: Object.keys(argTypes),
-  template: '<v-tiptap :toolbar="toolbar" />',
+  template: '<v-tiptap :toolbar="toolbar" :value="value" />',
 });
 
 // now the stories, you need at least one
 export const BasicUsage = Template.bind({});
+BasicUsage.args = {};
 
 // try one with overridden props
 export const CustomToolbar = Template.bind({});
