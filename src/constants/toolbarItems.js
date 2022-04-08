@@ -1,8 +1,8 @@
 export default [
   "bold",
   "italic",
-  "strike",
   "underline",
+  "strike",
   "color",
   "|",
   "headings",
