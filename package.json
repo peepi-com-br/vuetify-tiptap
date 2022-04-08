@@ -9,7 +9,8 @@
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
     "storybook:build": "vue-cli-service storybook:build -c .storybook",
-    "storybook:serve": "vue-cli-service storybook:serve -p 6006 -c .storybook"
+    "storybook:serve": "vue-cli-service storybook:serve -p 6006 -c .storybook",
+    "chromatic": "npx chromatic --project-token=0a78740c96a0 --build-script-name storybook:build"
   },
   "main": "dist/VTiptap.umd.js",
   "module": "dist/VTiptap.umd.js",

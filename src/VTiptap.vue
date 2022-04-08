@@ -150,7 +150,6 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import collect from "collect.js";
-import "@/styles/styles.scss";
 
 import { Editor, EditorContent } from "@tiptap/vue-2";
 import TiptapKit from "@/plugins/tiptap-kit";
@@ -505,3 +504,190 @@ export default class VTiptap extends Vue {
   }
 }
 </script>
+
+
+<style lang="scss">
+.v-tiptap {
+  overflow-wrap: anywhere;
+
+  .ProseMirror {
+    padding: 12px 18px;
+    min-height: 180px;
+    overflow-wrap: anywhere;
+  }
+
+  &.dense {
+    .ProseMirror {
+      padding: 6px 12px;
+      min-height: 32px;
+    }
+    p {
+      padding: 0 0;
+      line-height: 1.2rem;
+    }
+  }
+
+  .ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: #adb5bd;
+    pointer-events: none;
+    height: 0;
+    font-style: italic;
+  }
+
+  .v-select__selection--disabled {
+    color: rgba(0, 0, 0, 0.26) !important;
+  }
+
+  .v-toolbar__content {
+    flex-wrap: wrap;
+    padding: 4px 12px;
+
+    .v-select {
+      width: min-content;
+      margin-bottom: 0px !important;
+
+      .v-input__slot:hover {
+        background: #fcfcfc;
+        border-radius: 4px;
+      }
+      .v-input__slot::before,
+      .v-input__slot::after {
+        display: none;
+      }
+      .v-input__control > div {
+        height: 28px;
+        min-height: 24px !important;
+        padding: 6px !important;
+      }
+      .v-input__icon {
+        min-width: auto;
+        width: auto;
+        margin-left: -4px;
+        margin-right: -4px;
+      }
+      .v-input__append-inner {
+        padding: 0px;
+      }
+      .v-select__selection {
+        margin-top: 0px;
+        font-size: 14px;
+        margin-right: 8px;
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.7);
+      }
+    }
+    .v-btn.v-btn--icon {
+      border-radius: 4px;
+    }
+  }
+
+  .divider {
+    width: 2px;
+    height: 1.25rem;
+    background-color: rgba(#000, 0.1);
+    margin-left: 0.25rem;
+    margin-right: 0.5rem;
+  }
+
+  :focus-visible {
+    outline: -webkit-focus-ring-color auto 0px;
+  }
+
+  p {
+    padding: 0.35em 0;
+    margin: 2px 0px;
+    margin-bottom: 0;
+    line-height: 1.5rem;
+  }
+
+  h1 {
+    font-size: 2.125rem !important;
+    line-height: 2.5rem;
+    letter-spacing: 0.0073529412em !important;
+    font-weight: 400;
+    font-family: Roboto, sans-serif !important;
+    padding: 0.75em 0 0.5em 0;
+  }
+
+  h2 {
+    line-height: 2rem;
+    font-family: Roboto, sans-serif !important;
+    font-size: 1.5rem !important;
+    font-weight: 400;
+    letter-spacing: normal !important;
+    padding: 0.75em 0 0.5em 0;
+  }
+
+  h3 {
+    font-size: 1.25rem !important;
+    font-weight: 500;
+    letter-spacing: 0.0125em !important;
+    line-height: 2rem;
+    font-family: Roboto, sans-serif !important;
+    padding: 0.75em 0 0.5em 0;
+  }
+
+  blockquote {
+    margin-left: 1rem;
+    padding-left: 0.75em;
+    font-weight: 300;
+    border-left: 3px solid rgba(#0d0d0d, 0.2);
+  }
+
+  img {
+    max-width: 638px;
+    height: auto;
+    border: 4px solid rgba(0, 0, 0, 0);
+    margin-left: -4px;
+
+    &.focus {
+      border: 4px solid rgb(80, 173, 248);
+    }
+  }
+  .iframe-wrapper {
+    iframe {
+      width: 640px;
+      height: 360px;
+      border: 4px solid rgba(0, 0, 0, 0);
+      margin-left: -4px;
+    }
+
+    &.focus {
+      iframe {
+        border: 4px solid rgb(80, 173, 248);
+      }
+    }
+  }
+
+  ul,
+  ol {
+    padding-left: 20px;
+  }
+
+  ul[data-type="taskList"] {
+    list-style: none;
+    padding: 0;
+
+    p {
+      margin: 0;
+    }
+
+    li {
+      display: flex;
+
+      > label {
+        flex: 0 0 auto;
+        margin-right: 0.5rem;
+        margin-top: 1.1rem;
+        user-select: none;
+      }
+
+      > div {
+        flex: 1 1 auto;
+      }
+    }
+  }
+}
+</style>
