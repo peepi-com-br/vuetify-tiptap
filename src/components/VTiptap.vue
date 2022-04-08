@@ -139,11 +139,13 @@
 
       <!-- Dialogs -->
       <VTiptapImageDialog
-        v-model="imageDialog"
-        @input="editor.chain().focus().setImage({ src }).run()"
+        :value="imageSrc"
+        :show="imageDialog"
+        @close="imageDialog = $event"
+        @input="onSelectImage"
       >
-        <template #imageComponent>
-          <slot name="imageComponent" />
+        <template #image>
+          <slot name="image" v-bind="{ editor, imageSrc }" />
         </template>
       </VTiptapImageDialog>
     </v-input>
@@ -240,6 +242,14 @@ export default class VTiptap extends Vue {
     return xss(value, {
       whiteList: whiteList.all(),
     });
+  }
+
+  get imageSrc() {
+    return this.editor?.view.state.selection["node"]?.attrs?.src;
+  }
+
+  onSelectImage(value: string) {
+    this.editor.chain().focus().setImage({ src: value }).run();
   }
 
   get items() {

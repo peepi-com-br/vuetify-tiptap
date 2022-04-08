@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="dialog" @input="dialog = $event" max-width="500">
+  <v-dialog :value="show" @input="$emit('close', $event)" max-width="500">
     <v-card>
       <v-card-title>
         <span class="headline">
@@ -14,17 +14,15 @@
       </v-card-title>
 
       <v-card-text>
-        <!-- <UploadableImage v-model="src" variant class="mb-4" :uploading.sync="uploading" /> -->
-
-        <slot name="imageComponent" />
-
-        <v-text-field
-          v-model="src"
-          name="src"
-          label="Link URL"
-          :placeholder="'image'"
-          hide-details
-        />
+        <slot name="image">
+          <v-text-field
+            v-model="value"
+            name="src"
+            label="Link URL"
+            :placeholder="'image'"
+            hide-details
+          />
+        </slot>
       </v-card-text>
 
       <v-card-actions>
@@ -38,40 +36,19 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-// import delay from "delay";
 
 @Component
 export default class ImageDialog extends Vue {
-  @Prop() readonly value: string | null;
-
-  dialog = false;
-
-  uploading = false;
-
-  src = "";
+  @Prop() readonly value: boolean | null;
+  @Prop({ default: false }) show: boolean;
 
   apply() {
-    this.$emit("input", this.src);
-    this.dialog = false;
-  }
-
-  created() {
-    console.log(this.$scopedSlots);
-    this.src = this.value;
+    this.$emit("input", this.value);
+    this.$emit("close", false);
   }
 
   close() {
-    this.dialog = false;
-  }
-
-  @Watch("dialog")
-  async onDialogChange() {
-    if (!this.dialog) {
-      // await delay(500);
-
-      this.$destroy();
-      this.$el.parentNode.removeChild(this.$el);
-    }
+    this.$emit("close", false);
   }
 }
 </script>

@@ -101,20 +101,39 @@
           <template #prepend>🔜</template>
           <template #append>🔚</template>
 
-          <template #bottom>
+          <template #bottom="{ editor }">
             <v-toolbar
               dense
               flat
               height="48px"
-              class="py-1 px-4"
+              color="grey lighten-4"
+              class="px-2"
               style="border-top: 1px solid #ddd"
             >
               <v-spacer />
-              <v-btn icon small><v-icon>mdi-send</v-icon></v-btn>
+              <v-btn
+                @click="
+                  editor.commands.setContent('');
+                  content = '';
+                "
+                icon
+                small
+              >
+                <v-icon>mdi-send</v-icon>
+              </v-btn>
             </v-toolbar>
           </template>
 
-          <template #imageComponent> Testing images </template>
+          <template #image="{ editor, imageSrc }">
+            <v-text-field
+              :value="imageSrc"
+              name="src"
+              @input="editor.chain().focus().setImage({ src: $event }).run()"
+              label="Link URL"
+              :placeholder="'image'"
+              hide-details
+            />
+          </template>
         </VTiptap>
       </v-col>
     </v-row>
