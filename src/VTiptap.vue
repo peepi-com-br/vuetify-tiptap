@@ -511,7 +511,6 @@ export default class VTiptap extends Vue {
 }
 </script>
 
-
 <style lang="scss">
 .v-tiptap {
   overflow-wrap: anywhere;

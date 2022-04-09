@@ -4,16 +4,14 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build:lib": "vue-cli-service build --target lib --name VTiptap src/wrapper.js --report-json",
+    "build:lib": "vue-cli-service build --target lib --name v-tiptap src/wrapper.js --report",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
     "storybook:build": "vue-cli-service storybook:build -c .storybook",
     "storybook:serve": "vue-cli-service storybook:serve -p 6006 -c .storybook"
   },
-  "main": "dist/VTiptap.umd.js",
-  "module": "dist/VTiptap.umd.js",
-  "unpkg": "dist/VTiptap.umd.js",
+  "main": "dist/v-tiptap.umd.min.js",
   "dependencies": {
     "@tiptap/vue-2": "^2.0.0-beta.77",
     "storybook": "^6.4.20",
