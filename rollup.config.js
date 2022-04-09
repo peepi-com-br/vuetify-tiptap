@@ -4,7 +4,8 @@ import commonjs from "@rollup/plugin-commonjs";
 import typescript from "rollup-plugin-typescript2";
 import vue from "rollup-plugin-vue";
 import postcss from "rollup-plugin-postcss";
-import { visualizer } from "rollup-plugin-visualizer";
+import { terser } from "rollup-plugin-terser";
+// import { visualizer } from "rollup-plugin-visualizer";
 
 import packageJson from "./package.json";
 
@@ -12,23 +13,26 @@ export default {
   input: "src/wrapper.ts",
   output: [
     {
+      compact: true,
       format: "cjs",
       file: packageJson.main,
       sourcemap: true,
     },
     {
+      compact: true,
       format: "esm",
       file: packageJson.module,
       sourcemap: true,
     },
   ],
   plugins: [
-    vue(),
     peerDepsExternal(),
-    resolve(),
+    vue({ compileTemplate: true, css: false }),
     commonjs(),
+    resolve(),
     typescript(),
     postcss(),
+    terser(),
     // visualizer(),
   ],
 };
