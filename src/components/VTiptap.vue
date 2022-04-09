@@ -21,7 +21,7 @@
       >
         <!-- Toolbar -->
         <v-toolbar
-          v-if="!hideToolbar && toolbar.length"
+          v-if="!hideToolbar && toolbar && toolbar.length"
           dense
           flat
           color="grey lighten-4"
@@ -156,20 +156,20 @@ import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import collect from "collect.js";
 
 import { Editor, EditorContent } from "@tiptap/vue-2";
-import TiptapKit from "./plugins/tiptap-kit";
-import vuetify from "./plugins/vuetify";
+import TiptapKit from "../plugins/tiptap-kit";
+import vuetify from "../plugins/vuetify";
 
-import VTiptapLinkDialog from "./components/LinkDialog.vue";
-import VideoDialog from "./components/VideoDialog.vue";
-import VTiptapImageDialog from "./components/ImageDialog.vue";
+import VTiptapLinkDialog from "./LinkDialog.vue";
+import VideoDialog from "./VideoDialog.vue";
+import VTiptapImageDialog from "./ImageDialog.vue";
 
-import EmojiPicker from "./components/EmojiPicker.vue";
-import ColorPicker from "./components/ColorPicker.vue";
+import EmojiPicker from "./EmojiPicker.vue";
+import ColorPicker from "./ColorPicker.vue";
 
-import toolbarItems from "./constants/toolbarItems";
-import makeToolbarDefinitions from "./constants/toolbarDefinitions";
+import toolbarItems from "../constants/toolbarItems";
+import makeToolbarDefinitions from "../constants/toolbarDefinitions";
 
-import xssRules from "./constants/xssRules";
+import xssRules from "../constants/xssRules";
 import xss from "xss";
 
 import {
@@ -186,6 +186,8 @@ import {
 @Component({
   components: {
     EditorContent,
+    ColorPicker,
+    VTiptapImageDialog,
     VInput,
     VCard,
     VBtn,
@@ -194,12 +196,10 @@ import {
     VSelect,
     VSpacer,
     VTooltip,
-    ColorPicker,
-    VTiptapImageDialog,
   },
 })
-export default class VTiptap extends Vue {
-  @Prop() readonly value: string | null;
+export default class extends Vue {
+  @Prop({ default: "" }) readonly value: string | null;
 
   @Prop({ default: false }) readonly view: boolean;
 
@@ -245,19 +245,20 @@ export default class VTiptap extends Vue {
   }
 
   get imageSrc() {
-    // Babel is not working at the moment - Ugly workaround
-    if (
-      !this.editor ||
-      !this.editor.view.state.selection["node"] ||
-      !this.editor.view.state.selection["node"].attrs
-    ) {
-      return null;
-    }
+    // // Babel is not working at the moment - Ugly workaround
+    // if (
+    //   !this.editor ||
+    //   !this.editor.view.state.selection["node"] ||
+    //   !this.editor.view.state.selection["node"].attrs
+    // ) {
+    //   return null;
+    // }
 
-    return this.editor.view.state.selection["node"].attrs.src;
+    return this.editor?.view.state.selection["node"]?.attrs?.src;
   }
 
   onSelectImage(value: string) {
+    // @ts-ignore
     this.editor.chain().focus().setImage({ src: value }).run();
   }
 
@@ -282,8 +283,10 @@ export default class VTiptap extends Vue {
     }
 
     if (newValue > 0) {
+      // @ts-ignore
       this.editor.chain().focus().toggleHeading({ level: newValue }).run();
     } else {
+      // @ts-ignore
       this.editor.chain().focus().setParagraph().run();
     }
   }
@@ -320,6 +323,7 @@ export default class VTiptap extends Vue {
       return;
     }
 
+    // @ts-ignore
     this.editor.chain().focus().setTextAlign(newValue).run();
   }
 
@@ -367,12 +371,14 @@ export default class VTiptap extends Vue {
 
     instance.$on("input", (url) => {
       if (url === "" || url === null) {
+        // @ts-ignore
         this.editor.chain().focus().extendMarkRange("link").unsetLink().run();
       } else {
         this.editor
           .chain()
           .focus()
           .extendMarkRange("link")
+          // @ts-ignore
           .setLink({ href: url })
           .run();
       }

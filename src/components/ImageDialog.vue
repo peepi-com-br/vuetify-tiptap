@@ -32,7 +32,7 @@
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 
 @Component
-export default class ImageDialog extends Vue {
+export default class extends Vue {
   @Prop() readonly value: boolean | null;
   @Prop({ default: false }) show: boolean;
 

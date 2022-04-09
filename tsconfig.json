@@ -3,28 +3,28 @@
     "target": "esnext",
     "module": "esnext",
     "strict": false,
-    "jsx": "preserve",
+    "declaration": true,
+    "declarationDir": "dist/types",
+    "importHelpers": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
-    "skipLibCheck": true,
+    "useDefineForClassFields": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "useDefineForClassFields": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "baseUrl": ".",
-    "types": ["webpack-env", "jest"],
+    "newLine": "lf",
+    "types": ["node", "vue", "vuetify"],
     "paths": {
       "@/*": ["src/*"]
     },
+    "plugins": [
+      {
+        "transform": "@zerollup/ts-transform-paths",
+        "exclude": ["*"]
+      }
+    ],
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "tests/**/*.ts",
-    "tests/**/*.tsx"
-  ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]
 }

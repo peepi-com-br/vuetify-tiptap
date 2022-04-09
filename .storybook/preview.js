@@ -3,7 +3,6 @@ import Vue from "vue";
 import Vuetify from "vuetify";
 // import VueI18n from "vue-i18n"; // <== NOTE: I usually use i18n
 // import i18n from "@/i18n";
-import { options } from "@/plugins/vuetify"; // <== important
 
 // configure Vue to use Vuetify
 Vue.use(Vuetify);
@@ -16,8 +15,7 @@ export const parameters = {
 
 import "@mdi/font/css/materialdesignicons.css";
 
-// instantiate Vuetify instance with any component/story level params
-const vuetify = new Vuetify(options);
+const vuetify = new Vuetify();
 
 // THIS is my decorator
 export const decorators = [

@@ -81,7 +81,7 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
-export default class ColorPicker extends Vue {
+export default class extends Vue {
   @Prop() readonly value;
 
   @Prop({ default: 0 }) readonly nudgeLeft: string | number;

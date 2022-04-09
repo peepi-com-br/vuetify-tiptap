@@ -33,7 +33,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
-export default class VideoDialog extends Vue {
+export default class extends Vue {
   @Prop() readonly value: string | null;
 
   src = "";

@@ -26,10 +26,10 @@ import { VEmojiPicker } from "v-emoji-picker";
 @Component({
   components: { VEmojiPicker },
 })
-export default class EmojiPicker extends Vue {
+export default class extends Vue {
   value = false;
 
-  @Prop() readonly activator!: any;
+  @Prop() readonly activator: any;
 
   absoluteX = 0;
 

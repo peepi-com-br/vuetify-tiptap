@@ -1,9 +1,9 @@
 // import the helper!
 import { storyFactory } from "~storybook/util/helpers";
 // import the component to be tested
-import VTiptap from "@/VTiptap.vue";
+import VTiptap from "../components/VTiptap.vue";
 
-import testHtml from "@/constants/testHtml";
+import testHtml from "../constants/testHtml";
 
 // set the default properties
 export default storyFactory({

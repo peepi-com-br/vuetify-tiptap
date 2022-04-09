@@ -8,7 +8,7 @@ module.exports = {
     "@storybook/addon-storysource",
   ],
   core: {
-    builder: "webpack5",
+    // builder: "webpack5",
   },
   webpackFinal: async (config, { configType }) => {
     // so I can import { storyFactory } from '~storybook/util/helpers'
