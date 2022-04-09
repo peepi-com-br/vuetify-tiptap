@@ -56,13 +56,27 @@ The toolbar is fully customizable and you can add, remove or reorder buttons. Yo
 
 ## Instalation
 
-## Extending the Toolbar
+First, install the package using npm or yarn.
 
-- Example with custom toolbar
+```bash
+npm i vuetify-tiptap
+```
 
-## Add Custom Buttons
+Then add the package to the `transpileDependencies` config on `vue.config.js`
 
-- Example with slots
+```bash
+module.exports = {
+  transpileDependencies: ["vuetify", "vuetify-tiptap"],
+};
+```
+
+Finally, register the plugin on your main.ts.
+
+```bash
+import VTiptap from "vuetify-tiptap";
+
+Vue.use(VTiptap);
+```
 
 ## Props
 
@@ -107,6 +121,8 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Credits
+
+This package was developed at [Peepi](https://www.peepi.com.br), a SaaS platform to engage customers and employees.
 
 - [Atila Silva](https://github.com/a2insights)
 - [Ricardo Faust](https://github.com/alkin)
