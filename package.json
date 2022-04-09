@@ -9,16 +9,23 @@
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
     "storybook:build": "vue-cli-service storybook:build -c .storybook",
-    "storybook:serve": "vue-cli-service storybook:serve -p 6006 -c .storybook"
+    "storybook:serve": "vue-cli-service storybook:serve -p 6006 -c .storybook",
+    "rollup": "rollup -c"
   },
-  "main": "dist/v-tiptap.umd.min.js",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
   "dependencies": {
     "@tiptap/vue-2": "^2.0.0-beta.77",
-    "storybook": "^6.4.20",
     "v-emoji-picker": "^2.3.3"
+  },
+  "peerDependencies": {
+    "vue": "^2.6.11",
+    "vuetify": "^2.6.0"
   },
   "devDependencies": {
     "@mdi/font": "5.9.55",
+    "@rollup/plugin-commonjs": "^21.0.3",
+    "@rollup/plugin-node-resolve": "^13.1.3",
     "@socheatsok78/storybook-addon-vuetify": "^0.1.9",
     "@storybook/addon-essentials": "^6.5.0-alpha.59",
     "@storybook/addon-links": "^6.5.0-alpha.59",
@@ -48,6 +55,7 @@
     "@vue/cli-plugin-typescript": "~5.0.0",
     "@vue/cli-plugin-unit-jest": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
+    "@vue/compiler-sfc": "^3.2.31",
     "@vue/eslint-config-typescript": "^9.1.0",
     "@vue/test-utils": "^1.1.3",
     "@vue/vue2-jest": "^27.0.0-alpha.2",
@@ -67,8 +75,15 @@
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "roboto-fontface": "*",
+    "rollup": "^2.70.1",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-typescript2": "^0.31.2",
+    "rollup-plugin-visualizer": "^5.6.0",
+    "rollup-plugin-vue": "^6.0.0",
     "sass": "^1.32.7",
     "sass-loader": "^12.0.0",
+    "storybook": "^6.4.20",
     "ts-jest": "^27.0.4",
     "typescript": "~4.5.5",
     "vue": "^2.6.14",

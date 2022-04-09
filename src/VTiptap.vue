@@ -30,19 +30,19 @@
         >
           <template v-for="(item, key) in items">
             <!-- Spacer -->
-            <v-spacer v-if="item.type === 'spacer'" :key="key" />
+            <v-spacer v-if="item.type === 'spacer'" :key="`spacer-${key}`" />
             <!-- Divider -->
             <div
               v-else-if="item.type === 'divider'"
               class="divider"
-              :key="key"
+              :key="`divider-${key}`"
             />
             <!-- Slot -->
-            <div v-else-if="item.type === 'slot'" :key="key">
+            <div v-else-if="item.type === 'slot'" :key="`slot-${key}`">
               <slot :name="item.slot" v-bind="{ editor }" />
             </div>
             <!-- Buttons -->
-            <div v-else :key="key">
+            <div v-else :key="`button-${key}`">
               <v-tooltip :open-delay="500" top>
                 <span>{{ item.title }}</span>
                 <template v-slot:activator="{ on, attrs }">
@@ -158,7 +158,7 @@ import collect from "collect.js";
 import { Editor, EditorContent } from "@tiptap/vue-2";
 import TiptapKit from "@/plugins/tiptap-kit";
 import vuetify from "@/plugins/vuetify";
-import VTiptapLinkDialog from "@/components/LinkDialog.vue";
+import VTiptapLinkDialog from "./components/LinkDialog.vue";
 import VideoDialog from "@/components/VideoDialog.vue";
 import VTiptapImageDialog from "@/components/ImageDialog.vue";
 

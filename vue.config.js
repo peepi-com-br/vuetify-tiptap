@@ -14,10 +14,10 @@ module.exports = defineConfig({
 
   chainWebpack: config => {
     config.module.rule("js").include.add(path.resolve(__dirname, "./demo"));
-    config.externals({
-      vue: "commonjs2 vue",
-      vuetify: "commonjs2 vuetify",
-      "vuetify/lib": "commonjs2 vuetify/lib",
-    });
+    // config.externals({
+    //   vue: "commonjs2 vue",
+    //   vuetify: "commonjs2 vuetify",
+    //   "vuetify/lib": "commonjs2 vuetify/lib",
+    // });
   },
 });
