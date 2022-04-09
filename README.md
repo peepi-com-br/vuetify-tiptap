@@ -59,12 +59,12 @@ The toolbar is fully customizable and you can add, remove or reorder buttons. Yo
 First, install the package using npm or yarn.
 
 ```bash
-npm i vuetify-tiptap
+npm i -S vuetify-tiptap
 ```
 
 Then add the package to the `transpileDependencies` config on `vue.config.js`
 
-```bash
+```js
 module.exports = {
   transpileDependencies: ["vuetify", "vuetify-tiptap"],
 };
@@ -72,7 +72,7 @@ module.exports = {
 
 Finally, register the plugin on your main.ts.
 
-```bash
+```js
 import VTiptap from "vuetify-tiptap";
 
 Vue.use(VTiptap);
