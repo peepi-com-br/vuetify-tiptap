@@ -83,9 +83,11 @@ SlotsBottom.args = {
   slots: {
     bottom: `
     <v-toolbar dense elevation="0" class="px-4"  style="border-top: 1px solid #DDD">
-      <v-btn icon small><v-icon>mdi-home</v-icon></v-btn>
+      <v-btn icon small @click="onClick"><v-icon>mdi-home</v-icon></v-btn>
       <v-spacer/>
-      <v-btn icon small><v-icon>mdi-send</v-icon></v-btn>
+      <small class="text-uppercase" style="opacity: 0.5;">Bottom Slot</small>
+      <v-spacer/>
+      <v-btn icon small @click="onClick"><v-icon>mdi-send</v-icon></v-btn>
     </v-toolbar>`,
   },
 };

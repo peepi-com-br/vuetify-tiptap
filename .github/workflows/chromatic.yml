@@ -25,5 +25,4 @@ jobs:
         uses: chromaui/action@v1
         with:
           buildScriptName: "storybook:build"
-          skip: true
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
