@@ -30,8 +30,8 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
-export default class RichTextNewLinkDialog extends Vue {
-  @Prop() readonly value: string | null;
+export default class LinkDialog extends Vue {
+  @Prop() readonly value: string | null = null;
 
   url = "";
 

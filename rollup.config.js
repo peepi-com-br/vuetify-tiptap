@@ -4,6 +4,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import typescript from "rollup-plugin-typescript2";
 import vue from "rollup-plugin-vue";
 import postcss from "rollup-plugin-postcss";
+import { babel } from "@rollup/plugin-babel";
 import { terser } from "rollup-plugin-terser";
 // import { visualizer } from "rollup-plugin-visualizer";
 
@@ -16,21 +17,35 @@ export default {
       format: "cjs",
       file: packageJson.main,
       sourcemap: true,
+      exports: "named",
     },
     {
       format: "esm",
       file: packageJson.module,
       sourcemap: true,
+      exports: "named",
     },
   ],
   plugins: [
     peerDepsExternal(),
-    vue({ compileTemplate: true, css: false }),
-    commonjs(),
-    resolve(),
+    resolve({
+      jsnext: true,
+      main: true,
+      browser: true,
+    }),
+    //
     typescript(),
+    vue(),
+    // vue({ compileTemplate: true, css: false, target: "node" }),
+    //
+    commonjs(),
     postcss(),
-    // terser(),
+
+    babel({
+      babelHelpers: "bundled",
+      extensions: [".js", ".jsx", ".ts", ".tsx", ".vue"],
+    }),
+    // terser({}),
     // visualizer(),
   ],
 };

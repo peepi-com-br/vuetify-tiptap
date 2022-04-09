@@ -156,19 +156,20 @@ import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import collect from "collect.js";
 
 import { Editor, EditorContent } from "@tiptap/vue-2";
-import TiptapKit from "@/plugins/tiptap-kit";
-import vuetify from "@/plugins/vuetify";
+import TiptapKit from "./plugins/tiptap-kit";
+import vuetify from "./plugins/vuetify";
+
 import VTiptapLinkDialog from "./components/LinkDialog.vue";
-import VideoDialog from "@/components/VideoDialog.vue";
-import VTiptapImageDialog from "@/components/ImageDialog.vue";
+import VideoDialog from "./components/VideoDialog.vue";
+import VTiptapImageDialog from "./components/ImageDialog.vue";
 
-import EmojiPicker from "@/components/EmojiPicker.vue";
-import ColorPicker from "@/components/ColorPicker.vue";
+import EmojiPicker from "./components/EmojiPicker.vue";
+import ColorPicker from "./components/ColorPicker.vue";
 
-import toolbarItems from "@/constants/toolbarItems";
-import makeToolbarDefinitions from "@/constants/toolbarDefinitions";
+import toolbarItems from "./constants/toolbarItems";
+import makeToolbarDefinitions from "./constants/toolbarDefinitions";
 
-import xssRules from "@/constants/xssRules";
+import xssRules from "./constants/xssRules";
 import xss from "xss";
 
 import {
@@ -244,7 +245,16 @@ export default class VTiptap extends Vue {
   }
 
   get imageSrc() {
-    return this.editor?.view.state.selection["node"]?.attrs?.src;
+    // Babel is not working at the moment - Ugly workaround
+    if (
+      !this.editor ||
+      !this.editor.view.state.selection["node"] ||
+      !this.editor.view.state.selection["node"].attrs
+    ) {
+      return null;
+    }
+
+    return this.editor.view.state.selection["node"].attrs.src;
   }
 
   onSelectImage(value: string) {
