@@ -1,6 +1,6 @@
 {
-  "name": "vuetify-tiptap",
-  "version": "0.1.1",
+  "name": "@peepi/vuetify-tiptap",
+  "version": "0.1.2",
   "license": "MIT",
   "description": "Awesome and extendable rich text editor component for Vuetify projects using tiptap",
   "homepage": "https://github.com/peepi-com-br/vuetify-tiptap",
