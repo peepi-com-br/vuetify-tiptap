@@ -13,13 +13,11 @@ export default {
   input: "src/wrapper.ts",
   output: [
     {
-      compact: true,
       format: "cjs",
       file: packageJson.main,
       sourcemap: true,
     },
     {
-      compact: true,
       format: "esm",
       file: packageJson.module,
       sourcemap: true,
@@ -32,7 +30,7 @@ export default {
     resolve(),
     typescript(),
     postcss(),
-    terser(),
+    // terser(),
     // visualizer(),
   ],
 };
