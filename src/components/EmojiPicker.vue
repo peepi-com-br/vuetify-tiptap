@@ -10,6 +10,7 @@
   >
     <VEmojiPicker
       :labelSearch="'search'"
+      :dark="dark"
       emojisByRow="10"
       emojiSize="25"
       lang="pt-BR"
@@ -19,7 +20,6 @@
 </template>
 
 <script lang="ts">
-// import delay from "delay";
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import { VEmojiPicker } from "v-emoji-picker";
 
@@ -30,6 +30,8 @@ export default class extends Vue {
   value = false;
 
   @Prop() readonly activator: any;
+
+  @Prop({default: false}) readonly dark: boolean;
 
   absoluteX = 0;
 
@@ -42,7 +44,6 @@ export default class extends Vue {
   @Watch("value")
   async onValueChange() {
     if (!this.value) {
-      //await delay(500);
 
       this.$destroy();
       this.$el.parentNode.removeChild(this.$el);

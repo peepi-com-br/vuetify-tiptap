@@ -1,16 +1,20 @@
 <template>
-  <v-app>
+  <v-app :style="dark ? 'background: #1e1e1e' : 'background: #f5f5f5'">
     <v-row class="py-4 px-4">
       <v-col cols="4">
-        <v-toolbar color="grey" dense flat dark>
+        <v-toolbar :dark="dark" dense flat >
           <v-toolbar-title>vuetify-tiptap</v-toolbar-title>
         </v-toolbar>
 
-        <v-list subheader two-line flat>
+        <v-list :dark="dark" subheader two-line flat>
           <v-subheader>Props</v-subheader>
 
           <v-list-item>
             <v-switch v-model="hideToolbar" label="hideToolbar" inset />
+          </v-list-item>
+
+           <v-list-item>
+            <v-switch v-model="dark" label="dark" inset />
           </v-list-item>
 
           <v-list-item>
@@ -72,7 +76,7 @@
           :outlined="outlined"
           :dense="dense"
           :view="view"
-          background-color="grey lighten-4"
+          :dark="dark"
           placeholder="Enter some text..."
           :error-messages="errorMessages"
           rounded
@@ -172,6 +176,7 @@ export default {
   data: () => ({
     content: testHtml,
     view: false,
+    dark: false,
     outlined: true,
     dense: false,
     editHtml: false,

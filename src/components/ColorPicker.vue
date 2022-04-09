@@ -2,6 +2,7 @@
   <v-menu
     v-model="menu"
     offset-y
+    :dark="dark"
     :nudge-left="nudgeLeft || 255"
     :nudge-top="nudgeTop || 42"
     :close-on-content-click="false"
@@ -90,20 +91,9 @@ export default class extends Vue {
 
   @Prop({ default: true }) readonly more: boolean;
 
-  @Prop({ default: false }) readonly grayScale: boolean;
+  @Prop({ default: false }) readonly dark: boolean;
 
   menu = false;
-
-  grayColors = [
-    "#000000",
-    "#333333",
-    "#666666",
-    "#999999",
-    "#CCCCCC",
-    "#D5D5D4",
-    "#E8E8E8",
-    "#EEEEEE",
-  ];
 
   colors = [
     "#f44336",
@@ -122,15 +112,17 @@ export default class extends Vue {
     "#ffc107",
     "#ff9800",
     "#ff5722",
+     "#000000",
+    "#333333",
+    "#666666",
+    "#999999",
+    "#CCCCCC",
+    "#D5D5D4",
+    "#E8E8E8",
+    "#EEEEEE",
   ];
 
   picker = false;
-
-  mounted() {
-    if (this.grayScale) {
-      this.colors = this.colors.concat(this.grayColors);
-    }
-  }
 
   setColor(color) {
     this.$emit("input", color);
