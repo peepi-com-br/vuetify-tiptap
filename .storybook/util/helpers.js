@@ -4,11 +4,9 @@ export const storyFactory = options => {
   return {
     title,
     component,
-    // component-level default args to the component being tested
-    // you could add other app-level options here, too!
     args: {
-      dark: true,
       ...args,
+      dark: false,
     },
     argTypes: {
       locale: {
@@ -16,6 +14,15 @@ export const storyFactory = options => {
         control: {
           type: "inline-radio",
           options: { English: "en", Español: "es" },
+        },
+      },
+
+      onClick: {
+        action: "clicked",
+        table: {
+          type: {
+            summary: null,
+          },
         },
       },
     },

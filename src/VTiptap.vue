@@ -42,7 +42,7 @@
               <slot :name="item.slot" v-bind="{ editor }" />
             </div>
             <!-- Buttons -->
-            <div v-else class="my-1" :key="key">
+            <div v-else :key="key">
               <v-tooltip :open-delay="500" top>
                 <span>{{ item.title }}</span>
                 <template v-slot:activator="{ on, attrs }">
@@ -123,7 +123,11 @@
           <slot name="prepend" v-bind="{ editor }" />
           <!-- Tiptap Editor -->
           <slot name="editor" v-bind="{ editor }">
-            <editor-content :editor="editor" class="flex-grow-1" />
+            <editor-content
+              :editor="editor"
+              class="flex-grow-1"
+              :class="editorClass"
+            />
           </slot>
           <!-- Slot Append -->
           <slot name="append" v-bind="{ editor }" />
@@ -216,6 +220,8 @@ export default class VTiptap extends Vue {
   @Prop({ default: true }) readonly outlined: boolean;
 
   @Prop({ default: false }) readonly disabled: boolean;
+
+  @Prop() readonly editorClass: string | string[] | object;
 
   editor: Editor | null = null;
 
