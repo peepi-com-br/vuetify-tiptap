@@ -1,30 +1,25 @@
-# name: publish
+name: publish
 
-# on:
-#   release:
-#     types: [ created ]
+on:
+  release:
+    types: [created]
 
-# jobs:
-#   publish:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v2
-#       - name: Setup Node.js
-#         uses: actions/setup-node@v1
-#         with:
-#           node-version: '16.x'
-#           registry-url: 'https://registry.npmjs.org'
-#       - name: Install dependencies
-#         run: yarn install -s --no-progress --non-interactive
-#       - name: Publish to NPM
-#         run: yarn publish
-#         env:
-#           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-#       - name: Build demo
-#         run: yarn build:demo
-#       - name: Publish to GitHub Pages
-#         uses: JamesIves/github-pages-deploy-action@v4.2.5
-#         with:
-#           branch: gh-pages
-#           folder: dist_demo/
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          depth: 1
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: "npm"
+          registry-url: "https://registry.npmjs.org"
+      - name: Install dependencies
+        run: npm ci --no-audit --ignore-scripts
+      - name: Publish to NPM
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
