@@ -25,7 +25,7 @@
           v-if="!hideToolbar && toolbar && toolbar.length"
           dense
           flat
-          :color="dark ? undefined: 'grey lighten-4'"
+          :color="dark ? undefined : 'grey lighten-4'"
           height="auto"
           class="py-1"
         >
@@ -80,6 +80,15 @@
                         <v-btn
                           v-on="on"
                           :disabled="disableToolbar"
+                          :class="{
+                            'v-btn--active':
+                              editor.getAttributes('textStyle').color,
+                          }"
+                          :color="
+                            editor.getAttributes('textStyle').color
+                              ? 'primary'
+                              : undefined
+                          "
                           icon
                           small
                           style=""
@@ -580,10 +589,15 @@ export default class extends Vue {
 
   .theme--dark {
     .v-select__selection {
-      color:#fcfcfc !important;        
+      color: #fcfcfc !important;
     }
+
     .v-input__slot:hover {
-      background: #1e1e1e!important;
+      background: #1e1e1e !important;
+    }
+
+    .v-select__selection--disabled {
+      color: #fcfcfc71 !important;
     }
   }
 
