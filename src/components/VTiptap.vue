@@ -53,6 +53,8 @@
                       v-model="selectedHeading"
                       :disabled="disableToolbar"
                       :items="headingsItems"
+                      :menu-props="{ dark: dark }"
+                      :dark="dark"
                       dense
                       hide-details="auto"
                       style="width: 104px"
@@ -575,7 +577,7 @@ export default class extends Vue {
     .v-input__slot:hover {
       background: #1e1e1e!important;
     }
-  } 
+  }
 
   .v-toolbar__content {
     flex-wrap: wrap;

@@ -7,6 +7,7 @@
     :nudge-left="160"
     absolute
     :close-on-content-click="false"
+    :dark="dark"
   >
     <VEmojiPicker
       :labelSearch="'search'"
@@ -88,6 +89,18 @@ export default class extends Vue {
 
   .container-search {
     padding: 0 4px !important;
+  }
+}
+
+.dark {
+  .container-emoji {
+    &::after {
+      background: linear-gradient(
+        rgba(0, 0, 0, 0),
+        rgb(0, 0, 0, 0.75),
+        rgb(0, 0, 0)
+      );
+    }
   }
 }
 </style>
