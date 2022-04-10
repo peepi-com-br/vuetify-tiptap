@@ -110,7 +110,7 @@
                     icon
                     small
                   >
-                    <v-icon>{{ item.icon }}</v-icon>
+                    <v-icon >{{ item.icon }}</v-icon>
                   </v-btn>
                 </template>
               </v-tooltip>
@@ -221,6 +221,8 @@ export default class extends Vue {
   @Prop({ default: true }) readonly outlined: boolean;
 
   @Prop({ default: false }) readonly disabled: boolean;
+
+  @Prop({ default: 'mdIcons' }) readonly icons: string;
 
   @Prop() readonly editorClass: string | string[] | object;
 
@@ -531,6 +533,10 @@ export default class extends Vue {
 .v-tiptap {
   overflow-wrap: anywhere;
 
+  .v-btn > .v-btn__content .v-icon.fa {
+    font-size: 18px !important;
+  }
+
   .ProseMirror {
     padding: 12px 18px;
     min-height: 180px;
@@ -701,7 +707,7 @@ export default class extends Vue {
       > label {
         flex: 0 0 auto;
         margin-right: 0.5rem;
-        margin-top: 1.1rem;
+        margin-top: 0.4rem;
         user-select: none;
       }
 

@@ -13,6 +13,15 @@
             <v-switch v-model="hideToolbar" label="hideToolbar" inset />
           </v-list-item>
 
+           <v-list-item>
+            <v-select
+              v-model="icons"
+              :items="['mdIcons', 'faIcons', 'mIcons']"
+              label="icons"
+              persisten
+            />
+          </v-list-item>
+
           <v-list-item>
             <v-switch v-model="disableToolbar" label="disableToolbar" inset />
           </v-list-item>
@@ -66,6 +75,7 @@
       <v-col cols="8">
         <VTiptap
           v-model="content"
+          :icons="icons"
           :hide-toolbar="hideToolbar"
           :disable-toolbar="disableToolbar"
           :toolbar="toolbar"
@@ -172,6 +182,7 @@ export default {
   data: () => ({
     content: testHtml,
     view: false,
+    icons: "mdIcons",
     outlined: true,
     dense: false,
     editHtml: false,
