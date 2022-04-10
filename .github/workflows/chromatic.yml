@@ -7,8 +7,8 @@ name: "Chromatic"
 on:
   push:
     paths:
-      - ".storybook/*"
-      - "src/*"
+      - ".storybook/**/*"
+      - "src/**/*"
       - "package*"
 
 # List of jobs
