@@ -25,7 +25,7 @@
           v-if="!hideToolbar && toolbar && toolbar.length"
           dense
           flat
-          :color="dark ? undefined: 'grey lighten-4'"
+          :color="dark ? undefined : 'grey lighten-4'"
           height="auto"
           class="py-1"
         >
@@ -61,6 +61,7 @@
                       dense
                       hide-details="auto"
                       style="width: 104px"
+                      :data-testid="item.type"
                     />
                   </div>
 
@@ -83,6 +84,7 @@
                           icon
                           small
                           style=""
+                          :data-testid="item.type"
                         >
                           <v-icon
                             :style="{
@@ -115,6 +117,7 @@
                     class="mr-1"
                     icon
                     small
+                    :data-testid="item.type"
                   >
                     <v-icon>{{ item.icon }}</v-icon>
                   </v-btn>
@@ -133,6 +136,7 @@
               :editor="editor"
               class="flex-grow-1"
               :class="editorClass"
+              data-testid="value"
             />
           </slot>
           <!-- Slot Append -->
@@ -580,10 +584,10 @@ export default class extends Vue {
 
   .theme--dark {
     .v-select__selection {
-      color:#fcfcfc !important;        
+      color: #fcfcfc !important;
     }
     .v-input__slot:hover {
-      background: #1e1e1e!important;
+      background: #1e1e1e !important;
     }
   }
 

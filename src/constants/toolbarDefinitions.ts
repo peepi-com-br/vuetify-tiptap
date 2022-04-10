@@ -33,7 +33,7 @@ export default function makeToolbarDefinitions(context) {
     color: {
       title: "Color",
       icon: "mdi-palette",
-      action: (color) => context.editor.chain().focus().setColor(color).run(),
+      action: color => context.editor.chain().focus().setColor(color).run(),
       isActive: () => context.editor.isActive("textStyle"),
     },
     highlight: {
@@ -171,6 +171,7 @@ export default function makeToolbarDefinitions(context) {
   let toolbarItems = [];
   for (let i of context.toolbar) {
     if (definitions[i]) {
+      definitions[i].type = definitions[i].type || i;
       toolbarItems.push(definitions[i]);
     } else if (i[0] === "#") {
       toolbarItems.push({ type: "slot", slot: i.substring(1) });

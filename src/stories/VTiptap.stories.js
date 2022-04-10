@@ -1,8 +1,9 @@
-// import the helper!
 import { storyFactory } from "~storybook/util/helpers";
-// import the component to be tested
-import VTiptap from "../components/VTiptap.vue";
+import { within, userEvent, waitFor } from "@storybook/testing-library";
+import { expect } from "@storybook/jest";
+import delay from "delay";
 
+import VTiptap from "../components/VTiptap.vue";
 import testHtml from "../constants/testHtml";
 
 // set the default properties
@@ -45,9 +46,11 @@ BasicUsage.args = {
 };
 
 export const BasicUsageWithText = Template.bind({});
+BasicUsageWithText.storyName = "Basic Usage (Value)";
 BasicUsageWithText.args = { value: testHtml };
 
 export const BasicUsageWithView = Template.bind({});
+BasicUsageWithView.storyName = "Basic Usage (View Mode)";
 BasicUsageWithView.args = { value: testHtml, view: true };
 
 // Toolbard
@@ -114,4 +117,27 @@ SlotsPrepend.args = {
     prepend: `<v-avatar color="indigo" size="26" class="ma-2" title="Prepend Slot"><v-icon dark>mdi-account-circle</v-icon></v-avatar>`,
     append: `<v-btn icon small class="ma-2" title="Append Slot"><v-icon>mdi-send</v-icon></v-avatar>`,
   },
+};
+
+export const TestBasic = Template.bind({});
+TestBasic.args = {};
+TestBasic.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  await userEvent.click(canvas.getByTestId("value").children[0].children[0]);
+
+  await userEvent.keyboard("Testing", { delay: 100 });
+  await userEvent.keyboard("a", {
+    keyboardState: userEvent.keyboard("[ControlLeft>]"),
+  });
+
+  await userEvent.click(canvas.getByTestId("bold"));
+  await userEvent.click(canvas.getByTestId("center"));
+
+  await userEvent.click(canvas.getByTestId("value").children[0].children[0]);
+  await userEvent.keyboard("{home}");
+
+  await expect(canvas.getByTestId("value").children[0].innerHTML).toBe(
+    '<p style="text-align: center" class="focus"><strong>Testing</strong></p>'
+  );
 };

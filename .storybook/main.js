@@ -6,6 +6,7 @@ module.exports = {
     "@storybook/addon-essentials",
     "@storybook/addon-links",
     "@storybook/addon-storysource",
+    "@storybook/addon-interactions",
   ],
   core: {
     // builder: "webpack5",
