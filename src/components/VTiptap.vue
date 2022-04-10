@@ -39,7 +39,10 @@
             />
             <!-- Slot -->
             <div v-else-if="item.type === 'slot'" :key="`slot-${key}`">
-              <slot :name="item.slot" v-bind="{ editor }" />
+              <slot
+                :name="item.slot"
+                v-bind="{ editor, disabled: disableToolbar }"
+              />
             </div>
             <!-- Buttons -->
             <div v-else :key="`button-${key}`">
@@ -350,15 +353,20 @@ export default class extends Vue {
   selectedColor = null;
 
   get selectedColorBorder() {
+    let opacity = !this.disableToolbar ? "0.67" : "0.2";
+
     if (this.selectedColor) {
       let color = `${this.selectedColor}`;
-      color =
-        color[0] === "r" ? color.replace(")", ", 0.75)") : color.concat("C0");
-
-      return `3px solid ${color}`;
+      if (color[0] === "r") {
+        opacity = !this.disableToolbar ? "0.75" : "0.25";
+        return `3px solid ${color.replace(")", `, ${opacity})`)}`;
+      } else {
+        opacity = !this.disableToolbar ? "C0" : "30";
+        return `3px solid ${color.concat(opacity)}`;
+      }
     }
 
-    return "3px solid rgba(0, 0, 0, 0.67)";
+    return `3px solid rgba(0, 0, 0, ${opacity})`;
   }
 
   setLink() {
