@@ -187,7 +187,6 @@ export default {
     content: testHtml,
     view: false,
     icons: "mdIcons",
-    dark: false,
     outlined: true,
     dense: false,
     editHtml: false,
