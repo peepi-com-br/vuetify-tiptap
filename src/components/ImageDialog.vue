@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="show" @input="$emit('close', $event)" max-width="500">
+  <v-dialog :dark="dark" :value="show" @input="$emit('close', $event)" max-width="500">
     <v-card>
       <v-card-title>
         <span class="headline">
@@ -34,7 +34,10 @@ import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 @Component
 export default class extends Vue {
   @Prop() readonly value: boolean | null;
+
   @Prop({ default: false }) show: boolean;
+
+  @Prop({ default: false }) dark: boolean;
 
   apply() {
     this.$emit("input", this.value);

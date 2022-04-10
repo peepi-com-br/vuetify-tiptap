@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="dialog" @input="dialog = $event" max-width="500px">
+  <v-dialog :dark="dark" :value="dialog" @input="dialog = $event" max-width="500px">
     <v-card>
       <v-card-title>
         <span class="headline">
@@ -32,6 +32,8 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 @Component
 export default class extends Vue {
   @Prop() readonly value: string | null = null;
+
+  @Prop({ default: false }) readonly dark: boolean;
 
   url = "";
 
