@@ -586,10 +586,15 @@ export default class extends Vue {
 
   .theme--dark {
     .v-select__selection {
-      color:#fcfcfc !important;        
+      color:#fcfcfc !important;
     }
+
     .v-input__slot:hover {
       background: #1e1e1e!important;
+    }
+
+    .v-select__selection--disabled {
+        color: #fcfcfc71 !important;
     }
   }
 
