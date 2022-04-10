@@ -124,9 +124,6 @@ TestBasic.args = {};
 TestBasic.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
 
-  await canvas.findByTestId("value", { timeout: 5000 });
-  await delay(500);
-
   await userEvent.click(canvas.getByTestId("value").children[0].children[0]);
 
   await userEvent.keyboard("Testing", { delay: 100 });
