@@ -17,15 +17,6 @@
             <v-switch v-model="hideToolbar" label="hideToolbar" inset />
           </v-list-item>
 
-           <v-list-item>
-            <v-select
-              v-model="icons"
-              :items="['mdIcons', 'faIcons', 'mIcons']"
-              label="icons"
-              persisten
-            />
-          </v-list-item>
-
           <v-list-item>
             <v-switch v-model="disableToolbar" label="disableToolbar" inset />
           </v-list-item>
@@ -61,6 +52,15 @@
               true-value="Error messages"
               label="errorMessages"
               inset
+            />
+          </v-list-item>
+
+          <v-list-item>
+            <v-select
+              v-model="icons"
+              :items="['mdIcons', 'faIcons', 'mIcons']"
+              label="icons"
+              persisten
             />
           </v-list-item>
 
