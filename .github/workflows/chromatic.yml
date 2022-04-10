@@ -4,7 +4,12 @@
 name: "Chromatic"
 
 # Event for the workflow
-on: push
+on:
+  push:
+    paths:
+      - ".storybook/*"
+      - "src/*"
+      - "package*"
 
 # List of jobs
 jobs:
