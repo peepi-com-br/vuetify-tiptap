@@ -110,7 +110,7 @@
                     icon
                     small
                   >
-                    <v-icon >{{ item.icon }}</v-icon>
+                    <v-icon>{{ item.icon }}</v-icon>
                   </v-btn>
                 </template>
               </v-tooltip>
