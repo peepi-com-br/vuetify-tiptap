@@ -22,7 +22,8 @@ export default storyFactory({
 
 function makeSlots(args) {
   return Object.entries(args.slots || {}).map(
-    ([key, value]) => `<template #${key}="{ editor }">${value}</template>\n`
+    ([key, value]) =>
+      `<template #${key}="{ editor, disabled }">${value}</template>\n`
   );
 }
 
@@ -73,6 +74,15 @@ CustomButtons.args = {
   slots: {
     emoji: `<v-btn icon small @click="editor.commands.insertContent('😀')"><v-icon>mdi-emoticon-outline</v-icon></v-btn>`,
     clear: `<v-btn text small @click="editor.commands.clearContent()">Clear</v-btn>`,
+  },
+};
+
+export const DisabledToolbar = Template.bind({});
+DisabledToolbar.args = {
+  toolbar: ["bold", "color", "headings", "#emoji"],
+  disableToolbar: true,
+  slots: {
+    emoji: `<v-btn icon small @click="editor.commands.insertContent('😀')" :disabled="disabled"><v-icon>mdi-emoticon-outline</v-icon></v-btn>`,
   },
 };
 

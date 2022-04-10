@@ -7,9 +7,11 @@
     :nudge-left="160"
     absolute
     :close-on-content-click="false"
+    :dark="dark"
   >
     <VEmojiPicker
       :labelSearch="'search'"
+      :dark="dark"
       emojisByRow="10"
       emojiSize="25"
       lang="pt-BR"
@@ -19,7 +21,6 @@
 </template>
 
 <script lang="ts">
-// import delay from "delay";
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import { VEmojiPicker } from "v-emoji-picker";
 
@@ -30,6 +31,8 @@ export default class extends Vue {
   value = false;
 
   @Prop() readonly activator: any;
+
+  @Prop({default: false}) readonly dark: boolean;
 
   absoluteX = 0;
 
@@ -42,7 +45,6 @@ export default class extends Vue {
   @Watch("value")
   async onValueChange() {
     if (!this.value) {
-      //await delay(500);
 
       this.$destroy();
       this.$el.parentNode.removeChild(this.$el);
@@ -87,6 +89,18 @@ export default class extends Vue {
 
   .container-search {
     padding: 0 4px !important;
+  }
+}
+
+.dark {
+  .container-emoji {
+    &::after {
+      background: linear-gradient(
+        rgba(0, 0, 0, 0),
+        rgb(0, 0, 0, 0.75),
+        rgb(0, 0, 0)
+      );
+    }
   }
 }
 </style>

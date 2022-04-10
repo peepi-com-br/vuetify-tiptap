@@ -13,6 +13,7 @@
       <v-card
         flat
         :outlined="outlined"
+        :dark="dark"
         style="width: 100%"
         v-bind="$attrs"
         :style="{
@@ -24,7 +25,7 @@
           v-if="!hideToolbar && toolbar && toolbar.length"
           dense
           flat
-          color="grey lighten-4"
+          :color="dark ? undefined: 'grey lighten-4'"
           height="auto"
           class="py-1"
         >
@@ -39,7 +40,10 @@
             />
             <!-- Slot -->
             <div v-else-if="item.type === 'slot'" :key="`slot-${key}`">
-              <slot :name="item.slot" v-bind="{ editor }" />
+              <slot
+                :name="item.slot"
+                v-bind="{ editor, disabled: disableToolbar }"
+              />
             </div>
             <!-- Buttons -->
             <div v-else :key="`button-${key}`">
@@ -52,6 +56,8 @@
                       v-model="selectedHeading"
                       :disabled="disableToolbar"
                       :items="headingsItems"
+                      :menu-props="{ dark: dark }"
+                      :dark="dark"
                       dense
                       hide-details="auto"
                       style="width: 104px"
@@ -65,10 +71,10 @@
                       @input="item.action(selectedColor)"
                       v-bind="attrs"
                       v-on="on"
+                      :dark="dark"
                       :more="false"
                       :nudge-top="-4"
                       :nudge-left="14"
-                      gray-scale
                     >
                       <template #button="{ on }">
                         <v-btn
@@ -137,16 +143,17 @@
       </v-card>
 
       <!-- Dialogs -->
-      <VTiptapImageDialog
+      <ImageDialog
         :value="imageSrc"
         :show="imageDialog"
+        :dark="dark"
         @close="imageDialog = $event"
         @input="onSelectImage"
       >
         <template #image>
           <slot name="image" v-bind="{ editor, imageSrc }" />
         </template>
-      </VTiptapImageDialog>
+      </ImageDialog>
     </v-input>
   </div>
 </template>
@@ -159,9 +166,9 @@ import { Editor, EditorContent } from "@tiptap/vue-2";
 import TiptapKit from "../plugins/tiptap-kit";
 import vuetify from "../plugins/vuetify";
 
-import VTiptapLinkDialog from "./LinkDialog.vue";
+import LinkDialog from "./LinkDialog.vue";
 import VideoDialog from "./VideoDialog.vue";
-import VTiptapImageDialog from "./ImageDialog.vue";
+import ImageDialog from "./ImageDialog.vue";
 
 import EmojiPicker from "./EmojiPicker.vue";
 import ColorPicker from "./ColorPicker.vue";
@@ -187,7 +194,7 @@ import {
   components: {
     EditorContent,
     ColorPicker,
-    VTiptapImageDialog,
+    ImageDialog,
     VInput,
     VCard,
     VBtn,
@@ -202,6 +209,8 @@ export default class extends Vue {
   @Prop({ default: "" }) readonly value: string | null;
 
   @Prop({ default: false }) readonly view: boolean;
+
+  @Prop({ default: false }) readonly dark: boolean;
 
   @Prop() readonly placeholder: string | null;
 
@@ -352,23 +361,28 @@ export default class extends Vue {
   selectedColor = null;
 
   get selectedColorBorder() {
+    let opacity = !this.disableToolbar ? "0.67" : "0.2";
+
     if (this.selectedColor) {
       let color = `${this.selectedColor}`;
-      color =
-        color[0] === "r" ? color.replace(")", ", 0.75)") : color.concat("C0");
-
-      return `3px solid ${color}`;
+      if (color[0] === "r") {
+        opacity = !this.disableToolbar ? "0.75" : "0.25";
+        return `3px solid ${color.replace(")", `, ${opacity})`)}`;
+      } else {
+        opacity = !this.disableToolbar ? "C0" : "30";
+        return `3px solid ${color.concat(opacity)}`;
+      }
     }
 
-    return "3px solid rgba(0, 0, 0, 0.67)";
+    return `3px solid rgba(0, 0, 0, ${opacity})`;
   }
 
   setLink() {
     const previousUrl = this.editor.getAttributes("link").href;
 
-    const instance = new VTiptapLinkDialog({
+    const instance = new LinkDialog({
       vuetify: vuetify,
-      propsData: { value: previousUrl },
+      propsData: { value: previousUrl, dark: this.dark },
     });
 
     instance.$on("input", (url) => {
@@ -395,6 +409,9 @@ export default class extends Vue {
     const EmojiPickerComponent = Vue.extend(EmojiPicker);
     const instance: any = new EmojiPickerComponent({
       vuetify: vuetify,
+      propsData: {
+        dark: this.dark,
+      },
     });
 
     instance.$mount();
@@ -424,7 +441,7 @@ export default class extends Vue {
 
     const instance = new VideoDialog({
       vuetify: vuetify,
-      propsData: { value: previousSrc },
+      propsData: { value: previousSrc, dark: this.dark },
     });
 
     instance.$on("input", (src) => {
@@ -565,6 +582,15 @@ export default class extends Vue {
 
   .v-select__selection--disabled {
     color: rgba(0, 0, 0, 0.26) !important;
+  }
+
+  .theme--dark {
+    .v-select__selection {
+      color:#fcfcfc !important;        
+    }
+    .v-input__slot:hover {
+      background: #1e1e1e!important;
+    }
   }
 
   .v-toolbar__content {
