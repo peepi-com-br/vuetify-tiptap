@@ -97,7 +97,7 @@ SlotsBottom.args = {
     <v-toolbar dense elevation="0" class="px-4"  style="border-top: 1px solid #DDD">
       <v-btn icon small @click="onClick"><v-icon>mdi-home</v-icon></v-btn>
       <v-spacer/>
-      <small class="text-uppercase" style="opacity: 0.5;">{{ editor.storage.characterCount.characters() }}</small>
+      <small class="text-uppercase" style="opacity: 0.5;">{{ editor.storage.characterCount.characters() }} characters</small>
       <v-spacer/>
       <v-btn icon small @click="onClick"><v-icon>mdi-send</v-icon></v-btn>
     </v-toolbar>`,
