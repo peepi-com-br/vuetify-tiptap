@@ -166,7 +166,7 @@
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import collect from "collect.js";
 
-import { Editor, EditorContent } from "@tiptap/vue-2";
+import { Editor, EditorContent, AnyExtension } from "@tiptap/vue-2";
 import TiptapKit from "../plugins/tiptap-kit";
 import vuetify from "../plugins/vuetify";
 
@@ -235,6 +235,8 @@ export default class extends Vue {
 
   @Prop({ default: false }) readonly disabled: boolean;
 
+  @Prop({ default: () => [] }) readonly extensions: AnyExtension[];
+
   @Prop() readonly editorClass: string | string[] | object;
 
   editor: Editor | null = null;
@@ -258,15 +260,6 @@ export default class extends Vue {
   }
 
   get imageSrc() {
-    // // Babel is not working at the moment - Ugly workaround
-    // if (
-    //   !this.editor ||
-    //   !this.editor.view.state.selection["node"] ||
-    //   !this.editor.view.state.selection["node"].attrs
-    // ) {
-    //   return null;
-    // }
-
     return this.editor?.view.state.selection["node"]?.attrs?.src;
   }
 
@@ -520,6 +513,7 @@ export default class extends Vue {
           underline: {},
           video: {},
         }),
+        ...this.extensions,
       ],
       autofocus: false,
       editable: true,
@@ -693,24 +687,22 @@ export default class extends Vue {
   img {
     max-width: 638px;
     height: auto;
-    border: 4px solid rgba(0, 0, 0, 0);
     margin-left: -4px;
 
     &.focus {
-      border: 4px solid rgb(80, 173, 248);
+      outline: 4px solid rgb(80, 173, 248);
     }
   }
   .iframe-wrapper {
     iframe {
       width: 640px;
       height: 360px;
-      border: 4px solid rgba(0, 0, 0, 0);
       margin-left: -4px;
     }
 
     &.focus {
       iframe {
-        border: 4px solid rgb(80, 173, 248);
+        outline: 4px solid rgb(80, 173, 248);
       }
     }
   }
