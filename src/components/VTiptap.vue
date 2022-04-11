@@ -25,7 +25,7 @@
           v-if="!hideToolbar && toolbar && toolbar.length"
           dense
           flat
-          :color="dark ? undefined: 'grey lighten-4'"
+          :color="dark ? undefined : 'grey lighten-4'"
           height="auto"
           class="py-1"
         >
@@ -549,7 +549,7 @@ export default class extends Vue {
   overflow-wrap: anywhere;
 
   .ProseMirror {
-    padding: 12px 18px;
+    padding: 8px 18px;
     min-height: 180px;
     overflow-wrap: anywhere;
   }
@@ -580,10 +580,10 @@ export default class extends Vue {
 
   .theme--dark {
     .v-select__selection {
-      color:#fcfcfc !important;        
+      color: #fcfcfc !important;
     }
     .v-input__slot:hover {
-      background: #1e1e1e!important;
+      background: #1e1e1e !important;
     }
   }
 
@@ -655,7 +655,10 @@ export default class extends Vue {
     letter-spacing: 0.0073529412em !important;
     font-weight: 400;
     font-family: Roboto, sans-serif !important;
-    padding: 0.75em 0 0.5em 0;
+    margin: 0.75em 0 0.5em 0;
+    &:first-child {
+      margin-top: 0.25em;
+    }
   }
 
   h2 {
@@ -664,7 +667,7 @@ export default class extends Vue {
     font-size: 1.5rem !important;
     font-weight: 400;
     letter-spacing: normal !important;
-    padding: 0.75em 0 0.5em 0;
+    margin: 0.75em 0 0.5em 0;
   }
 
   h3 {
@@ -673,7 +676,7 @@ export default class extends Vue {
     letter-spacing: 0.0125em !important;
     line-height: 2rem;
     font-family: Roboto, sans-serif !important;
-    padding: 0.75em 0 0.5em 0;
+    margin: 0.75em 0 0.5em 0;
   }
 
   blockquote {
