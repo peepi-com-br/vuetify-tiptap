@@ -74,7 +74,7 @@
                       :dark="dark"
                       :more="false"
                       :nudge-top="-4"
-                      :nudge-left="14"
+                      :nudge-left="8"
                     >
                       <template #button="{ on }">
                         <v-btn

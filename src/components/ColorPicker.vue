@@ -22,15 +22,10 @@
         </v-btn>
       </slot>
     </template>
-    <v-list class="pa-0">
+    <v-list class="pb-0 pl-2">
       <v-container fluid style="padding-bottom: 0">
-        <div class="d-flex flex-wrap" style="max-width: 274px">
-          <div
-            v-for="color in colors"
-            :key="color"
-            class="text-center"
-            style="width: 12.5%"
-          >
+        <div class="d-flex flex-wrap" style="max-width: 230px">
+          <div v-for="color in colors" :key="color" class="text-center">
             <v-btn icon small @click="setColor(color)">
               <v-icon :color="color">mdi-circle</v-icon>
             </v-btn>
