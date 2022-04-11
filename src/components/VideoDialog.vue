@@ -1,5 +1,10 @@
 <template>
-  <v-dialog :dark="dark" :value="dialog" @input="dialog = $event" max-width="500px">
+  <v-dialog
+    :dark="dark"
+    :value="show"
+    @input="$emit('onClose', $event)"
+    max-width="500"
+  >
     <v-card>
       <v-card-title>
         <span class="headline">{{ "Edit Video" }}</span>
@@ -13,8 +18,9 @@
 
       <v-card-text>
         <v-text-field
-          v-model="src"
-          name="link-video"
+          :value="value"
+          @input="url = $event"
+          name="video-url"
           label="URL"
           hide-details
         />
@@ -36,23 +42,19 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 export default class extends Vue {
   @Prop() readonly value: string | null;
 
-  @Prop({ default: false }) readonly dark: boolean;
+  @Prop({ default: false }) show: boolean;
 
-  src = "";
+  @Prop({ default: false }) dark: boolean;
 
-  dialog = true;
+  url = "";
 
-  created() {
-    this.src = this.value;
+  apply() {
+    this.$emit("onApply", this.url);
+    this.$emit("onClose");
   }
 
   close() {
-    this.dialog = false;
-  }
-
-  apply() {
-    this.dialog = false;
-    this.$emit("input", this.src);
+    this.$emit("onClose");
   }
 }
 </script>

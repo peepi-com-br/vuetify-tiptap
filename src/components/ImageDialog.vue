@@ -1,5 +1,10 @@
 <template>
-  <v-dialog :dark="dark" :value="show" @input="$emit('close', $event)" max-width="500">
+  <v-dialog
+    :dark="dark"
+    :value="show"
+    @input="$emit('onClose', $event)"
+    max-width="500"
+  >
     <v-card>
       <v-card-title>
         <span class="headline">
@@ -15,7 +20,13 @@
 
       <v-card-text>
         <slot name="image">
-          <v-text-field v-model="value" name="src" label="URL" hide-details />
+          <v-text-field
+            :value="value"
+            @input="url = $event"
+            name="image-url"
+            label="URL"
+            hide-details
+          />
         </slot>
       </v-card-text>
 
@@ -29,23 +40,25 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
 export default class extends Vue {
-  @Prop() readonly value: boolean | null;
+  @Prop() readonly value: string | null;
 
   @Prop({ default: false }) show: boolean;
 
   @Prop({ default: false }) dark: boolean;
 
+  url = "";
+
   apply() {
-    this.$emit("input", this.value);
-    this.$emit("close", false);
+    this.$emit("onApply", this.url);
+    this.$emit("onClose");
   }
 
   close() {
-    this.$emit("close", false);
+    this.$emit("onClose");
   }
 }
 </script>

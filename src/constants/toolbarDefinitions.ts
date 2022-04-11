@@ -116,19 +116,19 @@ export default function makeToolbarDefinitions(context) {
     link: {
       title: "Link",
       icon: "mdi-link-variant",
-      action: context.setLink,
+      action: () => context.linkDialog = true,
       isActive: () => context.editor.isActive("link"),
     },
     image: {
       icon: "mdi-image",
       title: "Image",
-      action: context.selectImage,
+      action: () => context.imageDialog = true,
       isActive: () => context.editor.isActive("image"),
     },
     video: {
       icon: "mdi-video",
       title: "Video",
-      action: context.setVideo,
+      action: () => context.videoDialog = true,
       isActive: () => context.editor.isActive("iframe"),
     },
     emoji: {
