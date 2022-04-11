@@ -3,188 +3,190 @@
     <!-- View mode -->
     <div v-if="view" v-html="cleanValue" style="width: 100%" />
     <!-- Edit Mode -->
-    <v-input
-      v-else
-      class="simple outside-label"
-      style="padding-top: 0px !important"
-      v-bind="$attrs"
-      hide-details="auto"
-    >
-      <v-card
-        flat
-        :outlined="outlined"
-        :dark="dark"
-        style="width: 100%"
+    <template v-else>
+      <label v-if="label" class="v-label">{{ label }}</label>
+      <v-input
+        class="simple outside-label"
+        style="padding-top: 0px !important"
         v-bind="$attrs"
-        :style="{
-          borderColor: $attrs['error-messages'] ? '#ff5252' : undefined,
-        }"
+        hide-details="auto"
       >
-        <!-- Toolbar -->
-        <v-toolbar
-          v-if="!hideToolbar && toolbar && toolbar.length"
-          dense
+        <v-card
           flat
-          :color="dark ? undefined : 'grey lighten-4'"
-          height="auto"
-          class="py-1"
+          :outlined="outlined"
+          :dark="dark"
+          style="width: 100%"
+          v-bind="$attrs"
+          :style="{
+            borderColor: $attrs['error-messages'] ? '#ff5252' : undefined,
+          }"
         >
-          <template v-for="(item, key) in items">
-            <!-- Spacer -->
-            <v-spacer v-if="item.type === 'spacer'" :key="`spacer-${key}`" />
-            <!-- Divider -->
-            <div
-              v-else-if="item.type === 'divider'"
-              class="divider"
-              :key="`divider-${key}`"
-            />
-            <!-- Slot -->
-            <div v-else-if="item.type === 'slot'" :key="`slot-${key}`">
-              <slot
-                :name="item.slot"
-                v-bind="{ editor, disabled: disableToolbar }"
+          <!-- Toolbar -->
+          <v-toolbar
+            v-if="!hideToolbar && toolbar && toolbar.length"
+            dense
+            flat
+            :color="dark ? undefined : 'grey lighten-4'"
+            height="auto"
+            class="py-1"
+          >
+            <template v-for="(item, key) in items">
+              <!-- Spacer -->
+              <v-spacer v-if="item.type === 'spacer'" :key="`spacer-${key}`" />
+              <!-- Divider -->
+              <div
+                v-else-if="item.type === 'divider'"
+                class="divider"
+                :key="`divider-${key}`"
               />
-            </div>
-            <!-- Buttons -->
-            <div v-else :key="`button-${key}`">
-              <v-tooltip :open-delay="500" top>
-                <span>{{ item.title }}</span>
-                <template v-slot:activator="{ on, attrs }">
-                  <!-- Headings -->
-                  <div v-if="item.type === 'headings'" class="ml-n1">
-                    <v-select
-                      v-model="selectedHeading"
-                      :disabled="disableToolbar"
-                      :items="headingsItems"
-                      :menu-props="{ dark: dark }"
-                      :dark="dark"
-                      dense
-                      hide-details="auto"
-                      style="width: 104px"
-                      :data-testid="item.type"
-                    />
-                  </div>
+              <!-- Slot -->
+              <div v-else-if="item.type === 'slot'" :key="`slot-${key}`">
+                <slot
+                  :name="item.slot"
+                  v-bind="{ editor, disabled: disableToolbar }"
+                />
+              </div>
+              <!-- Buttons -->
+              <div v-else :key="`button-${key}`">
+                <v-tooltip :open-delay="500" top>
+                  <span>{{ item.title }}</span>
+                  <template v-slot:activator="{ on, attrs }">
+                    <!-- Headings -->
+                    <div v-if="item.type === 'headings'" class="ml-n1">
+                      <v-select
+                        v-model="selectedHeading"
+                        :disabled="disableToolbar"
+                        :items="headingsItems"
+                        :menu-props="{ dark: dark }"
+                        :dark="dark"
+                        dense
+                        hide-details="auto"
+                        style="width: 104px"
+                        :data-testid="item.type"
+                      />
+                    </div>
 
-                  <!-- Color Button -->
-                  <div v-else-if="item.title === 'Color'" class="mr-1">
-                    <ColorPicker
-                      v-model="selectedColor"
-                      @input="item.action(selectedColor)"
+                    <!-- Color Button -->
+                    <div v-else-if="item.title === 'Color'" class="mr-1">
+                      <ColorPicker
+                        v-model="selectedColor"
+                        @input="item.action(selectedColor)"
+                        v-bind="attrs"
+                        v-on="on"
+                        :dark="dark"
+                        :more="false"
+                        :nudge-top="-4"
+                        :nudge-left="8"
+                      >
+                        <template #button="{ on }">
+                          <v-btn
+                            v-on="on"
+                            :disabled="disableToolbar"
+                            icon
+                            small
+                            style=""
+                            :data-testid="item.type"
+                          >
+                            <v-icon
+                              :style="{
+                                'border-bottom': selectedColorBorder,
+                                height: '18px',
+                                top: '2px',
+                                width: '20px',
+                              }"
+                            >
+                              mdi-format-color-text
+                            </v-icon>
+                          </v-btn>
+                        </template>
+                      </ColorPicker>
+                    </div>
+
+                    <!-- Standard Button -->
+                    <v-btn
+                      v-else
+                      :disabled="disableToolbar"
+                      :class="{
+                        'v-btn--active': item.isActive && item.isActive(),
+                      }"
+                      :color="
+                        item.isActive && item.isActive() ? 'primary' : undefined
+                      "
                       v-bind="attrs"
                       v-on="on"
-                      :dark="dark"
-                      :more="false"
-                      :nudge-top="-4"
-                      :nudge-left="8"
+                      @click="item.action"
+                      class="mr-1"
+                      icon
+                      small
+                      :data-testid="item.type"
                     >
-                      <template #button="{ on }">
-                        <v-btn
-                          v-on="on"
-                          :disabled="disableToolbar"
-                          icon
-                          small
-                          style=""
-                          :data-testid="item.type"
-                        >
-                          <v-icon
-                            :style="{
-                              'border-bottom': selectedColorBorder,
-                              height: '18px',
-                              top: '2px',
-                              width: '20px',
-                            }"
-                          >
-                            mdi-format-color-text
-                          </v-icon>
-                        </v-btn>
-                      </template>
-                    </ColorPicker>
-                  </div>
+                      <v-icon>{{ item.icon }}</v-icon>
+                    </v-btn>
+                  </template>
+                </v-tooltip>
+              </div>
+            </template>
+          </v-toolbar>
 
-                  <!-- Standard Button -->
-                  <v-btn
-                    v-else
-                    :disabled="disableToolbar"
-                    :class="{
-                      'v-btn--active': item.isActive && item.isActive(),
-                    }"
-                    :color="
-                      item.isActive && item.isActive() ? 'primary' : undefined
-                    "
-                    v-bind="attrs"
-                    v-on="on"
-                    @click="item.action"
-                    class="mr-1"
-                    icon
-                    small
-                    :data-testid="item.type"
-                  >
-                    <v-icon>{{ item.icon }}</v-icon>
-                  </v-btn>
-                </template>
-              </v-tooltip>
-            </div>
+          <div class="d-flex">
+            <!-- Slot Prepend -->
+            <slot name="prepend" v-bind="{ editor }" />
+            <!-- Tiptap Editor -->
+            <slot name="editor" v-bind="{ editor }">
+              <editor-content
+                :editor="editor"
+                class="flex-grow-1"
+                :class="editorClass"
+                data-testid="value"
+              />
+            </slot>
+            <!-- Slot Append -->
+            <slot name="append" v-bind="{ editor }" />
+          </div>
+
+          <slot name="bottom" v-bind="{ editor }" />
+        </v-card>
+
+        <!-- Dialogs -->
+        <ImageDialog
+          :value="imageSrc"
+          :show="imageDialog"
+          :dark="dark"
+          @close="imageDialog = $event"
+          @input="onSelectImage"
+        >
+          <template #image>
+            <slot name="image" v-bind="{ editor, imageSrc }" />
           </template>
-        </v-toolbar>
+        </ImageDialog>
 
-        <div class="d-flex">
-          <!-- Slot Prepend -->
-          <slot name="prepend" v-bind="{ editor }" />
-          <!-- Tiptap Editor -->
-          <slot name="editor" v-bind="{ editor }">
-            <editor-content
-              :editor="editor"
-              class="flex-grow-1"
-              :class="editorClass"
-              data-testid="value"
-            />
-          </slot>
-          <!-- Slot Append -->
-          <slot name="append" v-bind="{ editor }" />
-        </div>
-
-        <slot name="bottom" v-bind="{ editor }" />
-      </v-card>
-
-      <!-- Dialogs -->
-      <ImageDialog
-        :value="imageSrc"
-        :show="imageDialog"
-        :dark="dark"
-        @close="imageDialog = $event"
-        @input="onSelectImage"
-      >
-        <template #image>
-          <slot name="image" v-bind="{ editor, imageSrc }" />
-        </template>
-      </ImageDialog>
-
-      <!-- Mention -->
-      <v-menu
-        v-model="mention.show"
-        dense
-        absolute
-        :position-x="mention.x"
-        :position-y="mention.y"
-        offset-y
-        max-height="220px"
-        class="items"
-      >
-        <v-list dense>
-          <v-list-item
-            class="item"
-            :style="{
-              background: index === mention.selected ? '#EEE' : undefined,
-            }"
-            v-for="(item, index) in mention.items"
-            :key="item.text"
-            @click="selectMention(index)"
-          >
-            <v-list-item-title>{{ item.text }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-    </v-input>
+        <!-- Mention -->
+        <v-menu
+          v-model="mention.show"
+          dense
+          absolute
+          :position-x="mention.x"
+          :position-y="mention.y"
+          offset-y
+          max-height="220px"
+          class="items"
+        >
+          <v-list dense>
+            <v-list-item
+              class="item"
+              :style="{
+                background: index === mention.selected ? '#EEE' : undefined,
+              }"
+              v-for="(item, index) in mention.items"
+              :key="item.text"
+              @click="selectMention(index)"
+            >
+              <v-list-item-title>{{ item.text }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-input>
+    </template>
   </div>
 </template>
 
@@ -248,6 +250,8 @@ export default class extends Vue {
   @Prop({ default: true }) readonly outlined: boolean;
 
   @Prop({ default: false }) readonly disabled: boolean;
+
+  @Prop() readonly label: string | null;
 
   @Prop() readonly placeholder: string | null;
 
@@ -817,6 +821,12 @@ export default class extends Vue {
 
   .mention {
     color: #08c;
+  }
+
+  .v-label {
+    color: rgba(0, 0, 0, 0.7) !important;
+    font-weight: 500;
+    line-height: 2rem;
   }
 }
 </style>
