@@ -618,6 +618,10 @@ export default class extends Vue {
 .v-tiptap {
   overflow-wrap: anywhere;
 
+  .v-btn > .v-btn__content .v-icon.fa {
+    font-size: 18px !important;
+  }
+
   .ProseMirror {
     padding: 8px 18px;
     min-height: 180px;
@@ -652,8 +656,13 @@ export default class extends Vue {
     .v-select__selection {
       color: #fcfcfc !important;
     }
+
     .v-input__slot:hover {
       background: #1e1e1e !important;
+    }
+
+    .v-select__selection--disabled {
+      color: #fcfcfc71 !important;
     }
   }
 
@@ -796,7 +805,7 @@ export default class extends Vue {
       > label {
         flex: 0 0 auto;
         margin-right: 0.5rem;
-        margin-top: 1.1rem;
+        margin-top: 0.4rem;
         user-select: none;
       }
 

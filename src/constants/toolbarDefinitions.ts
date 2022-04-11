@@ -1,3 +1,5 @@
+import icons from './icons'
+
 export default function makeToolbarDefinitions(context) {
   const definitions = {
     // Special items
@@ -8,160 +10,160 @@ export default function makeToolbarDefinitions(context) {
     // Standard buttons
     bold: {
       title: "Bold",
-      icon: "mdi-format-bold",
+      icon: "bold",
       action: () => context.editor.chain().focus().toggleBold().run(),
       isActive: () => context.editor.isActive("bold"),
     },
     italic: {
       title: "Italic",
-      icon: "mdi-format-italic",
+      icon: "italic",
       action: () => context.editor.chain().focus().toggleItalic().run(),
       isActive: () => context.editor.isActive("italic"),
     },
     underline: {
       title: "Underline",
-      icon: "mdi-format-underline",
+      icon: "underline",
       action: () => context.editor.chain().focus().toggleUnderline().run(),
       isActive: () => context.editor.isActive("underline"),
     },
     strike: {
       title: "Strike",
-      icon: "mdi-format-strikethrough",
+      icon: "strike",
       action: () => context.editor.chain().focus().toggleStrike().run(),
       isActive: () => context.editor.isActive("strike"),
     },
     color: {
       title: "Color",
-      icon: "mdi-palette",
-      action: color => context.editor.chain().focus().setColor(color).run(),
+      icon: "color",
+      action: (color) => context.editor.chain().focus().setColor(color).run(),
       isActive: () => context.editor.isActive("textStyle"),
     },
     highlight: {
       title: "Highlight",
-      icon: "mdi-grease-pencil",
+      icon: "highlight",
       action: () => context.editor.chain().focus().toggleHighlight().run(),
       isActive: () => context.editor.isActive("highlight"),
     },
     headings: { type: "headings" },
     h1: {
       title: "Heading 1",
-      icon: "mdi-format-header-1",
+      icon: "h1",
       action: () =>
         context.editor.chain().focus().toggleHeading({ level: 1 }).run(),
       isActive: () => context.editor.isActive("heading", { level: 1 }),
     },
     h2: {
       title: "Heading 2",
-      icon: "mdi-format-header-2",
+      icon: "h2",
       action: () =>
         context.editor.chain().focus().toggleHeading({ level: 2 }).run(),
       isActive: () => context.editor.isActive("heading", { level: 2 }),
     },
     h3: {
       title: "Heading 3",
-      icon: "mdi-format-header-3",
+      icon: "h3",
       action: () =>
         context.editor.chain().focus().toggleHeading({ level: 3 }).run(),
       isActive: () => context.editor.isActive("heading", { level: 3 }),
     },
     p: {
       title: "Paragraph",
-      icon: "mdi-format-paragraph",
+      icon: "p",
       action: () => context.editor.chain().focus().setParagraph().run(),
       isActive: () => context.editor.isActive("paragraph"),
     },
     left: {
       title: "left",
-      icon: "mdi-format-align-left",
+      icon: "left",
       action: () => context.editor.chain().focus().setTextAlign("left").run(),
       isActive: () => context.editor.isActive({ textAlign: "left" }),
     },
     center: {
       title: "center",
-      icon: "mdi-format-align-center",
+      icon: "center",
       action: () => context.editor.chain().focus().setTextAlign("center").run(),
       isActive: () => context.editor.isActive({ textAlign: "center" }),
     },
     right: {
       title: "right",
-      icon: "mdi-format-align-right",
+      icon: "right",
       action: () => context.editor.chain().focus().setTextAlign("right").run(),
       isActive: () => context.editor.isActive({ textAlign: "right" }),
     },
     justify: {
       title: "justify",
-      icon: "mdi-format-align-justify",
+      icon: "justify",
       action: () =>
         context.editor.chain().focus().setTextAlign("justify").run(),
       isActive: () => context.editor.isActive({ textAlign: "justify" }),
     },
     bulletList: {
       title: "Bullet List",
-      icon: "mdi-format-list-bulleted-square",
+      icon: "bulletList",
       action: () => context.editor.chain().focus().toggleBulletList().run(),
       isActive: () => context.editor.isActive("bulletList"),
     },
     orderedList: {
-      icon: "mdi-format-list-numbered",
       title: "Ordered List",
+      icon: "orderedList",
       action: () => context.editor.chain().focus().toggleOrderedList().run(),
       isActive: () => context.editor.isActive("orderedList"),
     },
     checkbox: {
-      icon: "mdi-format-list-checkbox",
       title: "Task List",
+      icon: "checkbox",
       action: () => context.editor.chain().focus().toggleTaskList().run(),
       isActive: () => context.editor.isActive("taskList"),
     },
     link: {
       title: "Link",
-      icon: "mdi-link-variant",
+      icon: "link",
       action: context.setLink,
       isActive: () => context.editor.isActive("link"),
     },
     image: {
-      icon: "mdi-image",
       title: "Image",
+      icon: "image",
       action: context.selectImage,
       isActive: () => context.editor.isActive("image"),
     },
     video: {
-      icon: "mdi-video",
       title: "Video",
+      icon: "video",
       action: context.setVideo,
       isActive: () => context.editor.isActive("iframe"),
     },
     emoji: {
-      icon: "mdi-emoticon-outline",
       title: "Emoji",
+      icon: "emoji",
       action: context.setEmoji,
     },
     blockquote: {
-      icon: "mdi-format-quote-open",
       title: "Blockquote",
+      icon: "blockquote",
       action: () => context.editor.chain().focus().toggleBlockquote().run(),
       isActive: () => context.editor.isActive("blockquote"),
     },
     rule: {
-      icon: "mdi-minus",
       title: "Horizontal Rule",
+      icon: "rule",
       action: () => context.editor.chain().focus().setHorizontalRule().run(),
     },
     code: {
       title: "Code",
-      icon: "mdi-code-tags",
+      icon: "code",
       action: () => context.editor.chain().focus().toggleCode().run(),
       isActive: () => context.editor.isActive("code"),
     },
     codeBlock: {
-      icon: "mdi-code-braces-box",
       title: "Code Block",
+      icon: "codeBlock",
       action: () => context.editor.chain().focus().toggleCodeBlock().run(),
       isActive: () => context.editor.isActive("codeBlock"),
     },
     clear: {
-      icon: "mdi-format-clear",
       title: "Clear Format",
+      icon: "clear",
       /* eslint newline-per-chained-call: "off" */
       action: () =>
         context.editor.chain().focus().clearNodes().unsetAllMarks().run(),
@@ -171,6 +173,7 @@ export default function makeToolbarDefinitions(context) {
   let toolbarItems = [];
   for (let i of context.toolbar) {
     if (definitions[i]) {
+      definitions[i].icon = icons.get(definitions[i].icon, context.$vuetify.icons.iconfont);
       definitions[i].type = definitions[i].type || i;
       toolbarItems.push(definitions[i]);
     } else if (i[0] === "#") {
