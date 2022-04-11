@@ -346,21 +346,23 @@ export default class extends Vue {
           textStyle: {},
           underline: {},
           video: {},
-          mention: {
-            HTMLAttributes: {
-              class: "mention",
-            },
-            suggestion: {
-              items: ({ query }) => {
-                return this.mentionItems
-                  .filter((item) =>
-                    item.text.toLowerCase().startsWith(query.toLowerCase())
-                  )
-                  .slice(0, 5);
-              },
-              render: renderSuggestion(this),
-            },
-          },
+          mention: this.mentionItems
+            ? {
+                HTMLAttributes: {
+                  class: "mention",
+                },
+                suggestion: {
+                  items: ({ query }) => {
+                    return this.mentionItems
+                      .filter((item) =>
+                        item.text.toLowerCase().startsWith(query.toLowerCase())
+                      )
+                      .slice(0, 5);
+                  },
+                  render: renderSuggestion(this),
+                },
+              }
+            : false,
         }),
         ...this.extensions,
       ],
@@ -424,7 +426,6 @@ export default class extends Vue {
       return;
     }
 
-    // @ts-ignore
     this.editor.chain().focus().setTextAlign(newValue).run();
   }
 
@@ -513,10 +514,8 @@ export default class extends Vue {
     }
 
     if (newValue > 0) {
-      // @ts-ignore
       this.editor.chain().focus().toggleHeading({ level: newValue }).run();
     } else {
-      // @ts-ignore
       this.editor.chain().focus().setParagraph().run();
     }
   }
@@ -549,7 +548,6 @@ export default class extends Vue {
   }
 
   onSelectImage(value: string) {
-    // @ts-ignore
     this.editor.chain().focus().setImage({ src: value }).run();
   }
 
@@ -564,14 +562,12 @@ export default class extends Vue {
 
     instance.$on("input", (url) => {
       if (url === "" || url === null) {
-        // @ts-ignore
         this.editor.chain().focus().extendMarkRange("link").unsetLink().run();
       } else {
         this.editor
           .chain()
           .focus()
           .extendMarkRange("link")
-          // @ts-ignore
           .setLink({ href: url })
           .run();
       }
