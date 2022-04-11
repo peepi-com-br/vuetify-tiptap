@@ -151,16 +151,16 @@
         :value="selectedImage"
         :show="imageDialog"
         :dark="dark"
-        @onClose="imageDialog = false"
-        @onApply="editor.chain().focus().setImage({ src: $event }).run()"
+        @close="imageDialog = false"
+        @apply="editor.chain().focus().setImage({ src: $event }).run()"
       />
 
       <LinkDialog
         :value="selectedLink"
         :show="linkDialog"
         :dark="dark"
-        @onClose="linkDialog = false"
-        @onApply="
+        @close="linkDialog = false"
+        @apply="
           editor
             .chain()
             .focus()
@@ -174,8 +174,8 @@
         :value="selectedVideo"
         :show="videoDialog"
         :dark="dark"
-        @onClose="videoDialog = false"
-        @onApply="editor.chain().focus().setIframe({ src: $event }).run()"
+        @close="videoDialog = false"
+        @apply="editor.chain().focus().setIframe({ src: $event }).run()"
       />
 
       <!-- Mention -->
@@ -214,46 +214,19 @@ import { Editor, EditorContent, AnyExtension } from "@tiptap/vue-2";
 import TiptapKit from "../plugins/tiptap-kit";
 import vuetify from "../plugins/vuetify";
 
-import ImageDialog from "./ImageDialog.vue";
-import LinkDialog from "./LinkDialog.vue";
-import VideoDialog from "./VideoDialog.vue";
-import EmojiPicker from "./EmojiPicker.vue";
-import ColorPicker from "./ColorPicker.vue";
+import * as components from "./components";
 
 import toolbarItems from "../constants/toolbarItems";
 import makeToolbarDefinitions from "../constants/toolbarDefinitions";
-
-import xssRules from "../constants/xssRules";
-import xss from "xss";
-
 import { renderSuggestion } from "../constants/suggestion";
 
-import {
-  VInput,
-  VCard,
-  VBtn,
-  VIcon,
-  VToolbar,
-  VSelect,
-  VSpacer,
-  VTooltip,
-} from "vuetify/lib";
+import xss from "xss";
+import xssRules from "../constants/xssRules";
 
 @Component({
   components: {
     EditorContent,
-    ColorPicker,
-    ImageDialog,
-    LinkDialog,
-    VideoDialog,
-    VInput,
-    VCard,
-    VBtn,
-    VIcon,
-    VToolbar,
-    VSelect,
-    VSpacer,
-    VTooltip,
+    ...components,
   },
 })
 export default class extends Vue {

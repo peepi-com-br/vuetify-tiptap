@@ -2,7 +2,7 @@
   <v-dialog
     :dark="dark"
     :value="show"
-    @input="$emit('onClose', $event)"
+    @input="$emit('close', $event)"
     max-width="500"
   >
     <v-card>
@@ -55,12 +55,12 @@ export default class extends Vue {
   }
 
   apply() {
-    this.$emit("onApply", this.url);
-    this.$emit("onClose");
+    this.$emit("apply", this.url);
+    this.$emit("close");
   }
 
   close() {
-    this.$emit("onClose");
+    this.$emit("close");
   }
 }
 </script>
