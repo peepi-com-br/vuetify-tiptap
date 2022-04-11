@@ -61,6 +61,7 @@
                       dense
                       hide-details="auto"
                       style="width: 104px"
+                      :data-testid="item.type"
                     />
                   </div>
 
@@ -83,6 +84,7 @@
                           icon
                           small
                           style=""
+                          :data-testid="item.type"
                         >
                           <v-icon
                             :style="{
@@ -115,6 +117,7 @@
                     class="mr-1"
                     icon
                     small
+                    :data-testid="item.type"
                   >
                     <v-icon>{{ item.icon }}</v-icon>
                   </v-btn>
@@ -133,6 +136,7 @@
               :editor="editor"
               class="flex-grow-1"
               :class="editorClass"
+              data-testid="value"
             />
           </slot>
           <!-- Slot Append -->
