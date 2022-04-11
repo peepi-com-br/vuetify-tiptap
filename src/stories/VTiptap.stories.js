@@ -1,5 +1,5 @@
 import { storyFactory } from "~storybook/util/helpers";
-import { within, userEvent, waitFor } from "@storybook/testing-library";
+import { within, userEvent, waitFor, screen } from "@storybook/testing-library";
 import { expect } from "@storybook/jest";
 import delay from "delay";
 
@@ -121,23 +121,21 @@ SlotsPrepend.args = {
 
 export const TestBasic = Template.bind({});
 TestBasic.args = {};
-TestBasic.play = async ({ canvasElement }) => {
-  const canvas = within(canvasElement);
-
-  await userEvent.click(canvas.getByTestId("value").children[0].children[0]);
+TestBasic.play = async () => {
+  await userEvent.click(screen.getByTestId("value").children[0].children[0]);
 
   await userEvent.keyboard("Testing", { delay: 100 });
   await userEvent.keyboard("a", {
     keyboardState: userEvent.keyboard("[ControlLeft>]"),
   });
 
-  await userEvent.click(canvas.getByTestId("bold"));
-  await userEvent.click(canvas.getByTestId("center"));
+  await userEvent.click(screen.getByTestId("bold"));
+  await userEvent.click(screen.getByTestId("center"));
 
-  await userEvent.click(canvas.getByTestId("value").children[0].children[0]);
+  await userEvent.click(screen.getByTestId("value").children[0].children[0]);
   await userEvent.keyboard("{home}");
 
-  await expect(canvas.getByTestId("value").children[0].innerHTML).toBe(
+  await expect(screen.getByTestId("value").children[0].innerHTML).toBe(
     '<p style="text-align: center" class="focus"><strong>Testing</strong></p>'
   );
 };
