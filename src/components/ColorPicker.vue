@@ -44,7 +44,7 @@
           @click.stop.prevent="picker = true"
           class="ma-0 py-3"
         >
-          {{ __("words.show-more") }}
+          {{ __("showMore") }}
         </v-btn>
         <v-btn
           v-else
@@ -55,7 +55,7 @@
           @click.stop.prevent="picker = false"
           class="ma-0 py-3"
         >
-          {{ __("words.show-less") }}
+          {{ __("showLess") }}
         </v-btn>
 
         <v-expand-transition>
@@ -74,10 +74,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
+import { mixins } from "vue-class-component";
+import i18n from "@/mixins/i18n";
 
 @Component
-export default class extends Vue {
+export default class extends mixins(i18n) {
   @Prop() readonly value;
 
   @Prop({ default: 0 }) readonly nudgeLeft: string | number;
