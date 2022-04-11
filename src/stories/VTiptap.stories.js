@@ -4,6 +4,7 @@ import { storyFactory } from "~storybook/util/helpers";
 import VTiptap from "../components/VTiptap.vue";
 
 import testHtml from "../constants/testHtml";
+import CharacterCount from "@tiptap/extension-character-count";
 
 // set the default properties
 export default storyFactory({
@@ -90,12 +91,13 @@ DisabledToolbar.args = {
 export const SlotsBottom = Template.bind({});
 SlotsBottom.storyName = "Slots: Bottom";
 SlotsBottom.args = {
+  extensions: [CharacterCount],
   slots: {
     bottom: `
     <v-toolbar dense elevation="0" class="px-4"  style="border-top: 1px solid #DDD">
       <v-btn icon small @click="onClick"><v-icon>mdi-home</v-icon></v-btn>
       <v-spacer/>
-      <small class="text-uppercase" style="opacity: 0.5;">Bottom Slot</small>
+      <small class="text-uppercase" style="opacity: 0.5;">{{ editor.storage.characterCount.characters() }}</small>
       <v-spacer/>
       <v-btn icon small @click="onClick"><v-icon>mdi-send</v-icon></v-btn>
     </v-toolbar>`,
