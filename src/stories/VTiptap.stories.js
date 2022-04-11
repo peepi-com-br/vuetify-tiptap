@@ -1,7 +1,6 @@
 import { storyFactory } from "~storybook/util/helpers";
-import { within, userEvent, waitFor, screen } from "@storybook/testing-library";
+import { userEvent, screen } from "@storybook/testing-library";
 import { expect } from "@storybook/jest";
-import delay from "delay";
 
 import VTiptap from "../components/VTiptap.vue";
 import testHtml from "../constants/testHtml";
@@ -48,7 +47,10 @@ BasicUsage.args = {
 
 export const BasicUsageWithText = Template.bind({});
 BasicUsageWithText.storyName = "Basic Usage (Value)";
-BasicUsageWithText.args = { value: testHtml };
+BasicUsageWithText.args = {
+  value: testHtml,
+  label: "Basic Usage (Value)",
+};
 
 export const BasicUsageWithView = Template.bind({});
 BasicUsageWithView.storyName = "Basic Usage (View Mode)";
