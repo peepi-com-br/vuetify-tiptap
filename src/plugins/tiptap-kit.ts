@@ -1,3 +1,4 @@
+// StarterKit
 import { Extension } from "@tiptap/core";
 import Blockquote, { BlockquoteOptions } from "@tiptap/extension-blockquote";
 import Bold, { BoldOptions } from "@tiptap/extension-bold";
@@ -22,6 +23,7 @@ import Paragraph, { ParagraphOptions } from "@tiptap/extension-paragraph";
 import Strike, { StrikeOptions } from "@tiptap/extension-strike";
 import Text from "@tiptap/extension-text";
 
+// Extensions
 import Placeholder, { PlaceholderOptions } from "@tiptap/extension-placeholder";
 import TextAlign, { TextAlignOptions } from "@tiptap/extension-text-align";
 import Focus, { FocusOptions } from "@tiptap/extension-focus";
@@ -33,6 +35,7 @@ import TaskList, { TaskListOptions } from "@tiptap/extension-task-list";
 import TaskItem, { TaskItemOptions } from "@tiptap/extension-task-item";
 import TextStyle, { TextStyleOptions } from "@tiptap/extension-text-style";
 import Underline, { UnderlineOptions } from "@tiptap/extension-underline";
+import Mention from "@tiptap/extension-mention";
 import Video from "@/plugins/video";
 
 export interface StarterKitOptions {
@@ -66,6 +69,7 @@ export interface StarterKitOptions {
   textStyle: Partial<TextStyleOptions> | false;
   underline: Partial<UnderlineOptions> | false;
   video: any;
+  mention: any;
 }
 
 export default Extension.create<StarterKitOptions>({
@@ -192,6 +196,10 @@ export default Extension.create<StarterKitOptions>({
 
     if (this.options.text !== false) {
       extensions.push(Text.configure(this.options.text));
+    }
+
+    if (this.options.mention !== false) {
+      extensions.push(Mention.configure(this.options.mention));
     }
 
     return extensions;

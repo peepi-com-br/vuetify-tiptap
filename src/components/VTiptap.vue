@@ -158,6 +158,32 @@
           <slot name="image" v-bind="{ editor, imageSrc }" />
         </template>
       </ImageDialog>
+
+      <!-- Mention -->
+      <v-menu
+        v-model="mention.show"
+        dense
+        absolute
+        :position-x="mention.x"
+        :position-y="mention.y"
+        offset-y
+        max-height="220px"
+        class="items"
+      >
+        <v-list dense>
+          <v-list-item
+            class="item"
+            :style="{
+              background: index === mention.selected ? '#EEE' : undefined,
+            }"
+            v-for="(item, index) in mention.items"
+            :key="item.text"
+            @click="selectMention(index)"
+          >
+            <v-list-item-title>{{ item.text }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-input>
   </div>
 </template>
@@ -182,6 +208,8 @@ import makeToolbarDefinitions from "../constants/toolbarDefinitions";
 
 import xssRules from "../constants/xssRules";
 import xss from "xss";
+
+import { renderSuggestion } from "../constants/suggestion";
 
 import {
   VInput,
@@ -238,6 +266,8 @@ export default class extends Vue {
   @Prop({ default: () => [] }) readonly extensions: AnyExtension[];
 
   @Prop() readonly editorClass: string | string[] | object;
+
+  @Prop() readonly mentionItems: Record<string, any>[];
 
   editor: Editor | null = null;
 
@@ -427,7 +457,7 @@ export default class extends Vue {
 
   imageDialog = false;
 
-  async selectImage() {
+  selectImage() {
     this.imageDialog = true;
   }
 
@@ -450,26 +480,10 @@ export default class extends Vue {
     this.editor = new Editor({
       content: this.value,
       editorProps: {
-        handleKeyDown: (view, event) => {
-          if (
-            event.key === "Enter" &&
-            this.$listeners.enter &&
-            !event.shiftKey
-          ) {
-            this.$emit("enter");
-            return true;
-          }
-
-          return false;
-        },
+        handleKeyDown: this.handleKeyDown,
       },
-      onSelectionUpdate: ({ editor }) => {
-        const { color } = editor.getAttributes("textStyle");
-        this.selectedColor = color;
-
-        this.selectedHeading = this.getHeading();
-      },
-      onUpdate: ({ editor }) => this.$emit("input", editor.getHTML()),
+      onSelectionUpdate: this.onSelectionUpdate,
+      onUpdate: this.onUpdate,
       extensions: [
         TiptapKit.configure({
           bold: {},
@@ -512,6 +526,12 @@ export default class extends Vue {
           textStyle: {},
           underline: {},
           video: {},
+          mention: {
+            HTMLAttributes: {
+              class: "mention",
+            },
+            suggestion: renderSuggestion(this),
+          },
         }),
         ...this.extensions,
       ],
@@ -538,6 +558,46 @@ export default class extends Vue {
 
   beforeDestroy() {
     this.editor.destroy();
+  }
+
+  //
+  handleKeyDown(view, event) {
+    if (event.key === "Enter" && this.$listeners.enter && !event.shiftKey) {
+      this.$emit("enter");
+
+      return true;
+    }
+
+    return false;
+  }
+
+  onSelectionUpdate({ editor }) {
+    const { color } = editor.getAttributes("textStyle");
+    this.selectedColor = color;
+
+    this.selectedHeading = this.getHeading();
+  }
+
+  onUpdate({ editor }) {
+    this.$emit("input", editor.getHTML());
+  }
+
+  // Mention
+  mention = {
+    items: [],
+    selected: 0,
+    show: false,
+    x: 0,
+    y: 0,
+    command: (_) => 0,
+  };
+
+  selectMention(index) {
+    const item = this.mention.items[index];
+    this.mention.command({ id: item.value, label: item.text });
+    this.mention.show = false;
+
+    this.$emit("mention", item);
   }
 }
 </script>
@@ -687,7 +747,6 @@ export default class extends Vue {
   img {
     max-width: 638px;
     height: auto;
-    margin-left: -4px;
 
     &.focus {
       outline: 4px solid rgb(80, 173, 248);
@@ -697,7 +756,6 @@ export default class extends Vue {
     iframe {
       width: 640px;
       height: 360px;
-      margin-left: -4px;
     }
 
     &.focus {
@@ -734,6 +792,10 @@ export default class extends Vue {
         flex: 1 1 auto;
       }
     }
+  }
+
+  .mention {
+    color: #08c;
   }
 }
 </style>
