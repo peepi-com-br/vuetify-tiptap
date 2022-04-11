@@ -61,6 +61,7 @@
                       dense
                       hide-details="auto"
                       style="width: 104px"
+                      :data-testid="item.type"
                     />
                   </div>
 
@@ -74,7 +75,7 @@
                       :dark="dark"
                       :more="false"
                       :nudge-top="-4"
-                      :nudge-left="14"
+                      :nudge-left="8"
                     >
                       <template #button="{ on }">
                         <v-btn
@@ -83,6 +84,7 @@
                           icon
                           small
                           style=""
+                          :data-testid="item.type"
                         >
                           <v-icon
                             :style="{
@@ -115,6 +117,7 @@
                     class="mr-1"
                     icon
                     small
+                    :data-testid="item.type"
                   >
                     <v-icon>{{ item.icon }}</v-icon>
                   </v-btn>
@@ -133,6 +136,7 @@
               :editor="editor"
               class="flex-grow-1"
               :class="editorClass"
+              data-testid="value"
             />
           </slot>
           <!-- Slot Append -->
@@ -154,22 +158,46 @@
           <slot name="image" v-bind="{ editor, imageSrc }" />
         </template>
       </ImageDialog>
+
+      <!-- Mention -->
+      <v-menu
+        v-model="mention.show"
+        dense
+        absolute
+        :position-x="mention.x"
+        :position-y="mention.y"
+        offset-y
+        max-height="220px"
+        class="items"
+      >
+        <v-list dense>
+          <v-list-item
+            class="item"
+            :style="{
+              background: index === mention.selected ? '#EEE' : undefined,
+            }"
+            v-for="(item, index) in mention.items"
+            :key="item.text"
+            @click="selectMention(index)"
+          >
+            <v-list-item-title>{{ item.text }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-input>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-import collect from "collect.js";
 
-import { Editor, EditorContent } from "@tiptap/vue-2";
+import { Editor, EditorContent, AnyExtension } from "@tiptap/vue-2";
 import TiptapKit from "../plugins/tiptap-kit";
 import vuetify from "../plugins/vuetify";
 
 import LinkDialog from "./LinkDialog.vue";
 import VideoDialog from "./VideoDialog.vue";
 import ImageDialog from "./ImageDialog.vue";
-
 import EmojiPicker from "./EmojiPicker.vue";
 import ColorPicker from "./ColorPicker.vue";
 
@@ -178,6 +206,8 @@ import makeToolbarDefinitions from "../constants/toolbarDefinitions";
 
 import xssRules from "../constants/xssRules";
 import xss from "xss";
+
+import { renderSuggestion } from "../constants/suggestion";
 
 import {
   VInput,
@@ -208,28 +238,34 @@ import {
 export default class extends Vue {
   @Prop({ default: "" }) readonly value: string | null;
 
+  // Appearance
   @Prop({ default: false }) readonly view: boolean;
 
   @Prop({ default: false }) readonly dark: boolean;
-
-  @Prop() readonly placeholder: string | null;
-
-  @Prop({ default: () => toolbarItems }) readonly toolbar: string[];
-
-  @Prop({ default: () => xssRules })
-  readonly xssOptions: Record<string, string[]>;
-
-  @Prop({ default: false }) readonly hideToolbar: boolean;
-
-  @Prop({ default: false }) readonly disableToolbar: boolean;
-
-  @Prop({ default: true }) readonly xss: boolean | string[];
 
   @Prop({ default: false }) readonly dense: boolean;
 
   @Prop({ default: true }) readonly outlined: boolean;
 
   @Prop({ default: false }) readonly disabled: boolean;
+
+  @Prop() readonly placeholder: string | null;
+
+  // Toolbar
+  @Prop({ default: () => toolbarItems }) readonly toolbar: string[];
+
+  @Prop({ default: false }) readonly hideToolbar: boolean;
+
+  @Prop({ default: false }) readonly disableToolbar: boolean;
+
+  // xss
+  @Prop({ default: true }) readonly xss: boolean | string[];
+
+  @Prop({ default: () => xssRules })
+  readonly xssOptions: Record<string, string[]>;
+
+  // Editor
+  @Prop({ default: () => [] }) readonly extensions: AnyExtension[];
 
   @Prop() readonly editorClass: string | string[] | object;
 
@@ -245,234 +281,29 @@ export default class extends Vue {
       .replace("watch?v=", "embed/")
       .replace("https://vimeo.com/", "https://player.vimeo.com/video/");
 
-    let whiteList: any = collect(this.xssOptions);
-    whiteList = Array.isArray(this.xss) ? whiteList.only(this.xss) : whiteList;
+    let whiteList = this.xssOptions;
+    if (Array.isArray(this.xss)) {
+      whiteList = this.xss.reduce((acc, rule) => {
+        acc[rule] = this.xssOptions[rule];
+        return acc;
+      }, {});
+    }
 
-    return xss(value, {
-      whiteList: whiteList.all(),
-    });
-  }
-
-  get imageSrc() {
-    // // Babel is not working at the moment - Ugly workaround
-    // if (
-    //   !this.editor ||
-    //   !this.editor.view.state.selection["node"] ||
-    //   !this.editor.view.state.selection["node"].attrs
-    // ) {
-    //   return null;
-    // }
-
-    return this.editor?.view.state.selection["node"]?.attrs?.src;
-  }
-
-  onSelectImage(value: string) {
-    // @ts-ignore
-    this.editor.chain().focus().setImage({ src: value }).run();
+    return xss(value, { whiteList });
   }
 
   get items() {
     return makeToolbarDefinitions(this);
   }
 
-  // Headings
-  headingsItems = [
-    { text: "Heading 1", value: 1 },
-    { text: "Heading 2", value: 2 },
-    { text: "Heading 3", value: 3 },
-    { text: "Text", value: 0 },
-  ];
-
-  selectedHeading = 0;
-
-  @Watch("selectedHeading")
-  onHeadingChanged(newValue, oldValue) {
-    if (newValue === oldValue || newValue === this.getHeading()) {
-      return;
-    }
-
-    if (newValue > 0) {
-      // @ts-ignore
-      this.editor.chain().focus().toggleHeading({ level: newValue }).run();
-    } else {
-      // @ts-ignore
-      this.editor.chain().focus().setParagraph().run();
-    }
-  }
-
-  getHeading() {
-    if (this.editor.isActive("heading", { level: 1 })) {
-      return 1;
-    }
-
-    if (this.editor.isActive("heading", { level: 2 })) {
-      return 2;
-    }
-
-    if (this.editor.isActive("heading", { level: 3 })) {
-      return 3;
-    }
-
-    return 0;
-  }
-
-  // Alignment
-  alinmentItems = [
-    { text: "< 1", value: "left" },
-    { text: ">< 2", value: "center" },
-    { text: "> 3", value: "right" },
-    { text: "-", value: "justify" },
-  ];
-
-  selectedAlignment = "left";
-
-  @Watch("selectedAlignment")
-  onAlignmentChanged(newValue, oldValue) {
-    if (newValue === oldValue || newValue === this.getAlignment()) {
-      return;
-    }
-
-    // @ts-ignore
-    this.editor.chain().focus().setTextAlign(newValue).run();
-  }
-
-  getAlignment() {
-    if (this.editor.isActive({ textAlign: "left" })) {
-      return "left";
-    }
-
-    if (this.editor.isActive({ textAlign: "center" })) {
-      return "center";
-    }
-
-    if (this.editor.isActive({ textAlign: "right" })) {
-      return "right";
-    }
-
-    if (this.editor.isActive({ textAlign: "justify" })) {
-      return "justify";
-    }
-
-    return "left";
-  }
-
-  selectedColor = null;
-
-  get selectedColorBorder() {
-    let opacity = !this.disableToolbar ? "0.67" : "0.2";
-
-    if (this.selectedColor) {
-      let color = `${this.selectedColor}`;
-      if (color[0] === "r") {
-        opacity = !this.disableToolbar ? "0.75" : "0.25";
-        return `3px solid ${color.replace(")", `, ${opacity})`)}`;
-      } else {
-        opacity = !this.disableToolbar ? "C0" : "30";
-        return `3px solid ${color.concat(opacity)}`;
-      }
-    }
-
-    return `3px solid rgba(0, 0, 0, ${opacity})`;
-  }
-
-  setLink() {
-    const previousUrl = this.editor.getAttributes("link").href;
-
-    const instance = new LinkDialog({
-      vuetify: vuetify,
-      propsData: { value: previousUrl, dark: this.dark },
-    });
-
-    instance.$on("input", (url) => {
-      if (url === "" || url === null) {
-        // @ts-ignore
-        this.editor.chain().focus().extendMarkRange("link").unsetLink().run();
-      } else {
-        this.editor
-          .chain()
-          .focus()
-          .extendMarkRange("link")
-          // @ts-ignore
-          .setLink({ href: url })
-          .run();
-      }
-    });
-
-    instance.$mount();
-  }
-
-  setEmoji(e) {
-    const activator = e.target;
-
-    const EmojiPickerComponent = Vue.extend(EmojiPicker);
-    const instance: any = new EmojiPickerComponent({
-      vuetify: vuetify,
-      propsData: {
-        dark: this.dark,
-      },
-    });
-
-    instance.$mount();
-    instance.$on("emojiSelected", (emoji) => {
-      this.editor.commands.insertContent(emoji);
-    });
-
-    document.querySelector("body").appendChild(instance.$el);
-
-    // Set Position
-    const position = activator.getBoundingClientRect();
-    instance.$children[0].absoluteX = position.x + 14;
-    instance.$children[0].absoluteY = position.y + 14;
-
-    // Display emoji picker
-    instance.value = true;
-  }
-
-  imageDialog = false;
-
-  async selectImage() {
-    this.imageDialog = true;
-  }
-
-  setVideo() {
-    const previousSrc = this.editor.getAttributes("iframe").src;
-
-    const instance = new VideoDialog({
-      vuetify: vuetify,
-      propsData: { value: previousSrc, dark: this.dark },
-    });
-
-    instance.$on("input", (src) => {
-      this.editor.chain().focus().setIframe({ src }).run();
-    });
-
-    instance.$mount();
-  }
-
   created() {
     this.editor = new Editor({
       content: this.value,
       editorProps: {
-        handleKeyDown: (view, event) => {
-          if (
-            event.key === "Enter" &&
-            this.$listeners.enter &&
-            !event.shiftKey
-          ) {
-            this.$emit("enter");
-            return true;
-          }
-
-          return false;
-        },
+        handleKeyDown: this.handleKeyDown,
       },
-      onSelectionUpdate: ({ editor }) => {
-        const { color } = editor.getAttributes("textStyle");
-        this.selectedColor = color;
-
-        this.selectedHeading = this.getHeading();
-      },
-      onUpdate: ({ editor }) => this.$emit("input", editor.getHTML()),
+      onSelectionUpdate: this.onSelectionUpdate,
+      onUpdate: this.onUpdate,
       extensions: [
         TiptapKit.configure({
           bold: {},
@@ -515,7 +346,25 @@ export default class extends Vue {
           textStyle: {},
           underline: {},
           video: {},
+          mention: this.mentionItems
+            ? {
+                HTMLAttributes: {
+                  class: "mention",
+                },
+                suggestion: {
+                  items: ({ query }) => {
+                    return this.mentionItems
+                      .filter((item) =>
+                        item.text.toLowerCase().startsWith(query.toLowerCase())
+                      )
+                      .slice(0, 5);
+                  },
+                  render: renderSuggestion(this),
+                },
+              }
+            : false,
         }),
+        ...this.extensions,
       ],
       autofocus: false,
       editable: true,
@@ -541,6 +390,227 @@ export default class extends Vue {
   beforeDestroy() {
     this.editor.destroy();
   }
+
+  //
+  handleKeyDown(view, event) {
+    if (event.key === "Enter" && this.$listeners.enter && !event.shiftKey) {
+      this.$emit("enter");
+
+      return true;
+    }
+
+    return false;
+  }
+
+  onSelectionUpdate({ editor }) {
+    // Color
+    const { color } = editor.getAttributes("textStyle");
+    this.selectedColor = color;
+
+    // Heading
+    this.selectedHeading = this.getHeading();
+  }
+
+  onUpdate({ editor }) {
+    this.$emit("input", editor.getHTML());
+  }
+
+  // --- Features --- //
+
+  // Alignment
+  selectedAlignment = "left";
+
+  @Watch("selectedAlignment")
+  onAlignmentChanged(newValue, oldValue) {
+    if (newValue === oldValue || newValue === this.getAlignment()) {
+      return;
+    }
+
+    this.editor.chain().focus().setTextAlign(newValue).run();
+  }
+
+  getAlignment() {
+    if (this.editor.isActive({ textAlign: "left" })) {
+      return "left";
+    }
+
+    if (this.editor.isActive({ textAlign: "center" })) {
+      return "center";
+    }
+
+    if (this.editor.isActive({ textAlign: "right" })) {
+      return "right";
+    }
+
+    if (this.editor.isActive({ textAlign: "justify" })) {
+      return "justify";
+    }
+
+    return "left";
+  }
+
+  // Color
+  selectedColor = null;
+
+  get selectedColorBorder() {
+    let opacity = !this.disableToolbar ? "0.67" : "0.2";
+
+    if (this.selectedColor) {
+      let color = `${this.selectedColor}`;
+      if (color[0] === "r") {
+        opacity = !this.disableToolbar ? "0.75" : "0.25";
+        return `3px solid ${color.replace(")", `, ${opacity})`)}`;
+      } else {
+        opacity = !this.disableToolbar ? "C0" : "30";
+        return `3px solid ${color.concat(opacity)}`;
+      }
+    }
+
+    return `3px solid rgba(0, 0, 0, ${opacity})`;
+  }
+
+  // Emoji
+  setEmoji(e) {
+    const activator = e.target;
+
+    const EmojiPickerComponent = Vue.extend(EmojiPicker);
+    const instance: any = new EmojiPickerComponent({
+      vuetify: vuetify,
+      propsData: {
+        dark: this.dark,
+      },
+    });
+
+    instance.$mount();
+    instance.$on("emojiSelected", (emoji) => {
+      this.editor.commands.insertContent(emoji);
+    });
+
+    document.querySelector("body").appendChild(instance.$el);
+
+    // Set Position
+    const position = activator.getBoundingClientRect();
+    instance.$children[0].absoluteX = position.x + 14;
+    instance.$children[0].absoluteY = position.y + 14;
+
+    // Display emoji picker
+    instance.value = true;
+  }
+
+  // Headings
+  headingsItems = [
+    { text: "Heading 1", value: 1 },
+    { text: "Heading 2", value: 2 },
+    { text: "Heading 3", value: 3 },
+    { text: "Text", value: 0 },
+  ];
+
+  selectedHeading = 0;
+
+  @Watch("selectedHeading")
+  onHeadingChanged(newValue, oldValue) {
+    if (newValue === oldValue || newValue === this.getHeading()) {
+      return;
+    }
+
+    if (newValue > 0) {
+      this.editor.chain().focus().toggleHeading({ level: newValue }).run();
+    } else {
+      this.editor.chain().focus().setParagraph().run();
+    }
+  }
+
+  getHeading() {
+    if (this.editor.isActive("heading", { level: 1 })) {
+      return 1;
+    }
+
+    if (this.editor.isActive("heading", { level: 2 })) {
+      return 2;
+    }
+
+    if (this.editor.isActive("heading", { level: 3 })) {
+      return 3;
+    }
+
+    return 0;
+  }
+
+  // Image
+  imageDialog = false;
+
+  selectImage() {
+    this.imageDialog = true;
+  }
+
+  get imageSrc() {
+    return this.editor?.view.state.selection["node"]?.attrs?.src;
+  }
+
+  onSelectImage(value: string) {
+    this.editor.chain().focus().setImage({ src: value }).run();
+  }
+
+  // Link
+  setLink() {
+    const previousUrl = this.editor.getAttributes("link").href;
+
+    const instance = new LinkDialog({
+      vuetify: vuetify,
+      propsData: { value: previousUrl, dark: this.dark },
+    });
+
+    instance.$on("input", (url) => {
+      if (url === "" || url === null) {
+        this.editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      } else {
+        this.editor
+          .chain()
+          .focus()
+          .extendMarkRange("link")
+          .setLink({ href: url })
+          .run();
+      }
+    });
+
+    instance.$mount();
+  }
+
+  // Mention
+  @Prop() readonly mentionItems: Record<string, any>[];
+
+  mention = {
+    items: [],
+    selected: 0,
+    show: false,
+    x: 0,
+    y: 0,
+    command: (_) => 0,
+  };
+
+  selectMention(index) {
+    const item = this.mention.items[index];
+    this.mention.command({ id: item.value, label: item.text });
+    this.mention.show = false;
+
+    this.$emit("mention", item);
+  }
+
+  // Video
+  setVideo() {
+    const previousSrc = this.editor.getAttributes("iframe").src;
+
+    const instance = new VideoDialog({
+      vuetify: vuetify,
+      propsData: { value: previousSrc, dark: this.dark },
+    });
+
+    instance.$on("input", (src) => {
+      this.editor.chain().focus().setIframe({ src }).run();
+    });
+
+    instance.$mount();
+  }
 }
 </script>
 
@@ -553,7 +623,7 @@ export default class extends Vue {
   }
 
   .ProseMirror {
-    padding: 12px 18px;
+    padding: 8px 18px;
     min-height: 180px;
     overflow-wrap: anywhere;
   }
@@ -664,7 +734,10 @@ export default class extends Vue {
     letter-spacing: 0.0073529412em !important;
     font-weight: 400;
     font-family: Roboto, sans-serif !important;
-    padding: 0.75em 0 0.5em 0;
+    margin: 0.75em 0 0.5em 0;
+    &:first-child {
+      margin-top: 0.25em;
+    }
   }
 
   h2 {
@@ -673,7 +746,7 @@ export default class extends Vue {
     font-size: 1.5rem !important;
     font-weight: 400;
     letter-spacing: normal !important;
-    padding: 0.75em 0 0.5em 0;
+    margin: 0.75em 0 0.5em 0;
   }
 
   h3 {
@@ -682,7 +755,7 @@ export default class extends Vue {
     letter-spacing: 0.0125em !important;
     line-height: 2rem;
     font-family: Roboto, sans-serif !important;
-    padding: 0.75em 0 0.5em 0;
+    margin: 0.75em 0 0.5em 0;
   }
 
   blockquote {
@@ -695,24 +768,20 @@ export default class extends Vue {
   img {
     max-width: 638px;
     height: auto;
-    border: 4px solid rgba(0, 0, 0, 0);
-    margin-left: -4px;
 
     &.focus {
-      border: 4px solid rgb(80, 173, 248);
+      outline: 4px solid rgb(80, 173, 248);
     }
   }
   .iframe-wrapper {
     iframe {
       width: 640px;
       height: 360px;
-      border: 4px solid rgba(0, 0, 0, 0);
-      margin-left: -4px;
     }
 
     &.focus {
       iframe {
-        border: 4px solid rgb(80, 173, 248);
+        outline: 4px solid rgb(80, 173, 248);
       }
     }
   }
@@ -744,6 +813,10 @@ export default class extends Vue {
         flex: 1 1 auto;
       }
     }
+  }
+
+  .mention {
+    color: #08c;
   }
 }
 </style>

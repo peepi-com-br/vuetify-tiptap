@@ -174,6 +174,7 @@ export default function makeToolbarDefinitions(context) {
   for (let i of context.toolbar) {
     if (definitions[i]) {
       definitions[i].icon = icons.get(definitions[i].icon, context.$vuetify.icons.iconfont);
+      definitions[i].type = definitions[i].type || i;
       toolbarItems.push(definitions[i]);
     } else if (i[0] === "#") {
       toolbarItems.push({ type: "slot", slot: i.substring(1) });

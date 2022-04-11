@@ -6,7 +6,6 @@ export const storyFactory = options => {
     component,
     args: {
       ...args,
-      dark: false,
     },
     argTypes: {
       locale: {

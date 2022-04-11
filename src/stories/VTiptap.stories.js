@@ -1,9 +1,11 @@
-// import the helper!
 import { storyFactory } from "~storybook/util/helpers";
-// import the component to be tested
-import VTiptap from "../components/VTiptap.vue";
+import { within, userEvent, waitFor, screen } from "@storybook/testing-library";
+import { expect } from "@storybook/jest";
+import delay from "delay";
 
+import VTiptap from "../components/VTiptap.vue";
 import testHtml from "../constants/testHtml";
+import CharacterCount from "@tiptap/extension-character-count";
 
 // set the default properties
 export default storyFactory({
@@ -30,7 +32,7 @@ function makeSlots(args) {
 // create a base template to share
 const Template = (args, { argTypes }) => ({
   components: { VTiptap },
-  props: Object.keys(argTypes),
+  props: Object.keys(argTypes).filter(key => key !== "slots"),
 
   template: `
   <v-tiptap v-bind="$props" style="max-width:800px">
@@ -45,9 +47,11 @@ BasicUsage.args = {
 };
 
 export const BasicUsageWithText = Template.bind({});
+BasicUsageWithText.storyName = "Basic Usage (Value)";
 BasicUsageWithText.args = { value: testHtml };
 
 export const BasicUsageWithView = Template.bind({});
+BasicUsageWithView.storyName = "Basic Usage (View Mode)";
 BasicUsageWithView.args = { value: testHtml, view: true };
 
 // Toolbard
@@ -86,16 +90,48 @@ DisabledToolbar.args = {
   },
 };
 
+export const Mentions = Template.bind({});
+Mentions.args = {
+  mentionItems: [
+    { text: "Lxaaea Thompson", value: 1 },
+    { text: "Cyndi Lauper", value: 1 },
+    { text: "Tom Cruise", value: 1 },
+    { text: "Madonna", value: 1 },
+    { text: "Jerry Hall", value: 1 },
+    { text: "Joan Collins", value: 1 },
+    { text: "Winona Ryder", value: 1 },
+    { text: "Christina Applegate", value: 1 },
+    { text: "Alyssa Milano", value: 1 },
+    { text: "Molly Ringwald", value: 1 },
+    { text: "Ally Sheedy", value: 1 },
+    { text: "Debbie Harry", value: 1 },
+    { text: "Olivia Newton-John", value: 1 },
+    { text: "Elton John", value: 1 },
+    { text: "Michael J. Fox", value: 1 },
+    { text: "Axl Rose", value: 1 },
+    { text: "Emilio Estevez", value: 1 },
+    { text: "Ralph Macchio", value: 1 },
+    { text: "Rob Lowe", value: 1 },
+    { text: "Jennifer Grey", value: 1 },
+    { text: "Mickey Rourke", value: 1 },
+    { text: "John Cusack", value: 1 },
+    { text: "Matthew Broderick", value: 1 },
+    { text: "Justine Bateman", value: 1 },
+    { text: "Lisa Bonet", value: 1 },
+  ],
+};
+
 // Slots
 export const SlotsBottom = Template.bind({});
 SlotsBottom.storyName = "Slots: Bottom";
 SlotsBottom.args = {
+  extensions: [CharacterCount],
   slots: {
     bottom: `
     <v-toolbar dense elevation="0" class="px-4"  style="border-top: 1px solid #DDD">
       <v-btn icon small @click="onClick"><v-icon>mdi-home</v-icon></v-btn>
       <v-spacer/>
-      <small class="text-uppercase" style="opacity: 0.5;">Bottom Slot</small>
+      <small class="text-uppercase" style="opacity: 0.5;">{{ editor.storage.characterCount.characters() }} characters</small>
       <v-spacer/>
       <v-btn icon small @click="onClick"><v-icon>mdi-send</v-icon></v-btn>
     </v-toolbar>`,
@@ -114,4 +150,25 @@ SlotsPrepend.args = {
     prepend: `<v-avatar color="indigo" size="26" class="ma-2" title="Prepend Slot"><v-icon dark>mdi-account-circle</v-icon></v-avatar>`,
     append: `<v-btn icon small class="ma-2" title="Append Slot"><v-icon>mdi-send</v-icon></v-avatar>`,
   },
+};
+
+export const TestBasic = Template.bind({});
+TestBasic.args = {};
+TestBasic.play = async () => {
+  await userEvent.click(screen.getByTestId("value").children[0].children[0]);
+
+  await userEvent.keyboard("Testing", { delay: 100 });
+  await userEvent.keyboard("a", {
+    keyboardState: userEvent.keyboard("[ControlLeft>]"),
+  });
+
+  await userEvent.click(screen.getByTestId("bold"));
+  await userEvent.click(screen.getByTestId("center"));
+
+  await userEvent.click(screen.getByTestId("value").children[0].children[0]);
+  await userEvent.keyboard("{home}");
+
+  await expect(screen.getByTestId("value").children[0].innerHTML).toBe(
+    '<p style="text-align: center" class="focus"><strong>Testing</strong></p>'
+  );
 };
