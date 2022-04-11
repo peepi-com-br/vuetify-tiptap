@@ -1,5 +1,10 @@
 <template>
-  <v-dialog :dark="dark" :value="dialog" @input="dialog = $event" max-width="500px">
+  <v-dialog
+    :dark="dark"
+    :value="show"
+    @input="$emit('close', $event)"
+    max-width="500"
+  >
     <v-card>
       <v-card-title>
         <span class="headline">
@@ -14,7 +19,13 @@
       </v-card-title>
 
       <v-card-text>
-        <v-text-field v-model="url" name="url" label="URL" hide-details />
+        <v-text-field
+          :value="value"
+          @input="url = $event"
+          name="link-url"
+          label="URL"
+          hide-details
+        />
       </v-card-text>
 
       <v-card-actions>
@@ -31,25 +42,25 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class extends Vue {
-  @Prop() readonly value: string | null = null;
+  @Prop() readonly value: string | null;
 
-  @Prop({ default: false }) readonly dark: boolean;
+  @Prop({ default: false }) show: boolean;
+
+  @Prop({ default: false }) dark: boolean;
 
   url = "";
-
-  dialog = true;
-
-  created() {
-    this.url = this.value;
-  }
 
   get isDisabled() {
     return this.value === this.url || (!this.value && !this.url);
   }
 
   apply() {
-    this.dialog = false;
-    this.$emit("input", this.url);
+    this.$emit("apply", this.url);
+    this.$emit("close");
+  }
+
+  close() {
+    this.$emit("close");
   }
 }
 </script>

@@ -183,7 +183,6 @@ import VTiptap from "../src/components/VTiptap.vue";
 
 import testHtml from "@/constants/testHtml";
 import toolbarItems from "@/constants/toolbarItems";
-import collect from "collect.js";
 
 export default {
   name: "App",
@@ -208,12 +207,7 @@ export default {
 
   computed: {
     toolbarItems() {
-      return collect(toolbarItems)
-        .unique()
-        .push(">")
-        .push("#edit-html-btn")
-        .push("#clean-btn")
-        .all();
+      return toolbarItems;
     },
   },
 };

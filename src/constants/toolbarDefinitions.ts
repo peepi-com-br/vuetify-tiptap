@@ -1,4 +1,4 @@
-import icons from './icons'
+import icons from "./icons";
 
 export default function makeToolbarDefinitions(context) {
   const definitions = {
@@ -35,7 +35,7 @@ export default function makeToolbarDefinitions(context) {
     color: {
       title: "Color",
       icon: "color",
-      action: (color) => context.editor.chain().focus().setColor(color).run(),
+      action: color => context.editor.chain().focus().setColor(color).run(),
       isActive: () => context.editor.isActive("textStyle"),
     },
     highlight: {
@@ -118,19 +118,19 @@ export default function makeToolbarDefinitions(context) {
     link: {
       title: "Link",
       icon: "link",
-      action: context.setLink,
+      action: () => (context.linkDialog = true),
       isActive: () => context.editor.isActive("link"),
     },
     image: {
       title: "Image",
       icon: "image",
-      action: context.selectImage,
+      action: () => (context.imageDialog = true),
       isActive: () => context.editor.isActive("image"),
     },
     video: {
       title: "Video",
       icon: "video",
-      action: context.setVideo,
+      action: () => (context.videoDialog = true),
       isActive: () => context.editor.isActive("iframe"),
     },
     emoji: {
@@ -173,7 +173,10 @@ export default function makeToolbarDefinitions(context) {
   let toolbarItems = [];
   for (let i of context.toolbar) {
     if (definitions[i]) {
-      definitions[i].icon = icons.get(definitions[i].icon, context.$vuetify.icons.iconfont);
+      definitions[i].icon = icons.get(
+        definitions[i].icon,
+        context.$vuetify.icons.iconfont
+      );
       definitions[i].type = definitions[i].type || i;
       toolbarItems.push(definitions[i]);
     } else if (i[0] === "#") {

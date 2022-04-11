@@ -149,16 +149,35 @@
 
         <!-- Dialogs -->
         <ImageDialog
-          :value="imageSrc"
+          :value="selectedImage"
           :show="imageDialog"
           :dark="dark"
-          @close="imageDialog = $event"
-          @input="onSelectImage"
-        >
-          <template #image>
-            <slot name="image" v-bind="{ editor, imageSrc }" />
-          </template>
-        </ImageDialog>
+          @close="imageDialog = false"
+          @apply="editor.chain().focus().setImage({ src: $event }).run()"
+        />
+
+        <LinkDialog
+          :value="selectedLink"
+          :show="linkDialog"
+          :dark="dark"
+          @close="linkDialog = false"
+          @apply="
+            editor
+              .chain()
+              .focus()
+              .extendMarkRange('link')
+              .setLink({ href: $event })
+              .run()
+          "
+        />
+
+        <VideoDialog
+          :value="selectedVideo"
+          :show="videoDialog"
+          :dark="dark"
+          @close="videoDialog = false"
+          @apply="editor.chain().focus().setIframe({ src: $event }).run()"
+        />
 
         <!-- Mention -->
         <v-menu
@@ -197,44 +216,19 @@ import { Editor, EditorContent, AnyExtension } from "@tiptap/vue-2";
 import TiptapKit from "../plugins/tiptap-kit";
 import vuetify from "../plugins/vuetify";
 
-import LinkDialog from "./LinkDialog.vue";
-import VideoDialog from "./VideoDialog.vue";
-import ImageDialog from "./ImageDialog.vue";
-import EmojiPicker from "./EmojiPicker.vue";
-import ColorPicker from "./ColorPicker.vue";
+import * as components from "./components";
 
 import toolbarItems from "../constants/toolbarItems";
 import makeToolbarDefinitions from "../constants/toolbarDefinitions";
-
-import xssRules from "../constants/xssRules";
-import xss from "xss";
-
 import { renderSuggestion } from "../constants/suggestion";
 
-import {
-  VInput,
-  VCard,
-  VBtn,
-  VIcon,
-  VToolbar,
-  VSelect,
-  VSpacer,
-  VTooltip,
-} from "vuetify/lib";
+import xss from "xss";
+import xssRules from "../constants/xssRules";
 
 @Component({
   components: {
     EditorContent,
-    ColorPicker,
-    ImageDialog,
-    VInput,
-    VCard,
-    VBtn,
-    VIcon,
-    VToolbar,
-    VSelect,
-    VSpacer,
-    VTooltip,
+    ...components,
   },
 })
 export default class extends Vue {
@@ -543,41 +537,22 @@ export default class extends Vue {
   // Image
   imageDialog = false;
 
-  selectImage() {
-    this.imageDialog = true;
-  }
-
-  get imageSrc() {
-    return this.editor?.view.state.selection["node"]?.attrs?.src;
-  }
-
-  onSelectImage(value: string) {
-    this.editor.chain().focus().setImage({ src: value }).run();
+  get selectedImage() {
+    return this.editor.view.state.selection["node"]?.attrs?.src;
   }
 
   // Link
-  setLink() {
-    const previousUrl = this.editor.getAttributes("link").href;
+  linkDialog = false;
 
-    const instance = new LinkDialog({
-      vuetify: vuetify,
-      propsData: { value: previousUrl, dark: this.dark },
-    });
+  get selectedLink() {
+    return this.editor.getAttributes("link").href;
+  }
 
-    instance.$on("input", (url) => {
-      if (url === "" || url === null) {
-        this.editor.chain().focus().extendMarkRange("link").unsetLink().run();
-      } else {
-        this.editor
-          .chain()
-          .focus()
-          .extendMarkRange("link")
-          .setLink({ href: url })
-          .run();
-      }
-    });
+  // Video
+  videoDialog = false;
 
-    instance.$mount();
+  get selectedVideo() {
+    return this.editor.getAttributes("iframe").src;
   }
 
   // Mention
@@ -598,22 +573,6 @@ export default class extends Vue {
     this.mention.show = false;
 
     this.$emit("mention", item);
-  }
-
-  // Video
-  setVideo() {
-    const previousSrc = this.editor.getAttributes("iframe").src;
-
-    const instance = new VideoDialog({
-      vuetify: vuetify,
-      propsData: { value: previousSrc, dark: this.dark },
-    });
-
-    instance.$on("input", (src) => {
-      this.editor.chain().focus().setIframe({ src }).run();
-    });
-
-    instance.$mount();
   }
 }
 </script>
