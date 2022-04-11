@@ -2,11 +2,20 @@
   <v-app>
     <v-row class="my-3 px-4">
       <v-col cols="4">
-        <v-toolbar :color="$vuetify.theme.dark ? undefined : 'grey lighten-4'" dense flat >
+        <v-toolbar
+          :color="$vuetify.theme.dark ? undefined : 'grey lighten-4'"
+          dense
+          flat
+        >
           <v-toolbar-title>vuetify-tiptap</v-toolbar-title>
         </v-toolbar>
 
-        <v-list :color="$vuetify.theme.dark ? undefined : 'grey lighten-5'" subheader two-line flat>
+        <v-list
+          :color="$vuetify.theme.dark ? undefined : 'grey lighten-5'"
+          subheader
+          two-line
+          flat
+        >
           <v-subheader>Props</v-subheader>
 
           <v-list-item>
@@ -57,8 +66,8 @@
 
           <v-list-item>
             <v-select
-              v-model="icons"
-              :items="['mdIcons', 'faIcons', 'mIcons']"
+              v-model="$vuetify.icons.iconfont"
+              :items="['mdi', 'fa', 'md']"
               label="icons"
               persisten
             />
@@ -79,7 +88,6 @@
       <v-col cols="8">
         <VTiptap
           v-model="content"
-          :icons="icons"
           :hide-toolbar="hideToolbar"
           :disable-toolbar="disableToolbar"
           :toolbar="toolbar"
@@ -186,7 +194,6 @@ export default {
   data: () => ({
     content: testHtml,
     view: false,
-    icons: "mdIcons",
     outlined: true,
     dense: false,
     editHtml: false,

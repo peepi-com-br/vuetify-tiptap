@@ -1,12 +1,10 @@
 export default {
-    pack: 'mdIcons',
-
-    get(iconName: string, packName = this.pack) {
+    get(iconName: string, packName = this.pack || 'mdi') {
         return this.packs[packName][iconName];
     },
 
     packs: {
-        mIcons: {
+        md: {
             bold: 'format_bold',
             italic: 'format_italic',
             underline: 'format_underlined',
@@ -34,7 +32,7 @@ export default {
             codeBlock: 'terminal',
             clear: 'format_clear',
         },
-        mdIcons: {
+        mdi: {
             bold: 'mdi-format-bold',
             italic: 'mdi-format-italic',
             underline: 'mdi-format-underline',
@@ -62,7 +60,7 @@ export default {
             codeBlock: 'mdi-code-braces-box',
             clear: 'mdi-format-clear',
         },
-        faIcons: {
+        fa: {
             bold: 'fa-bold',
             italic: 'fa-italic',
             underline: 'fa-underline',

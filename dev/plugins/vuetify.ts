@@ -11,4 +11,7 @@ export default new Vuetify({
       dark: { background: { base: colors.blueGrey.darken4 } },
     },
   },
+  icons: {
+    iconfont: 'mdi',
+  },
 });

@@ -25,7 +25,7 @@
           v-if="!hideToolbar && toolbar && toolbar.length"
           dense
           flat
-          :color="dark ? undefined: 'grey lighten-4'"
+          :color="dark ? undefined : 'grey lighten-4'"
           height="auto"
           class="py-1"
         >
@@ -230,8 +230,6 @@ export default class extends Vue {
   @Prop({ default: true }) readonly outlined: boolean;
 
   @Prop({ default: false }) readonly disabled: boolean;
-
-  @Prop({ default: 'mdIcons' }) readonly icons: string;
 
   @Prop() readonly editorClass: string | string[] | object;
 
@@ -586,15 +584,15 @@ export default class extends Vue {
 
   .theme--dark {
     .v-select__selection {
-      color:#fcfcfc !important;
+      color: #fcfcfc !important;
     }
 
     .v-input__slot:hover {
-      background: #1e1e1e!important;
+      background: #1e1e1e !important;
     }
 
     .v-select__selection--disabled {
-        color: #fcfcfc71 !important;
+      color: #fcfcfc71 !important;
     }
   }
 
