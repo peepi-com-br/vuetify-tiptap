@@ -350,7 +350,16 @@ export default class extends Vue {
             HTMLAttributes: {
               class: "mention",
             },
-            suggestion: renderSuggestion(this),
+            suggestion: {
+              items: ({ query }) => {
+                return this.mentionItems
+                  .filter((item) =>
+                    item.text.toLowerCase().startsWith(query.toLowerCase())
+                  )
+                  .slice(0, 5);
+              },
+              render: renderSuggestion(this),
+            },
           },
         }),
         ...this.extensions,
