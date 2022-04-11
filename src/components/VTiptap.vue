@@ -456,7 +456,7 @@ export default class extends Vue {
 
   imageDialog = false;
 
-  async selectImage() {
+  selectImage() {
     this.imageDialog = true;
   }
 
@@ -581,12 +581,11 @@ export default class extends Vue {
               },
 
               render: () => {
-                let component = this;
-                let popup;
+                // eslint-disable-next-line
+                const component = this;
 
                 return {
                   onStart: (props) => {
-                    console.log("start", props);
                     component.mentionMenu = true;
                     component.mentionItems = props.items;
                     component.mentionCommand = props.command;
@@ -595,37 +594,10 @@ export default class extends Vue {
                     const { x, y } = props.clientRect();
                     component.mentionX = x;
                     component.mentionY = y + 24;
-                    console.log(props.clientRect());
-
-                    // component = new VueRenderer(MentionList, {
-                    //   // using vue 2:
-                    //   parent: this,
-                    //   propsData: props,
-                    //   // using vue 3:
-                    //   // props,
-                    //   // editor: props.editor,
-                    // });
-
-                    // popup = tippy("body", {
-                    //   getReferenceClientRect: props.clientRect,
-                    //   appendTo: () => document.body,
-                    //   content: component.element,
-                    //   showOnCreate: true,
-                    //   interactive: true,
-                    //   trigger: "manual",
-                    //   placement: "bottom-start",
-                    // });
                   },
 
                   onUpdate(props) {
-                    console.log("update", props);
                     component.mentionItems = props.items;
-
-                    // component.updateProps(props);
-
-                    // popup[0].setProps({
-                    //   getReferenceClientRect: props.clientRect,
-                    // });
                   },
 
                   onKeyDown(props) {
@@ -662,12 +634,9 @@ export default class extends Vue {
                     }
 
                     return false;
-
-                    // return component.ref?.onKeyDown(props);
                   },
 
                   onExit() {
-                    console.log("exit");
                     this.mentionMenu = false;
                   },
                 };
