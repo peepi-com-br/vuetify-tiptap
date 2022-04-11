@@ -1,9 +1,11 @@
-// import the helper!
 import { storyFactory } from "~storybook/util/helpers";
-// import the component to be tested
-import VTiptap from "../components/VTiptap.vue";
+import { within, userEvent, waitFor, screen } from "@storybook/testing-library";
+import { expect } from "@storybook/jest";
+import delay from "delay";
 
+import VTiptap from "../components/VTiptap.vue";
 import testHtml from "../constants/testHtml";
+import CharacterCount from "@tiptap/extension-character-count";
 
 // set the default properties
 export default storyFactory({
@@ -45,9 +47,11 @@ BasicUsage.args = {
 };
 
 export const BasicUsageWithText = Template.bind({});
+BasicUsageWithText.storyName = "Basic Usage (Value)";
 BasicUsageWithText.args = { value: testHtml };
 
 export const BasicUsageWithView = Template.bind({});
+BasicUsageWithView.storyName = "Basic Usage (View Mode)";
 BasicUsageWithView.args = { value: testHtml, view: true };
 
 // Toolbard
@@ -121,12 +125,13 @@ Mentions.args = {
 export const SlotsBottom = Template.bind({});
 SlotsBottom.storyName = "Slots: Bottom";
 SlotsBottom.args = {
+  extensions: [CharacterCount],
   slots: {
     bottom: `
     <v-toolbar dense elevation="0" class="px-4"  style="border-top: 1px solid #DDD">
       <v-btn icon small @click="onClick"><v-icon>mdi-home</v-icon></v-btn>
       <v-spacer/>
-      <small class="text-uppercase" style="opacity: 0.5;">Bottom Slot</small>
+      <small class="text-uppercase" style="opacity: 0.5;">{{ editor.storage.characterCount.characters() }} characters</small>
       <v-spacer/>
       <v-btn icon small @click="onClick"><v-icon>mdi-send</v-icon></v-btn>
     </v-toolbar>`,
@@ -145,4 +150,25 @@ SlotsPrepend.args = {
     prepend: `<v-avatar color="indigo" size="26" class="ma-2" title="Prepend Slot"><v-icon dark>mdi-account-circle</v-icon></v-avatar>`,
     append: `<v-btn icon small class="ma-2" title="Append Slot"><v-icon>mdi-send</v-icon></v-avatar>`,
   },
+};
+
+export const TestBasic = Template.bind({});
+TestBasic.args = {};
+TestBasic.play = async () => {
+  await userEvent.click(screen.getByTestId("value").children[0].children[0]);
+
+  await userEvent.keyboard("Testing", { delay: 100 });
+  await userEvent.keyboard("a", {
+    keyboardState: userEvent.keyboard("[ControlLeft>]"),
+  });
+
+  await userEvent.click(screen.getByTestId("bold"));
+  await userEvent.click(screen.getByTestId("center"));
+
+  await userEvent.click(screen.getByTestId("value").children[0].children[0]);
+  await userEvent.keyboard("{home}");
+
+  await expect(screen.getByTestId("value").children[0].innerHTML).toBe(
+    '<p style="text-align: center" class="focus"><strong>Testing</strong></p>'
+  );
 };
