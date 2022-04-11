@@ -10,7 +10,7 @@
     :dark="dark"
   >
     <VEmojiPicker
-      :labelSearch="'search'"
+      :labelSearch="__('search')"
       :dark="dark"
       emojisByRow="10"
       emojiSize="25"
@@ -21,18 +21,20 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 import { VEmojiPicker } from "v-emoji-picker";
+import { mixins } from "vue-class-component";
+import i18n from "@/mixins/i18n";
 
 @Component({
   components: { VEmojiPicker },
 })
-export default class extends Vue {
+export default class extends mixins(i18n) {
   value = false;
 
   @Prop() readonly activator: any;
 
-  @Prop({default: false}) readonly dark: boolean;
+  @Prop({ default: false }) readonly dark: boolean;
 
   absoluteX = 0;
 
@@ -45,7 +47,6 @@ export default class extends Vue {
   @Watch("value")
   async onValueChange() {
     if (!this.value) {
-
       this.$destroy();
       this.$el.parentNode.removeChild(this.$el);
     }

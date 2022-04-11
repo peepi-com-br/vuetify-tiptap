@@ -1,9 +1,14 @@
 <template>
-  <v-dialog :dark="dark" :value="show" @input="$emit('close', $event)" max-width="500">
+  <v-dialog
+    :dark="dark"
+    :value="show"
+    @input="$emit('close', $event)"
+    max-width="500"
+  >
     <v-card>
       <v-card-title>
         <span class="headline">
-          {{ "Edit Image" }}
+          {{ __("dialogs.image.title") }}
         </span>
 
         <v-spacer />
@@ -21,7 +26,7 @@
 
       <v-card-actions>
         <v-btn text @click="apply">
-          {{ "apply" }}
+          {{ __("apply") }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -29,10 +34,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
+import { mixins } from "vue-class-component";
+import i18n from "@/mixins/i18n";
 
 @Component
-export default class extends Vue {
+export default class extends mixins(i18n) {
   @Prop() readonly value: boolean | null;
 
   @Prop({ default: false }) show: boolean;

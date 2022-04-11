@@ -209,6 +209,9 @@ import xss from "xss";
 
 import { renderSuggestion } from "../constants/suggestion";
 
+import { mixins } from "vue-class-component";
+import i18n from "@/mixins/i18n";
+
 import {
   VInput,
   VCard,
@@ -235,7 +238,7 @@ import {
     VTooltip,
   },
 })
-export default class extends Vue {
+export default class extends mixins(i18n) {
   @Prop({ default: "" }) readonly value: string | null;
 
   // Appearance
@@ -499,10 +502,10 @@ export default class extends Vue {
 
   // Headings
   headingsItems = [
-    { text: "Heading 1", value: 1 },
-    { text: "Heading 2", value: 2 },
-    { text: "Heading 3", value: 3 },
-    { text: "Text", value: 0 },
+    { text: `${this.__("heading")} 1`, value: 1 },
+    { text: `${this.__("heading")} 2`, value: 2 },
+    { text: `${this.__("heading")} 3`, value: 3 },
+    { text: this.__("text"), value: 0 },
   ];
 
   selectedHeading = 0;

@@ -1,8 +1,15 @@
 <template>
-  <v-dialog :dark="dark" :value="dialog" @input="dialog = $event" max-width="500px">
+  <v-dialog
+    :dark="dark"
+    :value="dialog"
+    @input="dialog = $event"
+    max-width="500px"
+  >
     <v-card>
       <v-card-title>
-        <span class="headline">{{ "Edit Video" }}</span>
+        <span class="headline">
+          {{ __("dialogs.video.title") }}
+        </span>
 
         <v-spacer />
 
@@ -22,7 +29,7 @@
 
       <v-card-actions>
         <v-btn text @click="apply">
-          {{ "Apply" }}
+          {{ __("apply") }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -30,10 +37,12 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
+import { mixins } from "vue-class-component";
+import i18n from "@/mixins/i18n";
 
 @Component
-export default class extends Vue {
+export default class extends mixins(i18n) {
   @Prop() readonly value: string | null;
 
   @Prop({ default: false }) readonly dark: boolean;

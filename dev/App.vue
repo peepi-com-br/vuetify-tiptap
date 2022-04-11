@@ -2,11 +2,20 @@
   <v-app>
     <v-row class="my-3 px-4">
       <v-col cols="4">
-        <v-toolbar :color="$vuetify.theme.dark ? undefined : 'grey lighten-4'" dense flat >
+        <v-toolbar
+          :color="$vuetify.theme.dark ? undefined : 'grey lighten-4'"
+          dense
+          flat
+        >
           <v-toolbar-title>vuetify-tiptap</v-toolbar-title>
         </v-toolbar>
 
-        <v-list :color="$vuetify.theme.dark ? undefined : 'grey lighten-5'" subheader two-line flat>
+        <v-list
+          :color="$vuetify.theme.dark ? undefined : 'grey lighten-5'"
+          subheader
+          two-line
+          flat
+        >
           <v-subheader>Props</v-subheader>
 
           <v-list-item>
@@ -61,6 +70,15 @@
               :items="toolbarItems"
               label="toolbar"
               multiple
+              persisten
+            />
+          </v-list-item>
+
+          <v-list-item>
+            <v-select
+              v-model="$vuetify.lang.current"
+              :items="['en', 'es', 'pt', 'de']"
+              label="toolbar"
               persisten
             />
           </v-list-item>
@@ -165,7 +183,6 @@ import VTiptap from "../src/components/VTiptap.vue";
 
 import testHtml from "@/constants/testHtml";
 import toolbarItems from "@/constants/toolbarItems";
-import collect from "collect.js";
 
 export default {
   name: "App",
@@ -191,12 +208,7 @@ export default {
 
   computed: {
     toolbarItems() {
-      return collect(toolbarItems)
-        .unique()
-        .push(">")
-        .push("#edit-html-btn")
-        .push("#clean-btn")
-        .all();
+      return toolbarItems;
     },
   },
 };
