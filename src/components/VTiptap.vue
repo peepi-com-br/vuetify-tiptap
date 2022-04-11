@@ -407,13 +407,6 @@ export default class extends Vue {
   // --- Features --- //
 
   // Alignment
-  alinmentItems = [
-    { text: "< 1", value: "left" },
-    { text: ">< 2", value: "center" },
-    { text: "> 3", value: "right" },
-    { text: "-", value: "justify" },
-  ];
-
   selectedAlignment = "left";
 
   @Watch("selectedAlignment")
