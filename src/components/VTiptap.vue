@@ -289,191 +289,8 @@ export default class extends Vue {
     });
   }
 
-  get imageSrc() {
-    return this.editor?.view.state.selection["node"]?.attrs?.src;
-  }
-
-  onSelectImage(value: string) {
-    // @ts-ignore
-    this.editor.chain().focus().setImage({ src: value }).run();
-  }
-
   get items() {
     return makeToolbarDefinitions(this);
-  }
-
-  // Headings
-  headingsItems = [
-    { text: "Heading 1", value: 1 },
-    { text: "Heading 2", value: 2 },
-    { text: "Heading 3", value: 3 },
-    { text: "Text", value: 0 },
-  ];
-
-  selectedHeading = 0;
-
-  @Watch("selectedHeading")
-  onHeadingChanged(newValue, oldValue) {
-    if (newValue === oldValue || newValue === this.getHeading()) {
-      return;
-    }
-
-    if (newValue > 0) {
-      // @ts-ignore
-      this.editor.chain().focus().toggleHeading({ level: newValue }).run();
-    } else {
-      // @ts-ignore
-      this.editor.chain().focus().setParagraph().run();
-    }
-  }
-
-  getHeading() {
-    if (this.editor.isActive("heading", { level: 1 })) {
-      return 1;
-    }
-
-    if (this.editor.isActive("heading", { level: 2 })) {
-      return 2;
-    }
-
-    if (this.editor.isActive("heading", { level: 3 })) {
-      return 3;
-    }
-
-    return 0;
-  }
-
-  // Alignment
-  alinmentItems = [
-    { text: "< 1", value: "left" },
-    { text: ">< 2", value: "center" },
-    { text: "> 3", value: "right" },
-    { text: "-", value: "justify" },
-  ];
-
-  selectedAlignment = "left";
-
-  @Watch("selectedAlignment")
-  onAlignmentChanged(newValue, oldValue) {
-    if (newValue === oldValue || newValue === this.getAlignment()) {
-      return;
-    }
-
-    // @ts-ignore
-    this.editor.chain().focus().setTextAlign(newValue).run();
-  }
-
-  getAlignment() {
-    if (this.editor.isActive({ textAlign: "left" })) {
-      return "left";
-    }
-
-    if (this.editor.isActive({ textAlign: "center" })) {
-      return "center";
-    }
-
-    if (this.editor.isActive({ textAlign: "right" })) {
-      return "right";
-    }
-
-    if (this.editor.isActive({ textAlign: "justify" })) {
-      return "justify";
-    }
-
-    return "left";
-  }
-
-  selectedColor = null;
-
-  get selectedColorBorder() {
-    let opacity = !this.disableToolbar ? "0.67" : "0.2";
-
-    if (this.selectedColor) {
-      let color = `${this.selectedColor}`;
-      if (color[0] === "r") {
-        opacity = !this.disableToolbar ? "0.75" : "0.25";
-        return `3px solid ${color.replace(")", `, ${opacity})`)}`;
-      } else {
-        opacity = !this.disableToolbar ? "C0" : "30";
-        return `3px solid ${color.concat(opacity)}`;
-      }
-    }
-
-    return `3px solid rgba(0, 0, 0, ${opacity})`;
-  }
-
-  setLink() {
-    const previousUrl = this.editor.getAttributes("link").href;
-
-    const instance = new LinkDialog({
-      vuetify: vuetify,
-      propsData: { value: previousUrl, dark: this.dark },
-    });
-
-    instance.$on("input", (url) => {
-      if (url === "" || url === null) {
-        // @ts-ignore
-        this.editor.chain().focus().extendMarkRange("link").unsetLink().run();
-      } else {
-        this.editor
-          .chain()
-          .focus()
-          .extendMarkRange("link")
-          // @ts-ignore
-          .setLink({ href: url })
-          .run();
-      }
-    });
-
-    instance.$mount();
-  }
-
-  setEmoji(e) {
-    const activator = e.target;
-
-    const EmojiPickerComponent = Vue.extend(EmojiPicker);
-    const instance: any = new EmojiPickerComponent({
-      vuetify: vuetify,
-      propsData: {
-        dark: this.dark,
-      },
-    });
-
-    instance.$mount();
-    instance.$on("emojiSelected", (emoji) => {
-      this.editor.commands.insertContent(emoji);
-    });
-
-    document.querySelector("body").appendChild(instance.$el);
-
-    // Set Position
-    const position = activator.getBoundingClientRect();
-    instance.$children[0].absoluteX = position.x + 14;
-    instance.$children[0].absoluteY = position.y + 14;
-
-    // Display emoji picker
-    instance.value = true;
-  }
-
-  imageDialog = false;
-
-  selectImage() {
-    this.imageDialog = true;
-  }
-
-  setVideo() {
-    const previousSrc = this.editor.getAttributes("iframe").src;
-
-    const instance = new VideoDialog({
-      vuetify: vuetify,
-      propsData: { value: previousSrc, dark: this.dark },
-    });
-
-    instance.$on("input", (src) => {
-      this.editor.chain().focus().setIframe({ src }).run();
-    });
-
-    instance.$mount();
   }
 
   created() {
@@ -582,6 +399,180 @@ export default class extends Vue {
     this.$emit("input", editor.getHTML());
   }
 
+  // --- Features --- //
+
+  // Alignment
+  alinmentItems = [
+    { text: "< 1", value: "left" },
+    { text: ">< 2", value: "center" },
+    { text: "> 3", value: "right" },
+    { text: "-", value: "justify" },
+  ];
+
+  selectedAlignment = "left";
+
+  @Watch("selectedAlignment")
+  onAlignmentChanged(newValue, oldValue) {
+    if (newValue === oldValue || newValue === this.getAlignment()) {
+      return;
+    }
+
+    // @ts-ignore
+    this.editor.chain().focus().setTextAlign(newValue).run();
+  }
+
+  getAlignment() {
+    if (this.editor.isActive({ textAlign: "left" })) {
+      return "left";
+    }
+
+    if (this.editor.isActive({ textAlign: "center" })) {
+      return "center";
+    }
+
+    if (this.editor.isActive({ textAlign: "right" })) {
+      return "right";
+    }
+
+    if (this.editor.isActive({ textAlign: "justify" })) {
+      return "justify";
+    }
+
+    return "left";
+  }
+
+  // Color
+  selectedColor = null;
+
+  get selectedColorBorder() {
+    let opacity = !this.disableToolbar ? "0.67" : "0.2";
+
+    if (this.selectedColor) {
+      let color = `${this.selectedColor}`;
+      if (color[0] === "r") {
+        opacity = !this.disableToolbar ? "0.75" : "0.25";
+        return `3px solid ${color.replace(")", `, ${opacity})`)}`;
+      } else {
+        opacity = !this.disableToolbar ? "C0" : "30";
+        return `3px solid ${color.concat(opacity)}`;
+      }
+    }
+
+    return `3px solid rgba(0, 0, 0, ${opacity})`;
+  }
+
+  // Emoji
+  setEmoji(e) {
+    const activator = e.target;
+
+    const EmojiPickerComponent = Vue.extend(EmojiPicker);
+    const instance: any = new EmojiPickerComponent({
+      vuetify: vuetify,
+      propsData: {
+        dark: this.dark,
+      },
+    });
+
+    instance.$mount();
+    instance.$on("emojiSelected", (emoji) => {
+      this.editor.commands.insertContent(emoji);
+    });
+
+    document.querySelector("body").appendChild(instance.$el);
+
+    // Set Position
+    const position = activator.getBoundingClientRect();
+    instance.$children[0].absoluteX = position.x + 14;
+    instance.$children[0].absoluteY = position.y + 14;
+
+    // Display emoji picker
+    instance.value = true;
+  }
+
+  // Headings
+  headingsItems = [
+    { text: "Heading 1", value: 1 },
+    { text: "Heading 2", value: 2 },
+    { text: "Heading 3", value: 3 },
+    { text: "Text", value: 0 },
+  ];
+
+  selectedHeading = 0;
+
+  @Watch("selectedHeading")
+  onHeadingChanged(newValue, oldValue) {
+    if (newValue === oldValue || newValue === this.getHeading()) {
+      return;
+    }
+
+    if (newValue > 0) {
+      // @ts-ignore
+      this.editor.chain().focus().toggleHeading({ level: newValue }).run();
+    } else {
+      // @ts-ignore
+      this.editor.chain().focus().setParagraph().run();
+    }
+  }
+
+  getHeading() {
+    if (this.editor.isActive("heading", { level: 1 })) {
+      return 1;
+    }
+
+    if (this.editor.isActive("heading", { level: 2 })) {
+      return 2;
+    }
+
+    if (this.editor.isActive("heading", { level: 3 })) {
+      return 3;
+    }
+
+    return 0;
+  }
+
+  // Image
+  imageDialog = false;
+
+  selectImage() {
+    this.imageDialog = true;
+  }
+
+  get imageSrc() {
+    return this.editor?.view.state.selection["node"]?.attrs?.src;
+  }
+
+  onSelectImage(value: string) {
+    // @ts-ignore
+    this.editor.chain().focus().setImage({ src: value }).run();
+  }
+
+  // Link
+  setLink() {
+    const previousUrl = this.editor.getAttributes("link").href;
+
+    const instance = new LinkDialog({
+      vuetify: vuetify,
+      propsData: { value: previousUrl, dark: this.dark },
+    });
+
+    instance.$on("input", (url) => {
+      if (url === "" || url === null) {
+        // @ts-ignore
+        this.editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      } else {
+        this.editor
+          .chain()
+          .focus()
+          .extendMarkRange("link")
+          // @ts-ignore
+          .setLink({ href: url })
+          .run();
+      }
+    });
+
+    instance.$mount();
+  }
+
   // Mention
   mention = {
     items: [],
@@ -598,6 +589,22 @@ export default class extends Vue {
     this.mention.show = false;
 
     this.$emit("mention", item);
+  }
+
+  // Video
+  setVideo() {
+    const previousSrc = this.editor.getAttributes("iframe").src;
+
+    const instance = new VideoDialog({
+      vuetify: vuetify,
+      propsData: { value: previousSrc, dark: this.dark },
+    });
+
+    instance.$on("input", (src) => {
+      this.editor.chain().focus().setIframe({ src }).run();
+    });
+
+    instance.$mount();
   }
 }
 </script>
