@@ -86,6 +86,9 @@ DisabledToolbar.args = {
   },
 };
 
+export const Mentions = Template.bind({});
+Mentions.args = {};
+
 // Slots
 export const SlotsBottom = Template.bind({});
 SlotsBottom.storyName = "Slots: Bottom";

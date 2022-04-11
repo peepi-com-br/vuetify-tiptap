@@ -22,6 +22,7 @@ import Paragraph, { ParagraphOptions } from "@tiptap/extension-paragraph";
 import Strike, { StrikeOptions } from "@tiptap/extension-strike";
 import Text from "@tiptap/extension-text";
 
+//
 import Placeholder, { PlaceholderOptions } from "@tiptap/extension-placeholder";
 import TextAlign, { TextAlignOptions } from "@tiptap/extension-text-align";
 import Focus, { FocusOptions } from "@tiptap/extension-focus";
@@ -34,6 +35,7 @@ import TaskItem, { TaskItemOptions } from "@tiptap/extension-task-item";
 import TextStyle, { TextStyleOptions } from "@tiptap/extension-text-style";
 import Underline, { UnderlineOptions } from "@tiptap/extension-underline";
 import Video from "@/plugins/video";
+import Mention from "@tiptap/extension-mention";
 
 export interface StarterKitOptions {
   blockquote: Partial<BlockquoteOptions> | false;
@@ -66,6 +68,7 @@ export interface StarterKitOptions {
   textStyle: Partial<TextStyleOptions> | false;
   underline: Partial<UnderlineOptions> | false;
   video: any;
+  mention: any;
 }
 
 export default Extension.create<StarterKitOptions>({
@@ -192,6 +195,10 @@ export default Extension.create<StarterKitOptions>({
 
     if (this.options.text !== false) {
       extensions.push(Text.configure(this.options.text));
+    }
+
+    if (this.options.mention !== false) {
+      extensions.push(Mention.configure(this.options.mention));
     }
 
     return extensions;

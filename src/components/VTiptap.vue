@@ -154,6 +154,32 @@
           <slot name="image" v-bind="{ editor, imageSrc }" />
         </template>
       </ImageDialog>
+
+      <!-- Mention -->
+      <v-menu
+        v-model="mentionMenu"
+        dense
+        absolute
+        offset-y
+        class="items"
+        ref="x"
+        :position-x="mentionX"
+        :position-y="mentionY"
+      >
+        <v-list dense>
+          <v-list-item
+            class="item"
+            :style="{
+              background: index === mentionSelected ? '#CCC' : undefined,
+            }"
+            v-for="(item, index) in mentionItems"
+            :key="item.text"
+            @click="selectMention(index)"
+          >
+            <v-list-item-title>{{ item.text }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-input>
   </div>
 </template>
@@ -515,6 +541,139 @@ export default class extends Vue {
           textStyle: {},
           underline: {},
           video: {},
+          mention: {
+            HTMLAttributes: {
+              class: "mention",
+            },
+            suggestion: {
+              items: ({ query }) => {
+                return [
+                  { text: "Laaea Thompson", value: 1 },
+                  { text: "Cyndi Lauper", value: 1 },
+                  { text: "Tom Cruise", value: 1 },
+                  { text: "Madonna", value: 1 },
+                  { text: "Jerry Hall", value: 1 },
+                  { text: "Joan Collins", value: 1 },
+                  { text: "Winona Ryder", value: 1 },
+                  { text: "Christina Applegate", value: 1 },
+                  { text: "Alyssa Milano", value: 1 },
+                  { text: "Molly Ringwald", value: 1 },
+                  { text: "Ally Sheedy", value: 1 },
+                  { text: "Debbie Harry", value: 1 },
+                  { text: "Olivia Newton-John", value: 1 },
+                  { text: "Elton John", value: 1 },
+                  { text: "Michael J. Fox", value: 1 },
+                  { text: "Axl Rose", value: 1 },
+                  { text: "Emilio Estevez", value: 1 },
+                  { text: "Ralph Macchio", value: 1 },
+                  { text: "Rob Lowe", value: 1 },
+                  { text: "Jennifer Grey", value: 1 },
+                  { text: "Mickey Rourke", value: 1 },
+                  { text: "John Cusack", value: 1 },
+                  { text: "Matthew Broderick", value: 1 },
+                  { text: "Justine Bateman", value: 1 },
+                  { text: "Lisa Bonet", value: 1 },
+                ]
+                  .filter((item) =>
+                    item.text.toLowerCase().startsWith(query.toLowerCase())
+                  )
+                  .slice(0, 5);
+              },
+
+              render: () => {
+                let component = this;
+                let popup;
+
+                return {
+                  onStart: (props) => {
+                    console.log("start", props);
+                    component.mentionMenu = true;
+                    component.mentionItems = props.items;
+                    component.mentionCommand = props.command;
+                    component.mentionSelected = 0;
+
+                    const { x, y } = props.clientRect();
+                    component.mentionX = x;
+                    component.mentionY = y + 24;
+                    console.log(props.clientRect());
+
+                    // component = new VueRenderer(MentionList, {
+                    //   // using vue 2:
+                    //   parent: this,
+                    //   propsData: props,
+                    //   // using vue 3:
+                    //   // props,
+                    //   // editor: props.editor,
+                    // });
+
+                    // popup = tippy("body", {
+                    //   getReferenceClientRect: props.clientRect,
+                    //   appendTo: () => document.body,
+                    //   content: component.element,
+                    //   showOnCreate: true,
+                    //   interactive: true,
+                    //   trigger: "manual",
+                    //   placement: "bottom-start",
+                    // });
+                  },
+
+                  onUpdate(props) {
+                    console.log("update", props);
+                    component.mentionItems = props.items;
+
+                    // component.updateProps(props);
+
+                    // popup[0].setProps({
+                    //   getReferenceClientRect: props.clientRect,
+                    // });
+                  },
+
+                  onKeyDown(props) {
+                    console.log("keydown", props);
+
+                    if (props.event.key === "Escape") {
+                      component.mentionMenu = false;
+
+                      return true;
+                    }
+
+                    if (event.key === "ArrowUp") {
+                      component.mentionSelected =
+                        (component.mentionSelected +
+                          component.mentionItems.length -
+                          1) %
+                        component.mentionItems.length;
+
+                      return true;
+                    }
+
+                    if (event.key === "ArrowDown") {
+                      component.mentionSelected =
+                        (component.mentionSelected + 1) %
+                        component.mentionItems.length;
+
+                      return true;
+                    }
+
+                    if (event.key === "Enter") {
+                      component.selectMention(component.mentionSelected);
+
+                      return true;
+                    }
+
+                    return false;
+
+                    // return component.ref?.onKeyDown(props);
+                  },
+
+                  onExit() {
+                    console.log("exit");
+                    this.mentionMenu = false;
+                  },
+                };
+              },
+            },
+          },
         }),
       ],
       autofocus: false,
@@ -541,6 +700,26 @@ export default class extends Vue {
   beforeDestroy() {
     this.editor.destroy();
   }
+
+  // Mention
+  mentionSelected = 0;
+
+  mentionItems = [{ text: "ok", value: "ok" }];
+
+  mentionMenu = false;
+
+  mentionCommand = (object) => 0;
+
+  selectMention(index) {
+    const item = this.mentionItems[index];
+
+    this.mentionCommand({ id: item.value, label: item.text });
+    this.mentionMenu = false;
+  }
+
+  mentionX = 0;
+
+  mentionY = 0;
 }
 </script>
 
@@ -736,6 +915,10 @@ export default class extends Vue {
         flex: 1 1 auto;
       }
     }
+  }
+
+  .mention {
+    color: #08c;
   }
 }
 </style>
