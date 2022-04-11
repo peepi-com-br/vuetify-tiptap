@@ -190,7 +190,6 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-import collect from "collect.js";
 
 import { Editor, EditorContent, AnyExtension } from "@tiptap/vue-2";
 import TiptapKit from "../plugins/tiptap-kit";
@@ -199,7 +198,6 @@ import vuetify from "../plugins/vuetify";
 import LinkDialog from "./LinkDialog.vue";
 import VideoDialog from "./VideoDialog.vue";
 import ImageDialog from "./ImageDialog.vue";
-
 import EmojiPicker from "./EmojiPicker.vue";
 import ColorPicker from "./ColorPicker.vue";
 
@@ -240,22 +238,10 @@ import {
 export default class extends Vue {
   @Prop({ default: "" }) readonly value: string | null;
 
+  // Appearance
   @Prop({ default: false }) readonly view: boolean;
 
   @Prop({ default: false }) readonly dark: boolean;
-
-  @Prop() readonly placeholder: string | null;
-
-  @Prop({ default: () => toolbarItems }) readonly toolbar: string[];
-
-  @Prop({ default: () => xssRules })
-  readonly xssOptions: Record<string, string[]>;
-
-  @Prop({ default: false }) readonly hideToolbar: boolean;
-
-  @Prop({ default: false }) readonly disableToolbar: boolean;
-
-  @Prop({ default: true }) readonly xss: boolean | string[];
 
   @Prop({ default: false }) readonly dense: boolean;
 
@@ -263,11 +249,25 @@ export default class extends Vue {
 
   @Prop({ default: false }) readonly disabled: boolean;
 
+  @Prop() readonly placeholder: string | null;
+
+  // Toolbar
+  @Prop({ default: () => toolbarItems }) readonly toolbar: string[];
+
+  @Prop({ default: false }) readonly hideToolbar: boolean;
+
+  @Prop({ default: false }) readonly disableToolbar: boolean;
+
+  // xss
+  @Prop({ default: true }) readonly xss: boolean | string[];
+
+  @Prop({ default: () => xssRules })
+  readonly xssOptions: Record<string, string[]>;
+
+  // Editor
   @Prop({ default: () => [] }) readonly extensions: AnyExtension[];
 
   @Prop() readonly editorClass: string | string[] | object;
-
-  @Prop() readonly mentionItems: Record<string, any>[];
 
   editor: Editor | null = null;
 
@@ -281,12 +281,15 @@ export default class extends Vue {
       .replace("watch?v=", "embed/")
       .replace("https://vimeo.com/", "https://player.vimeo.com/video/");
 
-    let whiteList: any = collect(this.xssOptions);
-    whiteList = Array.isArray(this.xss) ? whiteList.only(this.xss) : whiteList;
+    let whiteList = this.xssOptions;
+    if (Array.isArray(this.xss)) {
+      whiteList = this.xss.reduce((acc, rule) => {
+        acc[rule] = this.xssOptions[rule];
+        return acc;
+      }, {});
+    }
 
-    return xss(value, {
-      whiteList: whiteList.all(),
-    });
+    return xss(value, { whiteList });
   }
 
   get items() {
@@ -389,9 +392,11 @@ export default class extends Vue {
   }
 
   onSelectionUpdate({ editor }) {
+    // Color
     const { color } = editor.getAttributes("textStyle");
     this.selectedColor = color;
 
+    // Heading
     this.selectedHeading = this.getHeading();
   }
 
@@ -574,6 +579,8 @@ export default class extends Vue {
   }
 
   // Mention
+  @Prop() readonly mentionItems: Record<string, any>[];
+
   mention = {
     items: [],
     selected: 0,
