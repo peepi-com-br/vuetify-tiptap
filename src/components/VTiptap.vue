@@ -157,22 +157,22 @@
 
       <!-- Mention -->
       <v-menu
-        v-model="mentionMenu"
+        v-model="mention.show"
         dense
         absolute
+        :position-x="mention.x"
+        :position-y="mention.y"
         offset-y
+        max-height="220px"
         class="items"
-        ref="x"
-        :position-x="mentionX"
-        :position-y="mentionY"
       >
         <v-list dense>
           <v-list-item
             class="item"
             :style="{
-              background: index === mentionSelected ? '#CCC' : undefined,
+              background: index === mention.selected ? '#EEE' : undefined,
             }"
-            v-for="(item, index) in mentionItems"
+            v-for="(item, index) in mention.items"
             :key="item.text"
             @click="selectMention(index)"
           >
@@ -204,6 +204,8 @@ import makeToolbarDefinitions from "../constants/toolbarDefinitions";
 
 import xssRules from "../constants/xssRules";
 import xss from "xss";
+
+import { renderSuggestion } from "../constants/suggestion";
 
 import {
   VInput,
@@ -258,6 +260,8 @@ export default class extends Vue {
   @Prop({ default: false }) readonly disabled: boolean;
 
   @Prop() readonly editorClass: string | string[] | object;
+
+  @Prop() readonly mentionItems: Record<string, any>[];
 
   editor: Editor | null = null;
 
@@ -479,26 +483,10 @@ export default class extends Vue {
     this.editor = new Editor({
       content: this.value,
       editorProps: {
-        handleKeyDown: (view, event) => {
-          if (
-            event.key === "Enter" &&
-            this.$listeners.enter &&
-            !event.shiftKey
-          ) {
-            this.$emit("enter");
-            return true;
-          }
-
-          return false;
-        },
+        handleKeyDown: this.handleKeyDown,
       },
-      onSelectionUpdate: ({ editor }) => {
-        const { color } = editor.getAttributes("textStyle");
-        this.selectedColor = color;
-
-        this.selectedHeading = this.getHeading();
-      },
-      onUpdate: ({ editor }) => this.$emit("input", editor.getHTML()),
+      onSelectionUpdate: this.onSelectionUpdate,
+      onUpdate: this.onUpdate,
       extensions: [
         TiptapKit.configure({
           bold: {},
@@ -545,103 +533,7 @@ export default class extends Vue {
             HTMLAttributes: {
               class: "mention",
             },
-            suggestion: {
-              items: ({ query }) => {
-                return [
-                  { text: "Laaea Thompson", value: 1 },
-                  { text: "Cyndi Lauper", value: 1 },
-                  { text: "Tom Cruise", value: 1 },
-                  { text: "Madonna", value: 1 },
-                  { text: "Jerry Hall", value: 1 },
-                  { text: "Joan Collins", value: 1 },
-                  { text: "Winona Ryder", value: 1 },
-                  { text: "Christina Applegate", value: 1 },
-                  { text: "Alyssa Milano", value: 1 },
-                  { text: "Molly Ringwald", value: 1 },
-                  { text: "Ally Sheedy", value: 1 },
-                  { text: "Debbie Harry", value: 1 },
-                  { text: "Olivia Newton-John", value: 1 },
-                  { text: "Elton John", value: 1 },
-                  { text: "Michael J. Fox", value: 1 },
-                  { text: "Axl Rose", value: 1 },
-                  { text: "Emilio Estevez", value: 1 },
-                  { text: "Ralph Macchio", value: 1 },
-                  { text: "Rob Lowe", value: 1 },
-                  { text: "Jennifer Grey", value: 1 },
-                  { text: "Mickey Rourke", value: 1 },
-                  { text: "John Cusack", value: 1 },
-                  { text: "Matthew Broderick", value: 1 },
-                  { text: "Justine Bateman", value: 1 },
-                  { text: "Lisa Bonet", value: 1 },
-                ]
-                  .filter((item) =>
-                    item.text.toLowerCase().startsWith(query.toLowerCase())
-                  )
-                  .slice(0, 5);
-              },
-
-              render: () => {
-                // eslint-disable-next-line
-                const component = this;
-
-                return {
-                  onStart: (props) => {
-                    component.mentionMenu = true;
-                    component.mentionItems = props.items;
-                    component.mentionCommand = props.command;
-                    component.mentionSelected = 0;
-
-                    const { x, y } = props.clientRect();
-                    component.mentionX = x;
-                    component.mentionY = y + 24;
-                  },
-
-                  onUpdate(props) {
-                    component.mentionItems = props.items;
-                  },
-
-                  onKeyDown(props) {
-                    console.log("keydown", props);
-
-                    if (props.event.key === "Escape") {
-                      component.mentionMenu = false;
-
-                      return true;
-                    }
-
-                    if (event.key === "ArrowUp") {
-                      component.mentionSelected =
-                        (component.mentionSelected +
-                          component.mentionItems.length -
-                          1) %
-                        component.mentionItems.length;
-
-                      return true;
-                    }
-
-                    if (event.key === "ArrowDown") {
-                      component.mentionSelected =
-                        (component.mentionSelected + 1) %
-                        component.mentionItems.length;
-
-                      return true;
-                    }
-
-                    if (event.key === "Enter") {
-                      component.selectMention(component.mentionSelected);
-
-                      return true;
-                    }
-
-                    return false;
-                  },
-
-                  onExit() {
-                    this.mentionMenu = false;
-                  },
-                };
-              },
-            },
+            suggestion: renderSuggestion(this),
           },
         }),
       ],
@@ -670,25 +562,45 @@ export default class extends Vue {
     this.editor.destroy();
   }
 
-  // Mention
-  mentionSelected = 0;
+  //
+  handleKeyDown(view, event) {
+    if (event.key === "Enter" && this.$listeners.enter && !event.shiftKey) {
+      this.$emit("enter");
 
-  mentionItems = [{ text: "ok", value: "ok" }];
+      return true;
+    }
 
-  mentionMenu = false;
-
-  mentionCommand = (object) => 0;
-
-  selectMention(index) {
-    const item = this.mentionItems[index];
-
-    this.mentionCommand({ id: item.value, label: item.text });
-    this.mentionMenu = false;
+    return false;
   }
 
-  mentionX = 0;
+  onSelectionUpdate({ editor }) {
+    const { color } = editor.getAttributes("textStyle");
+    this.selectedColor = color;
 
-  mentionY = 0;
+    this.selectedHeading = this.getHeading();
+  }
+
+  onUpdate({ editor }) {
+    this.$emit("input", editor.getHTML());
+  }
+
+  // Mention
+  mention = {
+    items: [],
+    selected: 0,
+    show: false,
+    x: 0,
+    y: 0,
+    command: (_) => 0,
+  };
+
+  selectMention(index) {
+    const item = this.mention.items[index];
+    this.mention.command({ id: item.value, label: item.text });
+    this.mention.show = false;
+
+    this.$emit("mention", item);
+  }
 }
 </script>
 
@@ -837,7 +749,6 @@ export default class extends Vue {
   img {
     max-width: 638px;
     height: auto;
-    margin-left: -4px;
 
     &.focus {
       outline: 4px solid rgb(80, 173, 248);
@@ -847,7 +758,6 @@ export default class extends Vue {
     iframe {
       width: 640px;
       height: 360px;
-      margin-left: -4px;
     }
 
     &.focus {
