@@ -689,24 +689,22 @@ export default class extends Vue {
   img {
     max-width: 638px;
     height: auto;
-    border: 4px solid rgba(0, 0, 0, 0);
     margin-left: -4px;
 
     &.focus {
-      border: 4px solid rgb(80, 173, 248);
+      outline: 4px solid rgb(80, 173, 248);
     }
   }
   .iframe-wrapper {
     iframe {
       width: 640px;
       height: 360px;
-      border: 4px solid rgba(0, 0, 0, 0);
       margin-left: -4px;
     }
 
     &.focus {
       iframe {
-        border: 4px solid rgb(80, 173, 248);
+        outline: 4px solid rgb(80, 173, 248);
       }
     }
   }
