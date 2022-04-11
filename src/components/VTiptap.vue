@@ -217,6 +217,7 @@ import TiptapKit from "../plugins/tiptap-kit";
 import vuetify from "../plugins/vuetify";
 
 import * as components from "./components";
+import EmojiPicker from "./EmojiPicker.vue";
 
 import toolbarItems from "../constants/toolbarItems";
 import makeToolbarDefinitions from "../constants/toolbarDefinitions";
