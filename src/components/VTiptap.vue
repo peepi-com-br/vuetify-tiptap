@@ -354,7 +354,7 @@ export default class extends Vue {
                 suggestion: {
                   items: ({ query }) => {
                     return this.mentionItems
-                      .filter((item) =>
+                      .filter(item =>
                         item.text.toLowerCase().startsWith(query.toLowerCase())
                       )
                       .slice(0, 5);
@@ -482,7 +482,7 @@ export default class extends Vue {
     });
 
     instance.$mount();
-    instance.$on("emojiSelected", (emoji) => {
+    instance.$on("emojiSelected", emoji => {
       this.editor.commands.insertContent(emoji);
     });
 
@@ -568,7 +568,7 @@ export default class extends Vue {
     show: false,
     x: 0,
     y: 0,
-    command: (_) => 0,
+    command: _ => 0,
   };
 
   selectMention(index) {

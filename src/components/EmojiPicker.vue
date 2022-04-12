@@ -32,7 +32,7 @@ export default class extends Vue {
 
   @Prop() readonly activator: any;
 
-  @Prop({default: false}) readonly dark: boolean;
+  @Prop({ default: false }) readonly dark: boolean;
 
   absoluteX = 0;
 
@@ -45,7 +45,6 @@ export default class extends Vue {
   @Watch("value")
   async onValueChange() {
     if (!this.value) {
-
       this.$destroy();
       this.$el.parentNode.removeChild(this.$el);
     }
