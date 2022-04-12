@@ -542,7 +542,6 @@ export default class extends Vue {
   @Prop() readonly uploadImage: (file: File) => Promise<string>;
 
   get defaultUploadImage() {
-    console.log(this.uploadImage || getOption("uploadImage"));
     return this.uploadImage || getOption("uploadImage");
   }
 
