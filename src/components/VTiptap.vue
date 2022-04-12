@@ -153,6 +153,7 @@
           :show="imageDialog"
           :dark="dark"
           @close="imageDialog = false"
+          :uploadImage="uploadImage"
           @apply="editor.chain().focus().setImage({ src: $event }).run()"
         />
 
@@ -536,6 +537,8 @@ export default class extends Vue {
   }
 
   // Image
+  @Prop() readonly uploadImage: (f: File) => Promise<string>;
+
   imageDialog = false;
 
   get selectedImage() {
