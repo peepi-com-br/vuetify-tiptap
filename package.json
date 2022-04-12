@@ -41,7 +41,8 @@
     "postbuild": "rimraf ./dist/types/dev ./dist/types/src/entry.d.ts",
     "prepublishOnly": "npm run build",
     "storybook:build": "vue-cli-service storybook:build -c .storybook",
-    "storybook:serve": "vue-cli-service storybook:serve -p 6006 -c .storybook"
+    "storybook:serve": "vue-cli-service storybook:serve -p 6006 -c .storybook",
+    "pretty": "prettier --write \"./**/*.{js,ts,jsx,json,vue}\""
   },
   "dependencies": {
     "@tiptap/vue-2": "^2.0.0-beta.77",
