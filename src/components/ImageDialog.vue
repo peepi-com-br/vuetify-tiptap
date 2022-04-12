@@ -58,13 +58,8 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import UploadableImage from "./UploadableImage.vue";
 
-@Component({
-  components: {
-    UploadableImage,
-  },
-})
+@Component
 export default class extends Vue {
   @Prop() readonly value: string | null;
 
