@@ -91,6 +91,7 @@
     "@vue/eslint-config-typescript": "^10.0.0",
     "@zerollup/ts-transform-paths": "^1.7.18",
     "cache-loader": "^4.1.0",
+    "css-loader": "^5.0.0",
     "core-js": "^3.21.1",
     "cross-env": "^7.0.3",
     "delay": "^5.0.0",

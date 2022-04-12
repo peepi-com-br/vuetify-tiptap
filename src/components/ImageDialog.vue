@@ -30,7 +30,9 @@
           class="mb-2"
           :disabled="file || loading"
         />
-        <!-- <div class="text-overline text-center my-2">OR</div> -->
+
+        <div class="text-overline text-center my-2">OR</div>
+
         <v-file-input
           v-if="uploadImage"
           v-model="file"
