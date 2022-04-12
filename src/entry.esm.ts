@@ -1,5 +1,5 @@
 import { PluginOptions } from "@/types/options";
-import { DEFAULT_OPTIONS, getOption, mergeOptions } from "@/utils/options";
+import { mergeOptions } from "@/utils/options";
 import { PluginFunction } from "vue";
 
 import VTiptap from "@/components/VTiptap.vue";

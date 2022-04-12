@@ -18,64 +18,38 @@
         </v-btn>
       </v-card-title>
 
-      <v-card-text v-if="!link">
-        <v-list class="pa-0">
-          <v-list-item @click="selectFile">
-            <v-list-item-avatar>
-              <v-avatar
-                color="grey lighten-3 mx-auto"
-                size="84"
-                style="display: block"
-              >
-                <v-icon size="26">mdi-image</v-icon>
-              </v-avatar>
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title>Upload File</v-list-item-title>
-              <v-list-item-subtitle>
-                Click to select files to be uploaded
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item @click="link = true">
-            <v-list-item-avatar>
-              <v-avatar
-                color="grey lighten-3 mx-auto"
-                size="84"
-                style="display: block"
-              >
-                <v-icon size="26">mdi-link-variant</v-icon>
-              </v-avatar>
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title>Insert Link</v-list-item-title>
-              <v-list-item-subtitle>
-                Click to insert image by link
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-
-        <input v-show="false" type="file" ref="file" @change="onFileSelected" />
+      <v-card-text>
+        <v-text-field
+          v-model="url"
+          filled
+          name="url"
+          label="Link"
+          hide-details
+          autofocus
+          prepend-icon="mdi-link-variant"
+          class="mb-2"
+          :disabled="file || loading"
+        />
+        <!-- <div class="text-overline text-center my-2">OR</div> -->
+        <v-file-input
+          v-if="uploadImage"
+          v-model="file"
+          filled
+          label="File"
+          accept="image/png, image/jpeg, image/bmp, image/gif"
+          hide-details
+          @change="onFileSelected"
+          @click:clear="url = ''"
+          :loading="loading"
+          :disabled="loading"
+        />
       </v-card-text>
-      <template v-else>
-        <v-card-text>
-          <v-text-field
-            :value="value"
-            @input="url = $event"
-            name="image-url"
-            label="URL"
-            hide-details
-            autofocus
-          />
-        </v-card-text>
-        <v-card-actions>
-          <v-btn text @click="apply">
-            {{ "apply" }}
-          </v-btn>
-        </v-card-actions>
-      </template>
+
+      <v-card-actions>
+        <v-btn text @click="apply" :disabled="url == '' || loading">
+          {{ "apply" }}
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -96,28 +70,38 @@ export default class extends Vue {
 
   @Prop({ default: false }) dark: boolean;
 
-  @Prop() readonly uploadImage: (f: File) => Promise<string>;
-
-  file = "";
+  @Prop() readonly uploadImage: (file: File) => Promise<string>;
 
   url = "";
 
-  link = false;
+  file = null;
 
-  selectFile() {
-    this.$refs.file.click();
+  loading = false;
+
+  async onFileSelected(file) {
+    if (!file) return;
+
+    try {
+      this.loading = true;
+      this.url = await this.uploadImage(file);
+    } finally {
+      this.loading = false;
+    }
   }
 
   @Watch("show")
   onShow(val: boolean) {
     if (val) {
       this.url = this.value || "";
-      this.link = this.url != "";
     }
   }
 
   apply() {
     this.$emit("apply", this.url);
+
+    this.file = null;
+    this.url = "";
+
     this.$emit("close");
   }
 
@@ -126,3 +110,6 @@ export default class extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+</style>

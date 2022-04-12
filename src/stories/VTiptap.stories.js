@@ -1,6 +1,7 @@
 import { storyFactory } from "~storybook/util/helpers";
 import { userEvent, screen } from "@storybook/testing-library";
 import { expect } from "@storybook/jest";
+import delay from "delay";
 
 import VTiptap from "../components/VTiptap.vue";
 import testHtml from "../constants/testHtml";
@@ -121,6 +122,14 @@ Mentions.args = {
     { text: "Justine Bateman", value: 1 },
     { text: "Lisa Bonet", value: 1 },
   ],
+};
+
+export const UploadImage = Template.bind({});
+UploadImage.args = {
+  uploadImage: async file => {
+    await delay(2000);
+    return "https://fakeimg.pl/360x240/25a7fd";
+  },
 };
 
 // Slots

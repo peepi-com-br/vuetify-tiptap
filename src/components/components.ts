@@ -10,6 +10,7 @@ export {
   VCard,
   VBtn,
   VIcon,
+  VFileInput,
   VToolbar,
   VSelect,
   VSpacer,
