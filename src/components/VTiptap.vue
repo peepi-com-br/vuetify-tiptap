@@ -153,6 +153,7 @@
           :show="imageDialog"
           :dark="dark"
           @close="imageDialog = false"
+          :uploadImage="defaultUploadImage"
           @apply="editor.chain().focus().setImage({ src: $event }).run()"
         />
 
@@ -215,6 +216,8 @@ import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { Editor, EditorContent, AnyExtension } from "@tiptap/vue-2";
 import TiptapKit from "../plugins/tiptap-kit";
 import vuetify from "../plugins/vuetify";
+
+import { getOption } from "../utils/options";
 
 import * as components from "./components";
 import EmojiPicker from "./EmojiPicker.vue";
@@ -353,7 +356,7 @@ export default class extends Vue {
                 suggestion: {
                   items: ({ query }) => {
                     return this.mentionItems
-                      .filter(item =>
+                      .filter((item) =>
                         item.text.toLowerCase().startsWith(query.toLowerCase())
                       )
                       .slice(0, 5);
@@ -481,7 +484,7 @@ export default class extends Vue {
     });
 
     instance.$mount();
-    instance.$on("emojiSelected", emoji => {
+    instance.$on("emojiSelected", (emoji) => {
       this.editor.commands.insertContent(emoji);
     });
 
@@ -536,6 +539,13 @@ export default class extends Vue {
   }
 
   // Image
+  @Prop() readonly uploadImage: (file: File) => Promise<string>;
+
+  get defaultUploadImage() {
+    console.log(this.uploadImage || getOption("uploadImage"));
+    return this.uploadImage || getOption("uploadImage");
+  }
+
   imageDialog = false;
 
   get selectedImage() {
@@ -565,7 +575,7 @@ export default class extends Vue {
     show: false,
     x: 0,
     y: 0,
-    command: _ => 0,
+    command: (_) => 0,
   };
 
   selectMention(index) {

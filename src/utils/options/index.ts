@@ -1,20 +1,7 @@
-import { MessageOptions, PluginOptions } from "@/types/options";
+import { PluginOptions } from "@/types/options";
 
 export const DEFAULT_OPTIONS: PluginOptions = {
-  label: "Phone",
-  ariaLabel: undefined,
-  countryLabel: "Country",
-  countryAriaLabel: (options: MessageOptions) => `Country for ${options.label}`,
-  placeholder: undefined,
-  hint: undefined,
-  invalidMessage: (options: MessageOptions) =>
-    `The "${options.label}" field is not a valid phone number (example: ${options.example}).`,
-  persistentPlaceholder: undefined,
-  persistentHint: undefined,
-  countryIconMode: undefined,
-  disableGuessingCountry: false,
-  disableGuessLoading: false,
-  enableSearchingCountry: false,
+  uploadImage: null,
 };
 
 export const options = { ...DEFAULT_OPTIONS };

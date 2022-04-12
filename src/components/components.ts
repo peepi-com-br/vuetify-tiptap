@@ -3,12 +3,14 @@ export { default as LinkDialog } from "./LinkDialog.vue";
 export { default as VideoDialog } from "./VideoDialog.vue";
 export { default as EmojiPicker } from "./EmojiPicker.vue";
 export { default as ColorPicker } from "./ColorPicker.vue";
+export { default as UploadableImage } from "./UploadableImage.vue";
 
 export {
   VInput,
   VCard,
   VBtn,
   VIcon,
+  VFileInput,
   VToolbar,
   VSelect,
   VSpacer,

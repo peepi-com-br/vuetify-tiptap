@@ -78,39 +78,32 @@ import VTiptap from "@peepi/vuetify-tiptap";
 Vue.use(VTiptap);
 ```
 
-## Props
+### Uploading Images
 
-| Name           | Description | Type                       | Required | Default |
-| -------------- | ----------- | -------------------------- | -------- | ------- |
-| value          | ---         | `string \| null`           | `false`  | -----   |
-| view           | ---         | `boolean`                  | `false`  | false   |
-| placeholder    | ---         | `string \| null`           | `false`  | -----   |
-| toolbar        | ---         | `string[]`                 | `false`  | -----   |
-| xssOptions     | ---         | `Record<string, string[]>` | `false`  | -----   |
-| hideToolbar    | ---         | `boolean`                  | `false`  | false   |
-| disableToolbar | ---         | `boolean`                  | `false`  | false   |
-| xss            | ---         | `boolean \| string[]`      | `false`  | true    |
-| dense          | ---         | `boolean`                  | `false`  | false   |
-| outlined       | ---         | `boolean`                  | `false`  | true    |
-| disabled       | ---         | `boolean`                  | `false`  | false   |
+In order to use the upload image feature, pass down a prop `uploadImage` to the component with a function that receives a File and returns a Promise to an URL.
 
-## Events
+```vue
+<template>
+  <v-tiptap :uploadImage="uploadImage" />
+</template>
 
-| Event Name | Description | Parameters |
-| ---------- | ----------- | ---------- |
-| enter      | ----------- | ---------- |
-| input      | ----------- | ---------- |
+<script>
+async function uploadImage(file) {
+  const url = await myApi.upload(file);
+  return url;
+}
+</script>
+```
 
-## Slots
+You can also pass this function as a global option to the plugin.
 
-| Name         | Description   | Default Slot Content |
-| ------------ | ------------- | -------------------- |
-| toolbar.item | ------------- | -------------------- |
-| prepend      | Slot Prepend  | -------------------- |
-| editor       | Tiptap Editor | -------------------- |
-| append       | Slot Append   | -------------------- |
-| bottom       | ------------- | -------------------- |
-| image        | ------------- | -------------------- |
+```js
+Vue.use(VTiptap, { uploadImage: myApi.upload });
+```
+
+## Documentation
+
+Check the <a href="https://main--62508045836c88003a1f61fa.chromatic.com">live demo</a> for documentation.
 
 ## Changelog
 

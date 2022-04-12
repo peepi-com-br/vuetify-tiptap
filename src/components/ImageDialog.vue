@@ -19,19 +19,34 @@
       </v-card-title>
 
       <v-card-text>
-        <slot name="image">
-          <v-text-field
-            :value="value"
-            @input="url = $event"
-            name="image-url"
-            label="URL"
-            hide-details
-          />
-        </slot>
+        <v-text-field
+          v-model="url"
+          filled
+          name="url"
+          label="Link"
+          hide-details
+          autofocus
+          prepend-icon="mdi-link-variant"
+          class="mb-2"
+          :disabled="file || loading"
+        />
+        <!-- <div class="text-overline text-center my-2">OR</div> -->
+        <v-file-input
+          v-if="uploadImage"
+          v-model="file"
+          filled
+          label="File"
+          accept="image/png, image/jpeg, image/bmp, image/gif"
+          hide-details
+          @change="onFileSelected"
+          @click:clear="url = ''"
+          :loading="loading"
+          :disabled="loading"
+        />
       </v-card-text>
 
       <v-card-actions>
-        <v-btn text @click="apply">
+        <v-btn text @click="apply" :disabled="url == '' || loading">
           {{ "apply" }}
         </v-btn>
       </v-card-actions>
@@ -40,9 +55,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+import UploadableImage from "./UploadableImage.vue";
 
-@Component
+@Component({
+  components: {
+    UploadableImage,
+  },
+})
 export default class extends Vue {
   @Prop() readonly value: string | null;
 
@@ -50,10 +70,38 @@ export default class extends Vue {
 
   @Prop({ default: false }) dark: boolean;
 
+  @Prop() readonly uploadImage: (file: File) => Promise<string>;
+
   url = "";
+
+  file = null;
+
+  loading = false;
+
+  async onFileSelected(file) {
+    if (!file) return;
+
+    try {
+      this.loading = true;
+      this.url = await this.uploadImage(file);
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  @Watch("show")
+  onShow(val: boolean) {
+    if (val) {
+      this.url = this.value || "";
+    }
+  }
 
   apply() {
     this.$emit("apply", this.url);
+
+    this.file = null;
+    this.url = "";
+
     this.$emit("close");
   }
 
@@ -62,3 +110,6 @@ export default class extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+</style>
