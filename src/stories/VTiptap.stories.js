@@ -95,8 +95,8 @@ DisabledToolbar.args = {
 
 export const Mentions = Template.bind({});
 Mentions.args = {
+  value: `<p>Type @ to start mentioning people: <span data-type="mention" class="mention" data-id="1" data-label="Cyndi Lauper" contenteditable="false">@Cyndi Lauper</span> </p>`,
   mentionItems: [
-    { text: "Lxaaea Thompson", value: 1 },
     { text: "Cyndi Lauper", value: 1 },
     { text: "Tom Cruise", value: 1 },
     { text: "Madonna", value: 1 },
