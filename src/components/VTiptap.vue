@@ -1,7 +1,7 @@
 <template>
   <div class="v-tiptap" :class="{ dense, view }">
     <!-- View mode -->
-    <div v-if="view" v-html="cleanValue" style="width: 100%" />
+    <div v-if="view !== false" v-html="cleanValue" style="width: 100%" />
     <!-- Edit Mode -->
     <template v-else>
       <label v-if="label" class="v-label">{{ label }}</label>

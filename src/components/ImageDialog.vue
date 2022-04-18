@@ -28,7 +28,7 @@
           autofocus
           prepend-icon="mdi-link-variant"
           class="mb-2"
-          :disabled="file || loading"
+          :disabled="Boolean(file) || loading"
         />
 
         <div v-if="uploadImage" class="text-overline text-center my-2">OR</div>
