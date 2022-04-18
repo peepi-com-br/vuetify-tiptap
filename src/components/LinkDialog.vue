@@ -13,7 +13,7 @@
 
         <v-spacer />
 
-        <v-btn icon @click="dialog = false">
+        <v-btn icon @click="$emit('close', $event)">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
