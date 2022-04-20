@@ -284,7 +284,7 @@ export default class extends Vue {
       .replace("https://vimeo.com/", "https://player.vimeo.com/video/");
 
     let whiteList = this.xssOptions;
-    if (Array.isArray(this.xssOptions)) {
+    if (Array.isArray(this.xssOptions) && Array.isArray(this.xss)) {
       whiteList = this.xss.reduce((acc, rule) => {
         acc[rule] = this.xssOptions[rule];
         return acc;
