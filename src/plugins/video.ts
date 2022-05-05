@@ -58,10 +58,21 @@ export default Node.create<IframeOptions>({
   },
 
   renderHTML({ HTMLAttributes }) {
+    // Convert youtube links
     HTMLAttributes.src = HTMLAttributes.src
       .replace("https://youtu.be/", "https://www.youtube.com/watch?v=")
-      .replace("watch?v=", "embed/")
-      .replace("https://vimeo.com/", "https://player.vimeo.com/video/");
+      .replace("watch?v=", "embed/");
+
+    // Convert vimeo links
+    HTMLAttributes.src = HTMLAttributes.src.replace(
+      "https://vimeo.com/",
+      "https://player.vimeo.com/video/"
+    );
+
+    // Convert google drive links
+    if (HTMLAttributes.src.includes("drive.google.com")) {
+      HTMLAttributes.src = HTMLAttributes.src.replace("/view", "/preview");
+    }
 
     return ["div", this.options.HTMLAttributes, ["iframe", HTMLAttributes]];
   },
