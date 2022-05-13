@@ -171,7 +171,10 @@ export default function makeToolbarDefinitions(context) {
   };
 
   let toolbarItems = [];
-  for (let i of context.toolbar) {
+
+  const toolbar = context.toolbar.concat(context.append);
+
+  for (let i of toolbar) {
     if (definitions[i]) {
       definitions[i].icon = icons.get(
         definitions[i].icon,

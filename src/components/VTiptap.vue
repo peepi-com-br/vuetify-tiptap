@@ -256,6 +256,8 @@ export default class extends Vue {
   // Toolbar
   @Prop({ default: () => toolbarItems }) readonly toolbar: string[];
 
+  @Prop({ default: () => [] }) readonly append: string[];
+
   @Prop({ default: false }) readonly hideToolbar: boolean;
 
   @Prop({ default: false }) readonly disableToolbar: boolean;
