@@ -357,11 +357,11 @@ export default class extends Vue {
                 },
                 suggestion: {
                   items: async ({ query }) => {
-                    if (typeof this.mentionItems === "function") {
+                    if (typeof this.defaultMentionItems === "function") {
                       return await this.defaultMentionItems(query);
                     }
 
-                    return this.mentionItems
+                    return this.defaultMentionItems
                       .filter(item =>
                         item.text.toLowerCase().startsWith(query.toLowerCase())
                       )
