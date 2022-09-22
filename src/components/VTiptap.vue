@@ -350,7 +350,7 @@ export default class extends Vue {
           textStyle: {},
           underline: {},
           video: {},
-          mention: this.mentionItems
+          mention: this.defaultMentionItems
             ? {
                 HTMLAttributes: {
                   class: "mention",
