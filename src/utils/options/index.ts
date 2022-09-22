@@ -2,6 +2,7 @@ import { PluginOptions } from "@/types/options";
 
 export const DEFAULT_OPTIONS: PluginOptions = {
   uploadImage: null,
+  mentionItems: null,
 };
 
 export const options = { ...DEFAULT_OPTIONS };

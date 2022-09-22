@@ -356,7 +356,11 @@ export default class extends Vue {
                   class: "mention",
                 },
                 suggestion: {
-                  items: ({ query }) => {
+                  items: async ({ query }) => {
+                    if (typeof this.mentionItems === "function") {
+                      return await this.mentionItems(query);
+                    }
+
                     return this.mentionItems
                       .filter(item =>
                         item.text.toLowerCase().startsWith(query.toLowerCase())
@@ -567,8 +571,7 @@ export default class extends Vue {
     return this.editor.getAttributes("iframe").src;
   }
 
-  // Mention
-  @Prop() readonly mentionItems: Record<string, any>[];
+  @Prop() readonly mentionItems: any;
 
   mention = {
     items: [],
