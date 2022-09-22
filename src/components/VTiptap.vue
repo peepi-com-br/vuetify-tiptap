@@ -358,7 +358,7 @@ export default class extends Vue {
                 suggestion: {
                   items: async ({ query }) => {
                     if (typeof this.mentionItems === "function") {
-                      return await this.mentionItems(query);
+                      return await this.defaultMentionItems(query);
                     }
 
                     return this.mentionItems
@@ -569,6 +569,11 @@ export default class extends Vue {
 
   get selectedVideo() {
     return this.editor.getAttributes("iframe").src;
+  }
+
+  // Mention
+  get defaultMentionItems() {
+    return this.mentionItems || getOption("mentionItems");
   }
 
   @Prop() readonly mentionItems: any;
