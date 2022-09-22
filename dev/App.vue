@@ -94,6 +94,7 @@
           :outlined="outlined"
           :dense="dense"
           :view="view"
+          :mention-items="mentionItems"
           :dark="$vuetify.theme.dark"
           placeholder="Enter some text..."
           :error-messages="errorMessages"
@@ -180,7 +181,7 @@
 
 <script>
 import VTiptap from "../src/components/VTiptap.vue";
-
+import fetch from "node-fetch";
 import testHtml from "@/constants/testHtml";
 import toolbarItems from "@/constants/toolbarItems";
 
@@ -208,6 +209,22 @@ export default {
   computed: {
     toolbarItems() {
       return toolbarItems;
+    },
+  },
+
+  methods: {
+    mentionItems: async function (query) {
+      const response = await fetch(
+        `https://dummyjson.com/users/search?q=${query}`,
+        {}
+      ).then(res => res.json());
+
+      return response.users
+        .map(u => ({
+          value: u.id,
+          text: u.username,
+        }))
+        .slice(0, 5);
     },
   },
 };

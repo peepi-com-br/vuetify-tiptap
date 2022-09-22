@@ -350,14 +350,18 @@ export default class extends Vue {
           textStyle: {},
           underline: {},
           video: {},
-          mention: this.mentionItems
+          mention: this.defaultMentionItems
             ? {
                 HTMLAttributes: {
                   class: "mention",
                 },
                 suggestion: {
-                  items: ({ query }) => {
-                    return this.mentionItems
+                  items: async ({ query }) => {
+                    if (typeof this.defaultMentionItems === "function") {
+                      return await this.defaultMentionItems(query);
+                    }
+
+                    return this.defaultMentionItems
                       .filter(item =>
                         item.text.toLowerCase().startsWith(query.toLowerCase())
                       )
@@ -568,7 +572,11 @@ export default class extends Vue {
   }
 
   // Mention
-  @Prop() readonly mentionItems: Record<string, any>[];
+  get defaultMentionItems() {
+    return this.mentionItems || getOption("mentionItems");
+  }
+
+  @Prop() readonly mentionItems: any;
 
   mention = {
     items: [],

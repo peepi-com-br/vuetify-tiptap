@@ -1,6 +1,6 @@
 export default {
   a: ["href", "title", "target"],
-  span: ["style"],
+  span: ["style", "data-type", "class", "data-label", "data-id"],
   blockquote: ["style"],
   p: ["style"],
   hr: [],
