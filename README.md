@@ -89,7 +89,7 @@ In order to use the upload image feature, pass down a prop `uploadImage` to the 
 
 <script>
 async function uploadImage(file) {
-  const url = await myApi.upload(file);
+  const url = (await myApi.upload(file)).url;
   return url;
 }
 </script>
@@ -98,7 +98,7 @@ async function uploadImage(file) {
 You can also pass this function as a global option to the plugin.
 
 ```js
-Vue.use(VTiptap, {  uploadImage: async file => (await uploadImage(file))?.url });
+Vue.use(VTiptap, { uploadImage: async file => (await myApi.upload(file)).url });
 ```
 
 ### Mentions
@@ -116,7 +116,7 @@ You just need to pass the `mentionItems` prop to the component. It accepts an ar
 
 <script>
 async function mentionItems(query: string) {
-  const items = await myApi.users(query);
+  const items = (await myApi.users(query)).data;
   return items;
 }
 </script>
@@ -125,7 +125,7 @@ async function mentionItems(query: string) {
 You can also pass this function as a global option to the plugin and add the `:enableMentions="true"`.
 
 ```js
-Vue.use(VTiptap, { mentionItems: async query => await myApi.users(query) });
+Vue.use(VTiptap, { mentionItems: async query => (await myApi.users(query)).data });
 ```
 
 ## Documentation
