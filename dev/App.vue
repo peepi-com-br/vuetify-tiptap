@@ -223,6 +223,7 @@ export default {
         .map(u => ({
           value: u.id,
           text: u.username,
+          avatar: u.image,
         }))
         .slice(0, 5);
     },

@@ -201,7 +201,13 @@
               :key="item.text"
               @click="selectMention(index)"
             >
-              <v-list-item-title>{{ item.text }}</v-list-item-title>
+              <v-list-item-avatar height="20" v-if="item.avatar">
+                <v-img :alt="`${item.text} avatar`" :src="item.avatar" />
+              </v-list-item-avatar>
+
+              <v-list-item-content>
+                <v-list-item-title>{{ item.text }}</v-list-item-title>
+              </v-list-item-content>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -350,7 +356,7 @@ export default class extends Vue {
           textStyle: {},
           underline: {},
           video: {},
-          mention: this.defaultMentionItems
+          mention: this.mentionIsEnable
             ? {
                 HTMLAttributes: {
                   class: "mention",
@@ -577,6 +583,12 @@ export default class extends Vue {
   }
 
   @Prop() readonly mentionItems: any;
+
+  @Prop({ default: false }) readonly enableMentions: boolean;
+
+  get mentionIsEnable() {
+    return this.mentionItems || this.enableMentions;
+  }
 
   mention = {
     items: [],
