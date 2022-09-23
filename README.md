@@ -98,7 +98,34 @@ async function uploadImage(file) {
 You can also pass this function as a global option to the plugin.
 
 ```js
-Vue.use(VTiptap, { uploadImage: myApi.upload });
+Vue.use(VTiptap, {  uploadImage: async file => (await uploadImage(file))?.url });
+```
+
+### Mentions
+
+You just need to pass the `mentionItems` prop to the component. It accepts an array or a function that returns an array of items like:
+
+```js
+  mentionItems = [{text: 'User', value: 1, avatar: 'http://image.png'}]
+```
+
+```vue
+<template>
+  <v-tiptap :mentionItems="mentionItems" />
+</template>
+
+<script>
+async function mentionItems(query: string) {
+  const items = await myApi.users(query);
+  return items;
+}
+</script>
+```
+
+You can also pass this function as a global option to the plugin and add the `:enableMentions="true"`.
+
+```js
+Vue.use(VTiptap, { mentionItems: async query => await myApi.users(query) });
 ```
 
 ## Documentation
