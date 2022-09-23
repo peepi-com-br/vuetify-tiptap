@@ -35,6 +35,10 @@
           </v-list-item>
 
           <v-list-item>
+            <v-switch v-model="mention" label="mention" inset />
+          </v-list-item>
+
+          <v-list-item>
             <v-switch v-model="outlined" label="outlined" inset />
           </v-list-item>
 
@@ -93,6 +97,7 @@
           :toolbar="toolbar"
           :outlined="outlined"
           :dense="dense"
+          :mention="mention"
           :view="view"
           :mention-items="mentionItems"
           :dark="$vuetify.theme.dark"
@@ -194,6 +199,7 @@ export default {
   data: () => ({
     content: testHtml,
     view: false,
+    mention: true,
     outlined: true,
     dense: false,
     editHtml: false,
@@ -223,6 +229,7 @@ export default {
         .map(u => ({
           value: u.id,
           text: u.username,
+          avatar: u.image,
         }))
         .slice(0, 5);
     },

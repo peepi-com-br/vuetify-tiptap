@@ -1,48 +1,48 @@
 export function renderSuggestion(component) {
   return () => {
-    const { mention } = component;
+    const { mentionConfig } = component;
 
     return {
       onStart: props => {
-        mention.show = true;
-        mention.items = props.items;
-        mention.command = props.command;
-        mention.selected = 0;
+        mentionConfig.show = true;
+        mentionConfig.items = props.items;
+        mentionConfig.command = props.command;
+        mentionConfig.selected = 0;
 
         const { x, y } = props.clientRect();
-        mention.x = x;
-        mention.y = y + 24;
+        mentionConfig.x = x;
+        mentionConfig.y = y + 24;
       },
 
       onUpdate(props) {
-        mention.items = props.items;
+        mentionConfig.items = props.items;
       },
 
       onKeyDown(props) {
         const { event } = props;
 
         if (event.key === "Escape") {
-          mention.show = false;
+          mentionConfig.show = false;
 
           return true;
         }
 
         if (event.key === "ArrowUp") {
-          mention.selected =
-            (mention.selected + mention.items.length - 1) %
-            mention.items.length;
+          mentionConfig.selected =
+            (mentionConfig.selected + mentionConfig.items.length - 1) %
+            mentionConfig.items.length;
 
           return true;
         }
 
         if (event.key === "ArrowDown") {
-          mention.selected = (mention.selected + 1) % mention.items.length;
+          mentionConfig.selected = (mentionConfig.selected + 1) % mentionConfig.items.length;
 
           return true;
         }
 
         if (event.key === "Enter") {
-          component.selectMention(mention.selected);
+          component.selectMention(mentionConfig.selected);
 
           return true;
         }
@@ -51,7 +51,7 @@ export function renderSuggestion(component) {
       },
 
       onExit() {
-        mention.show = false;
+        mentionConfig.show = false;
       },
     };
   };
