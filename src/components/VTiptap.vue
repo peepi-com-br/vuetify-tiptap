@@ -182,11 +182,11 @@
 
         <!-- Mention -->
         <v-menu
-          v-model="mention.show"
+          v-model="mentionConfig.show"
           dense
           absolute
-          :position-x="mention.x"
-          :position-y="mention.y"
+          :position-x="mentionConfig.x"
+          :position-y="mentionConfig.y"
           offset-y
           max-height="220px"
           class="items"
@@ -195,9 +195,10 @@
             <v-list-item
               class="item"
               :style="{
-                background: index === mention.selected ? '#EEE' : undefined,
+                background:
+                  index === mentionConfig.selected ? '#EEE' : undefined,
               }"
-              v-for="(item, index) in mention.items"
+              v-for="(item, index) in mentionConfig.items"
               :key="item.text"
               @click="selectMention(index)"
             >
@@ -356,7 +357,7 @@ export default class extends Vue {
           textStyle: {},
           underline: {},
           video: {},
-          mention: this.mentionIsEnable
+          mention: this.mention
             ? {
                 HTMLAttributes: {
                   class: "mention",
@@ -584,13 +585,9 @@ export default class extends Vue {
 
   @Prop() readonly mentionItems: any;
 
-  @Prop({ default: false }) readonly enableMentions: boolean;
+  @Prop({ default: false }) readonly mention: boolean;
 
-  get mentionIsEnable() {
-    return this.mentionItems || this.enableMentions;
-  }
-
-  mention = {
+  mentionConfig = {
     items: [],
     selected: 0,
     show: false,
@@ -600,9 +597,9 @@ export default class extends Vue {
   };
 
   selectMention(index) {
-    const item = this.mention.items[index];
-    this.mention.command({ id: item.value, label: item.text });
-    this.mention.show = false;
+    const item = this.mentionConfig.items[index];
+    this.mentionConfig.command({ id: item.value, label: item.text });
+    this.mentionConfig.show = false;
 
     this.$emit("mention", item);
   }
