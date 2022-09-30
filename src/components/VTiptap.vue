@@ -212,7 +212,7 @@
                 </v-list-item-content>
               </v-list-item>
             </div>
-            <div v-if="mentionConfig.loading" class="skeleton">
+            <div v-else class="skeleton">
               <v-skeleton-loader
                 v-for="i in 5"
                 :key="i"
