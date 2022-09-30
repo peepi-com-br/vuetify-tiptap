@@ -214,8 +214,8 @@
             </div>
             <div v-if="mentionConfig.loading" class="skeleton">
               <v-skeleton-loader
-                v-for="(i, index) in [1, 2, 3, 4, 5]"
-                :key="index"
+                v-for="i in 5"
+                :key="i"
                 type="list-item-avatar"
                 light
                 width="150"
