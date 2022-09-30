@@ -192,24 +192,36 @@
           class="items"
         >
           <v-list dense>
-            <v-list-item
-              class="item"
-              :style="{
-                background:
-                  index === mentionConfig.selected ? '#EEE' : undefined,
-              }"
-              v-for="(item, index) in mentionConfig.items"
-              :key="item.text"
-              @click="selectMention(index)"
-            >
-              <v-list-item-avatar height="20" v-if="item.avatar">
-                <v-img :alt="`${item.text} avatar`" :src="item.avatar" />
-              </v-list-item-avatar>
+            <div v-if="!mentionConfig.loading">
+              <v-list-item
+                class="item"
+                :style="{
+                  background:
+                    index === mentionConfig.selected ? '#EEE' : undefined,
+                }"
+                v-for="(item, index) in mentionConfig.items"
+                :key="item.text"
+                @click="selectMention(index)"
+              >
+                <v-list-item-avatar height="20" v-if="item.avatar">
+                  <v-img :alt="`${item.text} avatar`" :src="item.avatar" />
+                </v-list-item-avatar>
 
-              <v-list-item-content>
-                <v-list-item-title>{{ item.text }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>{{ item.text }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </div>
+            <div v-if="mentionConfig.loading" class="skeleton">
+              <v-skeleton-loader
+                v-for="(i, index) in [1, 2, 3, 4, 5]"
+                :key="index"
+                type="list-item-avatar"
+                light
+                width="150"
+                max-height="30"
+              />
+            </div>
           </v-list>
         </v-menu>
       </v-input>
@@ -365,7 +377,13 @@ export default class extends Vue {
                 suggestion: {
                   items: async ({ query }) => {
                     if (typeof this.defaultMentionItems === "function") {
-                      return await this.defaultMentionItems(query);
+                      this.mentionConfig.loading = true;
+
+                      const items = await this.defaultMentionItems(query);
+
+                      this.mentionConfig.loading = false;
+
+                      return items;
                     }
 
                     return this.defaultMentionItems
@@ -408,7 +426,12 @@ export default class extends Vue {
 
   //
   handleKeyDown(view, event) {
-    if (event.key === "Enter" && this.$listeners.enter && !event.shiftKey) {
+    if (
+      event.key === "Enter" &&
+      this.$listeners.enter &&
+      !event.shiftKey &&
+      !this.mentionConfig.show
+    ) {
       this.$emit("enter");
 
       return true;
@@ -588,6 +611,7 @@ export default class extends Vue {
   @Prop({ default: false }) readonly mention: boolean;
 
   mentionConfig = {
+    loading: false,
     items: [],
     selected: 0,
     show: false,
@@ -815,6 +839,30 @@ export default class extends Vue {
     color: rgba(0, 0, 0, 0.7) !important;
     font-weight: 500;
     line-height: 2rem;
+  }
+}
+
+.skeleton {
+  .v-skeleton-loader__list-item-avatar .v-skeleton-loader__avatar,
+  .v-skeleton-loader__list-item-avatar-two-line .v-skeleton-loader__avatar,
+  .v-skeleton-loader__list-item-avatar-three-line .v-skeleton-loader__avatar {
+    height: 27px;
+    width: 27px;
+  }
+
+  .v-skeleton-loader__list-item,
+  .v-skeleton-loader__list-item-avatar,
+  .v-skeleton-loader__list-item-two-line,
+  .v-skeleton-loader__list-item-three-line,
+  .v-skeleton-loader__list-item-avatar-two-line,
+  .v-skeleton-loader__list-item-avatar-three-line {
+    align-content: unset;
+    align-items: unset;
+    padding: 0px 13px;
+  }
+
+  .v-skeleton-loader__text {
+    margin-top: 6px;
   }
 }
 </style>
