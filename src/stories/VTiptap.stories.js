@@ -97,32 +97,55 @@ export const Mentions = Template.bind({});
 Mentions.args = {
   value: `<p>Type @ to start mentioning people: <span data-type="mention" class="mention" data-id="1" data-label="Cyndi Lauper" contenteditable="false">@Cyndi Lauper</span> </p>`,
   mention: true,
-  mentionItems: [
-    { text: "Cyndi Lauper", value: 1 },
-    { text: "Tom Cruise", value: 1 },
-    { text: "Madonna", value: 1 },
-    { text: "Jerry Hall", value: 1 },
-    { text: "Joan Collins", value: 1 },
-    { text: "Winona Ryder", value: 1 },
-    { text: "Christina Applegate", value: 1 },
-    { text: "Alyssa Milano", value: 1 },
-    { text: "Molly Ringwald", value: 1 },
-    { text: "Ally Sheedy", value: 1 },
-    { text: "Debbie Harry", value: 1 },
-    { text: "Olivia Newton-John", value: 1 },
-    { text: "Elton John", value: 1 },
-    { text: "Michael J. Fox", value: 1 },
-    { text: "Axl Rose", value: 1 },
-    { text: "Emilio Estevez", value: 1 },
-    { text: "Ralph Macchio", value: 1 },
-    { text: "Rob Lowe", value: 1 },
-    { text: "Jennifer Grey", value: 1 },
-    { text: "Mickey Rourke", value: 1 },
-    { text: "John Cusack", value: 1 },
-    { text: "Matthew Broderick", value: 1 },
-    { text: "Justine Bateman", value: 1 },
-    { text: "Lisa Bonet", value: 1 },
-  ],
+  mentionItems: async function (query) {
+    await delay(2000);
+
+    const response = await fetch(
+      `https://dummyjson.com/users/search?q=${query}`,
+      {}
+    ).then(res => res.json());
+
+    return response.users
+      .map(u => ({
+        value: u.id,
+        text: u.username,
+        avatar: u.image,
+      }))
+      .slice(0, 5);
+  },
+  // mentionItems: () =>
+  //   new Promise(resolve =>
+  //     setTimeout(
+  //       () =>
+  //         resolve([
+  //           { text: "Cyndi Lauper", value: 1 },
+  //           { text: "Tom Cruise", value: 1 },
+  //           { text: "Madonna", value: 1 },
+  //           { text: "Jerry Hall", value: 1 },
+  //           { text: "Joan Collins", value: 1 },
+  //           { text: "Winona Ryder", value: 1 },
+  //           { text: "Christina Applegate", value: 1 },
+  //           { text: "Alyssa Milano", value: 1 },
+  //           { text: "Molly Ringwald", value: 1 },
+  //           { text: "Ally Sheedy", value: 1 },
+  //           { text: "Debbie Harry", value: 1 },
+  //           { text: "Olivia Newton-John", value: 1 },
+  //           { text: "Elton John", value: 1 },
+  //           { text: "Michael J. Fox", value: 1 },
+  //           { text: "Axl Rose", value: 1 },
+  //           { text: "Emilio Estevez", value: 1 },
+  //           { text: "Ralph Macchio", value: 1 },
+  //           { text: "Rob Lowe", value: 1 },
+  //           { text: "Jennifer Grey", value: 1 },
+  //           { text: "Mickey Rourke", value: 1 },
+  //           { text: "John Cusack", value: 1 },
+  //           { text: "Matthew Broderick", value: 1 },
+  //           { text: "Justine Bateman", value: 1 },
+  //           { text: "Lisa Bonet", value: 1 },
+  //         ]),
+  //       5000
+  //     )
+  //   ),
 };
 
 export const UploadImage = Template.bind({});

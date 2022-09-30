@@ -16,6 +16,7 @@ export {
   VMenu,
   VToolbar,
   VSelect,
+  VSkeletonLoader,
   VSpacer,
   VTooltip,
 } from "vuetify/lib";

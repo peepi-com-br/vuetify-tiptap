@@ -190,6 +190,7 @@
           offset-y
           max-height="220px"
           class="items"
+          loading
         >
           <v-list dense>
             <div v-if="!mentionConfig.loading">
@@ -214,7 +215,7 @@
             </div>
             <div v-else class="skeleton">
               <v-skeleton-loader
-                v-for="i in 5"
+                v-for="i in 3"
                 :key="i"
                 type="list-item-avatar"
                 light
@@ -376,8 +377,17 @@ export default class extends Vue {
                 },
                 suggestion: {
                   items: async ({ query }) => {
+                    // quando nao tem nenhum item
+                    // if (query == "") {
+                    //   // this.mentionConfig.loading = true;
+                    //   setTimeout(() => {
+                    //     this.mentionConfig.loading = false;
+                    //   }, 3000);
+                    //   return [];
+                    // }
+
                     if (typeof this.defaultMentionItems === "function") {
-                      this.mentionConfig.loading = true;
+                      // this.mentionConfig.loading = true;
 
                       const items = await this.defaultMentionItems(query);
 
