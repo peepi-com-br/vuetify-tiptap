@@ -188,12 +188,19 @@
           :position-x="mentionConfig.x"
           :position-y="mentionConfig.y"
           offset-y
-          max-height="220px"
+          max-height="230px"
           class="items"
           loading
         >
           <v-list dense>
-            <div v-if="!mentionConfig.loading">
+            <div>
+              <v-progress-linear
+                v-if="mentionConfig.loading"
+                color="deep-purple accent-4"
+                indeterminate
+                height="6"
+              />
+
               <v-list-item
                 class="item"
                 :style="{
@@ -213,7 +220,8 @@
                 </v-list-item-content>
               </v-list-item>
             </div>
-            <div v-else class="skeleton">
+
+            <!--  <div v-else class="skeleton">
               <v-skeleton-loader
                 v-for="i in 3"
                 :key="i"
@@ -222,7 +230,7 @@
                 width="150"
                 max-height="30"
               />
-            </div>
+            </div> -->
           </v-list>
         </v-menu>
       </v-input>
@@ -377,18 +385,15 @@ export default class extends Vue {
                 },
                 suggestion: {
                   items: async ({ query }) => {
-                    // quando nao tem nenhum item
-                    // if (query == "") {
-                    //   // this.mentionConfig.loading = true;
-                    //   setTimeout(() => {
-                    //     this.mentionConfig.loading = false;
-                    //   }, 3000);
-                    //   return [];
-                    // }
+                    this.mentionConfig.query = query;
+
+                    this.mentionConfig.loading = true;
+
+                    if (query == "") {
+                      return;
+                    }
 
                     if (typeof this.defaultMentionItems === "function") {
-                      // this.mentionConfig.loading = true;
-
                       const items = await this.defaultMentionItems(query);
 
                       this.mentionConfig.loading = false;
@@ -625,6 +630,7 @@ export default class extends Vue {
     items: [],
     selected: 0,
     show: false,
+    query: "",
     x: 0,
     y: 0,
     command: _ => 0,
@@ -849,6 +855,10 @@ export default class extends Vue {
     color: rgba(0, 0, 0, 0.7) !important;
     font-weight: 500;
     line-height: 2rem;
+  }
+
+  .v-list {
+    padding: 0px 0;
   }
 }
 
