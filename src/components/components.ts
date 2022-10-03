@@ -5,18 +5,21 @@ export { default as EmojiPicker } from "./EmojiPicker.vue";
 export { default as ColorPicker } from "./ColorPicker.vue";
 
 export {
+  VAvatar,
   VInput,
   VCard,
   VBtn,
+  VImg,
   VIcon,
   VFileInput,
   VList,
   VListItem,
+  VListItemAvatar,
   VListItemTitle,
   VMenu,
-  VToolbar,
+  VProgressLinear,
   VSelect,
-  VSkeletonLoader,
   VSpacer,
+  VToolbar,
   VTooltip,
 } from "vuetify/lib";

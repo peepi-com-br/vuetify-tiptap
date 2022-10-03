@@ -201,7 +201,6 @@
               marginBottom: mentionConfig.items.length != 0 ? '-6px' : '0px',
               zIndex: 9
             }"
-
           />
 
           <v-list v-if="mentionConfig.items.length > 0" dense class="py-0">
