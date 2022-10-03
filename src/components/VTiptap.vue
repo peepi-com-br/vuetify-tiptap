@@ -189,7 +189,6 @@
           :position-y="mentionConfig.y"
           offset-y
           max-height="230px"
-          class="v-tiptap-mentions"
         >
           <v-progress-linear
             v-if="mentionConfig.loading"
@@ -203,7 +202,7 @@
             }"
           />
 
-          <v-list v-if="mentionConfig.items.length > 0" dense class="py-0">
+          <v-list v-if="mentionConfig.items.length > 0" dense class="py-0 v-tiptap-mentions">
             <v-list-item
               class="item"
               :style="{
@@ -214,7 +213,7 @@
               :key="item.text"
               @click="selectMention(index)"
             >
-              <v-list-item-avatar height="20" v-if="item.avatar">
+              <v-list-item-avatar size="20" v-if="item.avatar">
                 <v-img :alt="`${item.text} avatar`" :src="item.avatar" />
               </v-list-item-avatar>
 
