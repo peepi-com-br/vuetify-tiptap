@@ -182,55 +182,47 @@
 
         <!-- Mention -->
         <v-menu
-          v-model="mentionConfig.show"
+          :value="mentionConfig.show && (mentionConfig.loading || mentionConfig.items.length)"
           dense
           absolute
           :position-x="mentionConfig.x"
           :position-y="mentionConfig.y"
           offset-y
           max-height="230px"
-          class="items"
-          loading
+          class="v-tiptap-mentions"
         >
-          <v-list dense>
-            <div>
-              <v-progress-linear
-                v-if="mentionConfig.loading"
-                color="deep-purple accent-4"
-                indeterminate
-                height="6"
-              />
+          <v-progress-linear
+            v-if="mentionConfig.loading"
+            color="primary"
+            indeterminate
+            height="6"
+            style="min-width: 120px;"
+            :style="{
+              marginBottom: mentionConfig.items.length != 0 ? '-6px' : '0px',
+              zIndex: 9
+            }"
 
-              <v-list-item
-                class="item"
-                :style="{
-                  background:
-                    index === mentionConfig.selected ? '#EEE' : undefined,
-                }"
-                v-for="(item, index) in mentionConfig.items"
-                :key="item.text"
-                @click="selectMention(index)"
-              >
-                <v-list-item-avatar height="20" v-if="item.avatar">
-                  <v-img :alt="`${item.text} avatar`" :src="item.avatar" />
-                </v-list-item-avatar>
+          />
 
-                <v-list-item-content>
-                  <v-list-item-title>{{ item.text }}</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </div>
+          <v-list v-if="mentionConfig.items.length > 0" dense class="py-0">
+            <v-list-item
+              class="item"
+              :style="{
+                background:
+                  index === mentionConfig.selected ? '#EEE' : undefined,
+              }"
+              v-for="(item, index) in mentionConfig.items"
+              :key="item.text"
+              @click="selectMention(index)"
+            >
+              <v-list-item-avatar height="20" v-if="item.avatar">
+                <v-img :alt="`${item.text} avatar`" :src="item.avatar" />
+              </v-list-item-avatar>
 
-            <!--  <div v-else class="skeleton">
-              <v-skeleton-loader
-                v-for="i in 3"
-                :key="i"
-                type="list-item-avatar"
-                light
-                width="150"
-                max-height="30"
-              />
-            </div> -->
+              <v-list-item-content>
+                <v-list-item-title>{{ item.text }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
           </v-list>
         </v-menu>
       </v-input>
@@ -244,6 +236,8 @@ import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { Editor, EditorContent, AnyExtension } from "@tiptap/vue-2";
 import TiptapKit from "../plugins/tiptap-kit";
 import vuetify from "../plugins/vuetify";
+
+import debounce from 'debounce';
 
 import { getOption } from "../utils/options";
 
@@ -385,20 +379,21 @@ export default class extends Vue {
                 },
                 suggestion: {
                   items: async ({ query }) => {
-                    this.mentionConfig.query = query;
-
-                    this.mentionConfig.loading = true;
-
-                    if (query == "") {
-                      return;
-                    }
-
                     if (typeof this.defaultMentionItems === "function") {
-                      const items = await this.defaultMentionItems(query);
+                      const config = this.mentionConfig;
 
-                      this.mentionConfig.loading = false;
+                      config.loading = true;
 
-                      return items;
+                      config.fetchMentions = config.fetchMentions ?? debounce(async (query) => {
+                        const items = await this.defaultMentionItems(query);
+
+                        config.items = items;
+                        config.loading = false;
+                      }, 1000);
+
+                      config.fetchMentions(query);
+
+                      return config.items;
                     }
 
                     return this.defaultMentionItems
@@ -634,6 +629,7 @@ export default class extends Vue {
     x: 0,
     y: 0,
     command: _ => 0,
+    fetchMentions: null,
   };
 
   selectMention(index) {
@@ -862,27 +858,13 @@ export default class extends Vue {
   }
 }
 
-.skeleton {
-  .v-skeleton-loader__list-item-avatar .v-skeleton-loader__avatar,
-  .v-skeleton-loader__list-item-avatar-two-line .v-skeleton-loader__avatar,
-  .v-skeleton-loader__list-item-avatar-three-line .v-skeleton-loader__avatar {
-    height: 27px;
-    width: 27px;
+.v-tiptap-mentions {
+  .v-list-item__avatar:first-child {
+    margin-right: 4px;
+    margin-left: -12px;
   }
-
-  .v-skeleton-loader__list-item,
-  .v-skeleton-loader__list-item-avatar,
-  .v-skeleton-loader__list-item-two-line,
-  .v-skeleton-loader__list-item-three-line,
-  .v-skeleton-loader__list-item-avatar-two-line,
-  .v-skeleton-loader__list-item-avatar-three-line {
-    align-content: unset;
-    align-items: unset;
-    padding: 0px 13px;
-  }
-
-  .v-skeleton-loader__text {
-    margin-top: 6px;
+  .v-list-item--dense, .v-list--dense .v-list-item {
+    min-height: 36px;
   }
 }
 </style>
