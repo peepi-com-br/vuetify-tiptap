@@ -858,8 +858,8 @@ export default class extends Vue {
 
 .v-tiptap-mentions {
   .v-list-item__avatar:first-child {
-    margin-right: 4px;
-    margin-left: -12px;
+    margin-right: 8px !important;
+    margin-left: -8px !important;
   }
   .v-list-item--dense, .v-list--dense .v-list-item {
     min-height: 36px;

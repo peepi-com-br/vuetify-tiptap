@@ -14,6 +14,7 @@ export {
   VFileInput,
   VList,
   VListItem,
+  VListItemContent,
   VListItemAvatar,
   VListItemTitle,
   VMenu,
