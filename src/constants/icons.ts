@@ -24,6 +24,7 @@ export default {
       checkbox: "ballot",
       link: "link",
       image: "image",
+      gif: "",
       video: "videocam",
       emoji: "tag_faces",
       blockquote: "format_quote",
@@ -31,6 +32,7 @@ export default {
       code: "code",
       codeBlock: "terminal",
       clear: "format_clear",
+      search: "search",
     },
     mdi: {
       bold: "mdi-format-bold",
@@ -52,6 +54,7 @@ export default {
       checkbox: "mdi-format-list-checkbox",
       link: "mdi-link",
       image: "mdi-image",
+      gif: "mdi-file-gif-box",
       video: "mdi-video",
       emoji: "mdi-emoticon-outline",
       blockquote: "mdi-format-quote-open",
@@ -59,6 +62,7 @@ export default {
       code: "mdi-code-tags",
       codeBlock: "mdi-code-braces-box",
       clear: "mdi-format-clear",
+      search: "mdi-magnify",
     },
     fa: {
       bold: "fa-bold",
@@ -80,6 +84,7 @@ export default {
       checkbox: "fa-check",
       link: "fa-link",
       image: "fa-image",
+      gif: "",
       video: "fa-video",
       emoji: "fa-regular fa-face-grin",
       blockquote: "fa-quote-left",
@@ -87,6 +92,7 @@ export default {
       code: "fa-code",
       codeBlock: "fa-code",
       clear: "fa-text-slash",
+      search: "fa-search",
     },
   },
 };

@@ -45,8 +45,10 @@
     "pretty": "prettier --write \"./**/*.{js,ts,jsx,json,vue}\""
   },
   "dependencies": {
+    "@giphy/js-fetch-api": "^4.4.0",
     "@tiptap/vue-2": "^2.0.0-beta.196",
     "debounce": "github:component/debounce",
+    "gifpicker": "^1.1.2",
     "v-emoji-picker": "^2.3.3",
     "xss": "^1.0.11"
   },

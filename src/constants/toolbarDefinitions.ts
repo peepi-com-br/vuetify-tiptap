@@ -138,6 +138,11 @@ export default function makeToolbarDefinitions(context) {
       icon: "emoji",
       action: context.setEmoji,
     },
+    gif: {
+      title: "Gif",
+      icon: "gif",
+      action: context.setGif,
+    },
     blockquote: {
       title: "Blockquote",
       icon: "blockquote",
@@ -169,6 +174,9 @@ export default function makeToolbarDefinitions(context) {
         context.editor.chain().focus().clearNodes().unsetAllMarks().run(),
     },
   };
+
+  Object.assign(definitions, context.plugins)
+
 
   let toolbarItems = [];
 

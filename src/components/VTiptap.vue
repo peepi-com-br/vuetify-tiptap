@@ -1,5 +1,6 @@
 <template>
   <div class="v-tiptap" :class="{ dense, view }">
+    {{ plugins }}
     <!-- View mode -->
     <div v-if="view !== false" v-html="cleanValue" style="width: 100%" />
     <!-- Edit Mode -->
@@ -182,7 +183,10 @@
 
         <!-- Mention -->
         <v-menu
-          :value="mentionConfig.show && (mentionConfig.loading || mentionConfig.items.length)"
+          :value="
+            mentionConfig.show &&
+            (mentionConfig.loading || mentionConfig.items.length)
+          "
           dense
           absolute
           :position-x="mentionConfig.x"
@@ -195,14 +199,18 @@
             color="primary"
             indeterminate
             height="6"
-            style="min-width: 120px;"
+            style="min-width: 120px"
             :style="{
               marginBottom: mentionConfig.items.length != 0 ? '-6px' : '0px',
-              zIndex: 9
+              zIndex: 9,
             }"
           />
 
-          <v-list v-if="mentionConfig.items.length > 0" dense class="py-0 v-tiptap-mentions">
+          <v-list
+            v-if="mentionConfig.items.length > 0"
+            dense
+            class="py-0 v-tiptap-mentions"
+          >
             <v-list-item
               class="item"
               :style="{
@@ -235,12 +243,13 @@ import { Editor, EditorContent, AnyExtension } from "@tiptap/vue-2";
 import TiptapKit from "../plugins/tiptap-kit";
 import vuetify from "../plugins/vuetify";
 
-import debounce from 'debounce';
+import debounce from "debounce";
 
 import { getOption } from "../utils/options";
 
 import * as components from "./components";
 import EmojiPicker from "./EmojiPicker.vue";
+import GifPicker from "./GifPicker.vue";
 
 import toolbarItems from "../constants/toolbarItems";
 import makeToolbarDefinitions from "../constants/toolbarDefinitions";
@@ -275,6 +284,8 @@ export default class extends Vue {
 
   // Toolbar
   @Prop({ default: () => toolbarItems }) readonly toolbar: string[];
+
+  @Prop({ default: () => null }) readonly plugins: object;
 
   @Prop({ default: () => [] }) readonly append: string[];
 
@@ -382,12 +393,14 @@ export default class extends Vue {
 
                       config.loading = true;
 
-                      config.fetchMentions = config.fetchMentions ?? debounce(async (query) => {
-                        const items = await this.defaultMentionItems(query);
+                      config.fetchMentions =
+                        config.fetchMentions ??
+                        debounce(async query => {
+                          const items = await this.defaultMentionItems(query);
 
-                        config.items = items;
-                        config.loading = false;
-                      }, 1000);
+                          config.items = items;
+                          config.loading = false;
+                        }, 1000);
 
                       config.fetchMentions(query);
 
@@ -530,6 +543,33 @@ export default class extends Vue {
     instance.$mount();
     instance.$on("emojiSelected", emoji => {
       this.editor.commands.insertContent(emoji);
+    });
+
+    document.querySelector("body").appendChild(instance.$el);
+
+    // Set Position
+    const position = activator.getBoundingClientRect();
+    instance.$children[0].absoluteX = position.x + 14;
+    instance.$children[0].absoluteY = position.y + 14;
+
+    // Display emoji picker
+    instance.value = true;
+  }
+
+  setGif(e) {
+    const activator = e.target;
+
+    const GifPickerComponent = Vue.extend(GifPicker);
+    const instance: any = new GifPickerComponent({
+      vuetify: vuetify,
+      propsData: {
+        dark: this.dark,
+      },
+    });
+
+    instance.$mount();
+    instance.$on("gifSelected", gif => {
+      this.editor.commands.insertContent(`<img src="${gif}" `);
     });
 
     document.querySelector("body").appendChild(instance.$el);
@@ -861,7 +901,8 @@ export default class extends Vue {
     margin-right: 8px !important;
     margin-left: -8px !important;
   }
-  .v-list-item--dense, .v-list--dense .v-list-item {
+  .v-list-item--dense,
+  .v-list--dense .v-list-item {
     min-height: 36px;
   }
 }
