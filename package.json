@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "@tiptap/vue-2": "^2.0.0-beta.196",
-    "debounce": "github:component/debounce",
+    "debounce": "^1.0.1",
     "v-emoji-picker": "^2.3.3",
     "xss": "^1.0.11"
   },
