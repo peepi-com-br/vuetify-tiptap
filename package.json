@@ -40,8 +40,8 @@
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife",
     "postbuild": "rimraf ./dist/types/dev ./dist/types/src/entry.d.ts",
     "prepublishOnly": "npm run build",
-    "storybook:build": "vue-cli-service storybook:build -c .storybook",
-    "storybook:serve": "vue-cli-service storybook:serve -p 6006 -c .storybook",
+    "storybook:build": "cross-env NODE_OPTIONS=--openssl-legacy-provider vue-cli-service storybook:build -c .storybook",
+    "storybook:serve": "cross-env NODE_OPTIONS=--openssl-legacy-provider vue-cli-service storybook:serve -p 6006 -c .storybook",
     "pretty": "prettier --write \"./**/*.{js,ts,jsx,json,vue}\""
   },
   "dependencies": {
@@ -65,6 +65,7 @@
     "@storybook/addon-essentials": "^6.0.26",
     "@storybook/addon-interactions": "^6.4.21",
     "@storybook/addon-links": "^6.0.26",
+    "@storybook/addon-storysource": "^7.0.24",
     "@storybook/jest": "^0.0.10",
     "@storybook/testing-library": "^0.0.9",
     "@storybook/vue": "^6.0.26",

@@ -5,7 +5,7 @@ module.exports = {
   addons: [
     "@storybook/addon-essentials",
     "@storybook/addon-links",
-    "@storybook/addon-storysource",
+    // "@storybook/addon-storysource",
     "@storybook/addon-interactions",
   ],
   core: {

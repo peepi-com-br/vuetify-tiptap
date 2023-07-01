@@ -1,0 +1,7 @@
+# Commands to update version :)
+
+npm version minor
+git commit -a -m "Version bump to v`node -p -e \"require('./package.json').version\"`"
+git push origin master
+git tag v`node -p -e \"require('./package.json').version\"`
+git push origin master --tags
