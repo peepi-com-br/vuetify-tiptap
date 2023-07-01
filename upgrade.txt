@@ -2,6 +2,6 @@
 
 npm version minor
 git commit -a -m "Version bump to v`node -p -e \"require('./package.json').version\"`"
-git push origin master
+git push origin main
 git tag v`node -p -e \"require('./package.json').version\"`
-git push origin master --tags
+git push origin main --tags
