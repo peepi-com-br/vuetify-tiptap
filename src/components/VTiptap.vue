@@ -182,7 +182,10 @@
 
         <!-- Mention -->
         <v-menu
-          :value="mentionConfig.show && (mentionConfig.loading || mentionConfig.items.length)"
+          :value="
+            mentionConfig.show &&
+            (mentionConfig.loading || mentionConfig.items.length)
+          "
           dense
           absolute
           :position-x="mentionConfig.x"
@@ -195,14 +198,18 @@
             color="primary"
             indeterminate
             height="6"
-            style="min-width: 120px;"
+            style="min-width: 120px"
             :style="{
               marginBottom: mentionConfig.items.length != 0 ? '-6px' : '0px',
-              zIndex: 9
+              zIndex: 9,
             }"
           />
 
-          <v-list v-if="mentionConfig.items.length > 0" dense class="py-0 v-tiptap-mentions">
+          <v-list
+            v-if="mentionConfig.items.length > 0"
+            dense
+            class="py-0 v-tiptap-mentions"
+          >
             <v-list-item
               class="item"
               :style="{
@@ -235,7 +242,7 @@ import { Editor, EditorContent, AnyExtension } from "@tiptap/vue-2";
 import TiptapKit from "../plugins/tiptap-kit";
 import vuetify from "../plugins/vuetify";
 
-import debounce from 'debounce';
+import debounce from "debounce";
 
 import { getOption } from "../utils/options";
 
@@ -377,17 +384,21 @@ export default class extends Vue {
                 },
                 suggestion: {
                   items: async ({ query }) => {
+                    this.mentionConfig.query = query;
+
                     if (typeof this.defaultMentionItems === "function") {
                       const config = this.mentionConfig;
 
                       config.loading = true;
 
-                      config.fetchMentions = config.fetchMentions ?? debounce(async (query) => {
-                        const items = await this.defaultMentionItems(query);
+                      config.fetchMentions =
+                        config.fetchMentions ??
+                        debounce(async query => {
+                          const items = await this.defaultMentionItems(query);
 
-                        config.items = items;
-                        config.loading = false;
-                      }, 1000);
+                          config.items = items;
+                          config.loading = false;
+                        }, 1000);
 
                       config.fetchMentions(query);
 
@@ -636,6 +647,20 @@ export default class extends Vue {
     this.mentionConfig.show = false;
 
     this.$emit("mention", item);
+
+    // Workaround for mention bug
+    try {
+      const from = this.editor.state.selection.ranges[0].$from.pos;
+      const to = from + this.mentionConfig.query.length;
+      const text = this.editor.state.doc.textBetween(from, to);
+
+      if (text === this.mentionConfig.query) {
+        this.editor.commands.setTextSelection({ from, to });
+        this.editor.commands.deleteSelection();
+      }
+    } catch (e) {
+      // Ignore
+    }
   }
 }
 </script>
@@ -861,7 +886,8 @@ export default class extends Vue {
     margin-right: 8px !important;
     margin-left: -8px !important;
   }
-  .v-list-item--dense, .v-list--dense .v-list-item {
+  .v-list-item--dense,
+  .v-list--dense .v-list-item {
     min-height: 36px;
   }
 }
