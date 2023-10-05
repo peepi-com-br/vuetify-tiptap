@@ -241,7 +241,7 @@ import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { Editor, EditorContent, AnyExtension } from "@tiptap/vue-2";
 import TiptapKit from "../plugins/tiptap-kit";
 import vuetify from "../plugins/vuetify";
-import Image from "../plugins/image";
+import Image from "@tiptap/extension-image";
 
 import debounce from "debounce";
 
@@ -827,6 +827,7 @@ export default class extends Vue {
       outline: 4px solid rgb(80, 173, 248);
     }
   }
+
   .iframe-wrapper {
     iframe {
       width: 640px;

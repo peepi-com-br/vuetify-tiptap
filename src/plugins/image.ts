@@ -4,7 +4,7 @@ import { mergeAttributes } from "@tiptap/vue-2";
 export default Image.extend({
   defaultOptions: {
     ...Image.options,
-    sizes: ["inline", "block", "left", "right"]
+    sizes: ["inline", "block", "left", "right"],
   },
   renderHTML({ HTMLAttributes }) {
     const { style } = HTMLAttributes;
