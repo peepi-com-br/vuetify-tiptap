@@ -241,6 +241,7 @@ import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { Editor, EditorContent, AnyExtension } from "@tiptap/vue-2";
 import TiptapKit from "../plugins/tiptap-kit";
 import vuetify from "../plugins/vuetify";
+import Image from "../plugins/image";
 
 import debounce from "debounce";
 
@@ -353,14 +354,13 @@ export default class extends Vue {
             placeholder: () => this.placeholder || "",
           },
           textAlign: {
-            types: ["heading", "paragraph"],
+            types: ["heading", "paragraph", "image"],
           },
           focus: {
             className: "focus",
           },
           color: {},
           highlight: { multicolor: true },
-          image: {},
           link: {
             openOnClick: false,
           },
@@ -415,6 +415,9 @@ export default class extends Vue {
                 },
               }
             : false,
+        }),
+        Image.configure({
+          inline: true,
         }),
         ...this.extensions,
       ],
