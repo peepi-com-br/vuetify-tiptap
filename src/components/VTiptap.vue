@@ -360,7 +360,9 @@ export default class extends Vue {
           },
           color: {},
           highlight: { multicolor: true },
-          image: {},
+          image: {
+            inline: true,
+          },
           link: {
             openOnClick: false,
           },
